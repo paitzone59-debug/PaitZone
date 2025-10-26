@@ -3,9 +3,8 @@ from flask_mysqldb import MySQL
 import MySQLdb
 import MySQLdb.cursors
 from functools import wraps
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask import g
-from MySQLdb.cursors import DictCursor
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask import jsonify
@@ -14,28 +13,20 @@ import os
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
-# ✅ CONFIGURACIÓN CON TUS CREDENCIALES DE RAILWAY
-if os.environ.get('MYSQLHOST'):  # Si está en producción (Railway)
-    # PRODUCCIÓN (Railway MySQL)
-    app.config['MYSQL_HOST'] = os.environ.get('MYSQLHOST', 'mysql.railway.internal')
-    app.config['MYSQL_USER'] = os.environ.get('MYSQLUSER', 'root')
-    app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQLPASSWORD', 'EkoPbltgEWMrXOcERJMQKgedaFHermOt')
-    app.config['MYSQL_DB'] = os.environ.get('MYSQLDATABASE', 'railway')
-    app.config['MYSQL_PORT'] = int(os.environ.get('MYSQLPORT', 3306))
-    
-    # Para SQLAlchemy
-    database_uri = f"mysql+pymysql://{app.config['MYSQL_USER']}:{app.config['MYSQL_PASSWORD']}@{app.config['MYSQL_HOST']}:{app.config['MYSQL_PORT']}/{app.config['MYSQL_DB']}"
-else:
-    # DESARROLLO (Local)
-    app.config['MYSQL_HOST'] = 'localhost'
-    app.config['MYSQL_USER'] = 'root'
-    app.config['MYSQL_PASSWORD'] = 'mysql'
-    app.config['MYSQL_DB'] = 'Entrelaza'
-    app.config['MYSQL_PORT'] = 3306
-    database_uri = 'mysql+pymysql://root:mysql@localhost/Entrelaza'
-
+# ✅ CONEXIÓN CON PyMySQL DIRECTAMENTE
+app.config['MYSQL_HOST'] = os.environ.get('MYSQLHOST', 'localhost')
+app.config['MYSQL_USER'] = os.environ.get('MYSQLUSER', 'root')
+app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQLPASSWORD', 'mysql')
+app.config['MYSQL_DB'] = os.environ.get('MYSQLDATABASE', 'Entrelaza')
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
 mysql = MySQL(app)
+
+# Configuración para SQLAlchemy (si la necesitas)
+if os.environ.get('MYSQLHOST'):
+    database_uri = f"mysql+pymysql://{os.environ.get('MYSQLUSER')}:{os.environ.get('MYSQLPASSWORD')}@{os.environ.get('MYSQLHOST')}:{os.environ.get('MYSQLPORT', 3306)}/{os.environ.get('MYSQLDATABASE')}"
+else:
+    database_uri = 'mysql+pymysql://root:mysql@localhost/Entrelaza'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

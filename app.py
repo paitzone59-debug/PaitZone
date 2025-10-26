@@ -163,6 +163,26 @@ def index():
         mi_proyecto=mi_proyecto
     )
 
+
+@app.route('/test')
+def test():
+    try:
+        # Probar conexión básica
+        return "✅ Flask está funcionando"
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
+
+@app.route('/test-db')
+def test_db():
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute("SHOW TABLES")
+        tables = cursor.fetchall()
+        cursor.close()
+        return f"✅ BD Conectada. Tablas: {len(tables)}"
+    except Exception as e:
+        return f"❌ Error BD: {str(e)}"
+
 # ruta admin
 @app.route('/admin')
 @admin_required

@@ -2,7 +2,4 @@ Flask==2.3.2
 gunicorn
 bcrypt
 PyMySQL
-Flask-MySQLdb
-Flask-SQLAlchemy
-cryptography
 Werkzeug==2.3.0

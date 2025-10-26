@@ -9,21 +9,35 @@ from MySQLdb.cursors import DictCursor
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask import jsonify
+import os
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
-# Configuración MySQL directa para tus queries actuales
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'mysql'
-app.config['MYSQL_DB'] = 'Entrelaza'
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+# ✅ CONFIGURACIÓN CON TUS CREDENCIALES DE RAILWAY
+if os.environ.get('MYSQLHOST'):  # Si está en producción (Railway)
+    # PRODUCCIÓN (Railway MySQL)
+    app.config['MYSQL_HOST'] = os.environ.get('MYSQLHOST', 'mysql.railway.internal')
+    app.config['MYSQL_USER'] = os.environ.get('MYSQLUSER', 'root')
+    app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQLPASSWORD', 'EkoPbltgEWMrXOcERJMQKgedaFHermOt')
+    app.config['MYSQL_DB'] = os.environ.get('MYSQLDATABASE', 'railway')
+    app.config['MYSQL_PORT'] = int(os.environ.get('MYSQLPORT', 3306))
+    
+    # Para SQLAlchemy
+    database_uri = f"mysql+pymysql://{app.config['MYSQL_USER']}:{app.config['MYSQL_PASSWORD']}@{app.config['MYSQL_HOST']}:{app.config['MYSQL_PORT']}/{app.config['MYSQL_DB']}"
+else:
+    # DESARROLLO (Local)
+    app.config['MYSQL_HOST'] = 'localhost'
+    app.config['MYSQL_USER'] = 'root'
+    app.config['MYSQL_PASSWORD'] = 'mysql'
+    app.config['MYSQL_DB'] = 'Entrelaza'
+    app.config['MYSQL_PORT'] = 3306
+    database_uri = 'mysql+pymysql://root:mysql@localhost/Entrelaza'
 
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mysql = MySQL(app)
 
-# Configuración SQLAlchemy para el modelo Notificacion
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:mysql@localhost/Entrelaza'
+app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -1437,6 +1451,7 @@ def inject_notificaciones():
 
 
 
+if __name__ == "__main__":
+    from os import environ
+    app.run(host="0.0.0.0", port=int(environ.get("PORT", 5000)), debug=True)
 
-if __name__ == '__main__':
-    app.run(debug=True)

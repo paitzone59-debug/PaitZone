@@ -63,6 +63,32 @@ def admin_required(f):
 
 
 
+@app.route('/debug')
+def debug():
+    return "✅ Flask está funcionando"
+
+@app.route('/debug-db')
+def debug_db():
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT 1")
+        result = cursor.fetchone()
+        cursor.close()
+        return f"✅ Base de datos conectada: {result}"
+    except Exception as e:
+        return f"❌ Error de base de datos: {str(e)}"
+
+@app.route('/debug-tables')
+def debug_tables():
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute("SHOW TABLES")
+        tables = cursor.fetchall()
+        cursor.close()
+        return f"✅ Tablas en la BD: {tables}"
+    except Exception as e:
+        return f"❌ Error al obtener tablas: {str(e)}"
+
 @app.route('/')
 def index():
     usuario = session.get('usuario')

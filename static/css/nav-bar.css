@@ -1,0 +1,186 @@
+/* === NAVBAR MODERNA PREMIUM === */
+.custom-navbar {
+  background: rgba(16, 82, 123, 0.7);
+  backdrop-filter: blur(10px);
+  transition: all 0.4s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  animation: navbarFadeIn 0.6s ease-out forwards;
+}
+
+/* LOGO IZQUIERDA */
+.navbar-brand {
+  font-size: 1.8rem;
+  color: #fff !important;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  transition: color 0.4s ease, text-shadow 0.3s ease;
+}
+
+.navbar-brand:hover {
+  color: #5f8ea0 !important;
+  text-shadow: 0 0 8px rgba(202, 130, 5, 0.6);
+}
+
+/* === LINKS CENTRALES === */
+.navbar-nav .nav-link {
+  color: #0574d5 !important;
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subrayado animado */
+.navbar-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: #ca8205;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+  border-radius: 4px;
+}
+
+.navbar-nav .nav-link:hover::after {
+  width: 60%;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #ca8205 !important;
+}
+
+/* === BOTONES DERECHA === */
+.navbar-right .btn {
+  border-radius: 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-cafe {
+  background-color: #0585ca;
+  color: #fff;
+  border: none;
+}
+
+.btn-cafe:hover {
+  background-color: #0441b1;
+  color: #fff;
+}
+
+.btn-outline-light {
+  border: 1px solid #fff;
+  color: #fff;
+}
+
+.btn-outline-light:hover {
+  background-color: #fff;
+  color: #1a467d;
+}
+
+/* === HAMBURGUESA === */
+.navbar-toggler {
+  background: transparent;
+  border: none;
+}
+
+.navbar-toggler:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.navbar-toggler i {
+  color: #fff;
+  font-size: 1.4rem;
+}
+
+/* === ESTADO SCROLLED === */
+
+
+/* === EFECTOS PREMIUM === */
+.navbar:hover {
+  box-shadow: 0 6px 25px rgba(255, 252, 252, 0.25);
+}
+
+/* Animación de entrada suave */
+@keyframes navbarFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 992px) {
+  .navbar-collapse {
+    background: rgba(0, 0, 0, 0.92);
+    backdrop-filter: blur(12px);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .navbar-nav {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .navbar-right {
+    display: none; /* oculto al colapsar (puedes moverlo si quieres mostrarlo abajo) */
+  }
+
+  .navbar-brand {
+    font-size: 1.5rem;
+  }
+}
+
+/* === EFECTO GRADIENTE OPCIONAL (ACTÍVALO SI QUIERES) === */
+/*
+.custom-navbar {
+  background: linear-gradient(90deg, rgba(20,20,20,0.9) 0%, rgba(25,25,25,0.7) 100%);
+}
+*/
+
+
+/* === EFECTO/estilo para las cards  === */
+
+
+.equipo-card {
+  background: linear-gradient(145deg, rgba(20,20,20,0.95), rgba(35,35,35,0.9));
+  border-radius: 1.25rem; /* esquinas redondeadas */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.equipo-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border-color: rgba(0, 123, 255, 0.4);
+}
+
+.equipo-card .card-body {
+  padding: 1.5rem;
+}
+
+.equipo-card .btn {
+  border-radius: 0.75rem;
+  font-weight: 500;
+}
+
+.equipo-card .badge {
+  font-size: 0.8rem;
+  border-radius: 0.5rem;
+  padding: 0.4em 0.6em;
+}

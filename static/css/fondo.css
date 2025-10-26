@@ -1,0 +1,26 @@
+/* Fondo de la página */
+body {
+    /* Imagen de fondo: puedes cambiar la URL por la que quieras */
+    background-image: url('/static/img/fondo01.jpg');
+    background-size: cover;     /* La imagen cubre toda la pantalla */
+    background-position: center; /* Centrada */
+    background-attachment: fixed; /* No se mueve al hacer scroll */
+    background-repeat: no-repeat;
+    color: #fff; /* Texto en blanco para que contraste */
+    font-family: 'Urbanist', sans-serif; /* O la fuente que uses */
+}
+
+/* Opcional: un overlay oscuro para que los textos sean más legibles */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5); /* 50% de opacidad negra */
+    z-index: -1;
+}
+
+
+
+

@@ -1,0 +1,175 @@
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container mt-4">
+  <h2 class="mb-3">Equipos</h2>
+  <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary mb-3">Volver al admin</a>
+  <!-- Botón para abrir la modal de agregar equipo -->
+  <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#agregarEquipoModal">
+    + Agregar Equipo
+  </button>
+
+  <table class="table table-striped table-hover table-bordered align-middle">
+    <thead class="table-dark text-center">
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Max Integrantes</th>
+        <th>Turno</th>
+        <th>Privacidad</th>
+        <th>Creador ID</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in equipos %}
+      <tr class="text-center">
+        <td>{{ e.id }}</td>
+        <td>{{ e.nombre_proyecto }}</td>
+        <td>{{ e.descripcion }}</td>
+        <td>{{ e.max_integrantes }}</td>
+        <td>
+          <span class="badge {% if e.turno == 'Matutino' %}bg-warning{% else %}bg-info{% endif %}">
+            {{ e.turno }}
+          </span>
+        </td>
+        <td>
+          <span class="badge {% if e.privacidad == 'publico' %}bg-success{% else %}bg-secondary{% endif %}">
+            {{ e.privacidad }}
+          </span>
+        </td>
+        <td>{{ e.creador_id }}</td>
+        <td>
+          <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ url_for('borrar_equipo', id=e.id) }}', '{{ e.nombre_proyecto }}')">
+            Borrar
+          </button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+function confirmDelete(url, nombre) {
+  Swal.fire({
+    title: `¿Estás seguro de eliminar "${nombre}"?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'No',
+    reverseButtons: true
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Crear un form dinámico
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = url;
+
+      document.body.appendChild(form);
+      form.submit();
+    }
+  });
+}
+</script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Modal Agregar Equipo -->
+<div class="modal fade" id="agregarEquipoModal" tabindex="-1" aria-labelledby="agregarEquipoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="agregarEquipoLabel">Registrar nuevo proyecto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{{ url_for('agregar_equipo') }}">
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre del proyecto</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required />
+          </div>
+
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="max_integrantes" class="form-label">Número máximo de integrantes</label>
+            <input type="number" class="form-control" id="max_integrantes" name="max_integrantes" value="5" min="3" max="10" required />
+          </div>
+
+          <!-- ✅ NUEVO CAMPO TURNO -->
+          <div class="mb-3">
+            <label for="turno" class="form-label">Turno del equipo</label>
+            <select class="form-select" id="turno" name="turno" required>
+              <option value="" disabled selected>Selecciona el turno</option>
+              <option value="Matutino">Matutino</option>
+              <option value="Vespertino">Vespertino</option>
+            </select>
+          </div>
+
+          <!-- ✅ NUEVO CAMPO PRIVACIDAD -->
+          <div class="mb-3">
+            <label for="privacidad" class="form-label">Privacidad del equipo</label>
+            <select class="form-select" id="privacidad" name="privacidad" required>
+              <option value="publico">Público (se pueden unir directamente)</option>
+              <option value="privado">Privado (requiere solicitud)</option>
+            </select>
+          </div>
+
+          <!-- ✅ CAMPO ASESOR -->
+          <div class="mb-3">
+            <label for="asesor" class="form-label">Asesor (opcional)</label>
+            <input type="text" class="form-control" id="asesor" name="asesor" placeholder="Nombre del asesor del proyecto" />
+          </div>
+
+          <!-- ✅ CAMPO INTEGRANTES -->
+          <div class="mb-3">
+            <label for="integrantes" class="form-label">Integrantes iniciales (opcional)</label>
+            <input type="text" class="form-control" id="integrantes" name="integrantes" 
+                   placeholder="Nombres separados por coma: Juan Pérez, María García" />
+            <div class="form-text">Separa los nombres con comas. El creador se agregará automáticamente.</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Carreras necesarias (máximo 4)</label><br />
+            {% for carrera in carreras %}
+              <div class="form-check form-check-inline">
+                <input class="form-check-input carrera-checkbox" type="checkbox" name="carreras" id="carrera_{{ loop.index }}" value="{{ carrera }}" />
+                <label class="form-check-label" for="carrera_{{ loop.index }}">{{ carrera }}</label>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Registrar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Script para limitar carreras a 4 -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const checkboxes = document.querySelectorAll('.carrera-checkbox');
+  
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+      const checked = document.querySelectorAll('.carrera-checkbox:checked');
+      if (checked.length > 4) {
+        this.checked = false;
+        alert('Solo puedes seleccionar máximo 4 carreras');
+      }
+    });
+  });
+});
+</script>

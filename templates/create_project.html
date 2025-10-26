@@ -1,0 +1,373 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/botones.css">
+<link rel="stylesheet" href="/static/css/nav-bar.css">
+<link rel="stylesheet" href="/static/css/fondo.css">
+<link rel="stylesheet" href="/static/css/estilo_de_creatproject.css">
+
+<div class="create-project-container">
+  <div class="create-project-wrapper">
+    <!-- Tarjeta Principal -->
+    <div class="project-card">
+      <!-- Header -->
+      <div class="project-header">
+        <div class="project-logo">
+          <img src="{{ url_for('static', filename='img/logo1.jpg') }}" alt="Entrelaza Logo">
+        </div>
+        <h2>Crear Nuevo Proyecto</h2>
+        <p>Forma tu equipo ideal y comienza a colaborar</p>
+      </div>
+
+      <!-- Alerta Informativa -->
+      <div class="custom-alert info">
+        <i class="fa-solid fa-circle-info"></i>
+        <div>
+          <strong>Nota importante:</strong> El creador del equipo será automáticamente el administrador y podrá aceptar o rechazar solicitudes.
+        </div>
+      </div>
+
+      <form method="post" class="project-form">
+        <!-- Información Básica -->
+        <div class="form-section">
+          <h4 class="section-title">
+            <i class="fa-solid fa-circle-info"></i>
+            Información Básica
+          </h4>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="nombre" class="form-label">Nombre del proyecto</label>
+                <div class="input-with-icon">
+                  <i class="fa-solid fa-signature"></i>
+                  <input type="text" id="nombre" name="nombre" placeholder="Ingresa un nombre atractivo para tu proyecto" required>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="max_integrantes" class="form-label">Número máximo de integrantes</label>
+                <div class="input-with-icon">
+                  <i class="fa-solid fa-users"></i>
+                  <input type="number" id="max_integrantes" name="max_integrantes" value="5" min="3" max="10" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="descripcion" class="form-label">Descripción del proyecto</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-file-lines"></i>
+              <textarea id="descripcion" name="descripcion" placeholder="Describe los objetivos, tecnologías a usar y lo que harán en el proyecto..." required></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Configuración del Equipo -->
+        <div class="form-section">
+          <h4 class="section-title">
+            <i class="fa-solid fa-gear"></i>
+            Configuración del Equipo
+          </h4>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="turno" class="form-label">Turno del equipo</label>
+                <div class="input-with-icon">
+                  <i class="fa-solid fa-clock"></i>
+                  <select id="turno" name="turno" required>
+                    <option value="" disabled selected>Selecciona el turno para tu equipo</option>
+                    <option value="Matutino">Matutino</option>
+                    <option value="Vespertino">Vespertino</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="privacidad" class="form-label">Privacidad del equipo</label>
+                <div class="input-with-icon">
+                  <i class="fa-solid fa-lock"></i>
+                  <select id="privacidad" name="privacidad" required>
+                    <option value="publico" selected>Público (cualquiera puede unirse)</option>
+                    <option value="privado">Privado (requiere solicitud)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="asesor" class="form-label">Asesor del proyecto</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-user-tie"></i>
+              <input type="text" id="asesor" name="asesor" placeholder="Nombre completo del asesor (Ej: Juan Pérez García)" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="integrantes" class="form-label">Integrantes iniciales (opcional)</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-user-plus"></i>
+              <input type="text" id="integrantes" name="integrantes" placeholder="Ej: Juan Pérez, María López">
+            </div>
+            <div class="form-text">
+              <i class="fa-solid fa-lightbulb"></i>
+              Agrega integrantes iniciales. El sistema verificará que existan en la plataforma.
+            </div>
+          </div>
+        </div>
+
+        <!-- Carreras Necesarias -->
+        <div class="form-section">
+          <h4 class="section-title">
+            <i class="fa-solid fa-graduation-cap"></i>
+            Carreras Necesarias
+          </h4>
+          
+          <div class="careers-section">
+            <div class="careers-header">
+              <span>Selecciona las carreras que necesitas (máximo 7)</span>
+              <span class="counter" id="careerCounter">0/7 seleccionadas</span>
+            </div>
+
+            <div class="careers-grid">
+              {% for carrera in carreras %}
+              <div class="career-card">
+                <div class="career-checkbox">
+                  <input class="carrera-checkbox" type="checkbox" name="carreras" id="{{ carrera }}" value="{{ carrera }}" />
+                  <label for="{{ carrera }}" class="career-label">
+                    <span class="career-name">{{ carrera }}</span>
+                  </label>
+                </div>
+                <div class="career-quantity">
+                  <label for="cantidad_{{ carrera }}" class="quantity-label">Cantidad:</label>
+                  <div class="quantity-input-wrapper">
+                    <button type="button" class="quantity-btn minus" data-carrera="{{ carrera }}">-</button>
+                    <input type="number" class="quantity-input" 
+                           id="cantidad_{{ carrera }}" name="cantidad_{{ carrera }}" 
+                           min="0" max="5" value="0" disabled
+                           placeholder="0">
+                    <button type="button" class="quantity-btn plus" data-carrera="{{ carrera }}">+</button>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+
+            <div class="careers-summary">
+              <div class="summary-item">
+                <span>Total de personas requeridas:</span>
+                <strong id="totalRequired">0</strong>
+              </div>
+              <div class="summary-item">
+                <span>Máximo permitido:</span>
+                <strong id="maxAllowed">5</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón de Envío -->
+        <div class="form-actions">
+          <button type="submit" class="create-project-btn">
+            <i class="fa-solid fa-rocket"></i>
+            Crear Proyecto
+          </button>
+          <a href="{{ url_for('index') }}" class="back-btn">
+            <i class="fa-solid fa-house"></i>
+            Volver al Inicio
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const checkboxes = document.querySelectorAll('.carrera-checkbox');
+  const maxIntegrantesInput = document.getElementById('max_integrantes');
+  const careerCounter = document.getElementById('careerCounter');
+  const totalRequiredSpan = document.getElementById('totalRequired');
+  const maxAllowedSpan = document.getElementById('maxAllowed');
+
+  // Actualizar contadores
+  function updateCounters() {
+    const checked = document.querySelectorAll('.carrera-checkbox:checked');
+    careerCounter.textContent = `${checked.length}/7 seleccionadas`;
+    
+    let total = 0;
+    checked.forEach(checkbox => {
+      const carreraNombre = checkbox.value;
+      const cantidadInput = document.getElementById(`cantidad_${carreraNombre}`);
+      total += parseInt(cantidadInput.value) || 0;
+    });
+    
+    totalRequiredSpan.textContent = total;
+    maxAllowedSpan.textContent = maxIntegrantesInput.value;
+    
+    // Actualizar estilo si se excede
+    if (total > parseInt(maxIntegrantesInput.value)) {
+      totalRequiredSpan.style.color = 'var(--rojo)';
+    } else {
+      totalRequiredSpan.style.color = 'var(--azul-fuerte)';
+    }
+  }
+
+  // Habilitar/deshabilitar campos de cantidad
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+      const carreraNombre = this.value;
+      const cantidadInput = document.getElementById(`cantidad_${carreraNombre}`);
+      const careerCard = this.closest('.career-card');
+      
+      if (this.checked) {
+        cantidadInput.disabled = false;
+        careerCard.classList.add('selected');
+        cantidadInput.value = '1';
+      } else {
+        cantidadInput.disabled = true;
+        careerCard.classList.remove('selected');
+        cantidadInput.value = '0';
+      }
+      
+      // Limitar selección a 7 carreras máximo
+      const checked = document.querySelectorAll('.carrera-checkbox:checked');
+      if (checked.length > 7) {
+        this.checked = false;
+        cantidadInput.disabled = true;
+        careerCard.classList.remove('selected');
+        cantidadInput.value = '0';
+        showAlert('Solo puedes seleccionar máximo 7 carreras', 'warning');
+      }
+      
+      updateCounters();
+    });
+  });
+
+  // Botones de incremento/decremento
+  document.querySelectorAll('.quantity-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const carrera = this.dataset.carrera;
+      const input = document.getElementById(`cantidad_${carrera}`);
+      const currentValue = parseInt(input.value) || 0;
+      
+      if (this.classList.contains('plus') && currentValue < 5) {
+        input.value = currentValue + 1;
+      } else if (this.classList.contains('minus') && currentValue > 0) {
+        input.value = currentValue - 1;
+      }
+      
+      input.dispatchEvent(new Event('change'));
+    });
+  });
+
+  // Actualizar cuando cambian las cantidades
+  document.querySelectorAll('.quantity-input').forEach(input => {
+    input.addEventListener('change', function() {
+      const value = parseInt(this.value) || 0;
+      
+      if (value < 0) this.value = 0;
+      if (value > 5) this.value = 5;
+      
+      updateCounters();
+      
+      if (!validateQuantities()) {
+        showAlert('La suma de personas requeridas excede el máximo permitido', 'error');
+      }
+    });
+  });
+
+  // Actualizar cuando cambia el máximo de integrantes
+  maxIntegrantesInput.addEventListener('change', function() {
+    const value = parseInt(this.value) || 5;
+    
+    if (value < 3) this.value = 3;
+    if (value > 10) this.value = 10;
+    
+    updateCounters();
+    maxAllowedSpan.textContent = this.value;
+  });
+
+  // Validar cantidades
+  function validateQuantities() {
+    const maxIntegrantes = parseInt(maxIntegrantesInput.value) || 5;
+    let totalRequerido = 0;
+    
+    const checkedCarreras = document.querySelectorAll('.carrera-checkbox:checked');
+    checkedCarreras.forEach(checkbox => {
+      const carreraNombre = checkbox.value;
+      const cantidadInput = document.getElementById(`cantidad_${carreraNombre}`);
+      const cantidad = parseInt(cantidadInput.value) || 0;
+      totalRequerido += cantidad;
+    });
+    
+    return totalRequerido <= maxIntegrantes;
+  }
+
+  // Validar formulario
+  const form = document.querySelector('.project-form');
+  form.addEventListener('submit', function(e) {
+    // Validar que se seleccione al menos 1 carrera
+    const checkedCarreras = document.querySelectorAll('.carrera-checkbox:checked');
+    if (checkedCarreras.length === 0) {
+      e.preventDefault();
+      showAlert('Debes seleccionar al menos 1 carrera necesaria para el equipo', 'error');
+      return false;
+    }
+
+    // Validar que el turno esté seleccionado
+    const turno = document.getElementById('turno').value;
+    if (!turno) {
+      e.preventDefault();
+      showAlert('Debes seleccionar un turno para el equipo', 'error');
+      return false;
+    }
+
+    // Validar que las cantidades no excedan el máximo
+    if (!validateQuantities()) {
+      e.preventDefault();
+      const maxIntegrantes = maxIntegrantesInput.value;
+      showAlert(`La suma de personas requeridas (${totalRequiredSpan.textContent}) no puede exceder el máximo de ${maxIntegrantes} integrantes`, 'error');
+      return false;
+    }
+
+    // Validar que cada carrera seleccionada tenga al menos 1 persona
+    let todasTienenCantidad = true;
+    checkedCarreras.forEach(checkbox => {
+      const carreraNombre = checkbox.value;
+      const cantidadInput = document.getElementById(`cantidad_${carreraNombre}`);
+      const cantidad = parseInt(cantidadInput.value) || 0;
+      
+      if (cantidad < 1) {
+        todasTienenCantidad = false;
+      }
+    });
+
+    if (!todasTienenCantidad) {
+      e.preventDefault();
+      showAlert('Cada carrera seleccionada debe tener al menos 1 persona requerida', 'error');
+      return false;
+    }
+  });
+
+  // Función para mostrar alertas (puedes implementar un sistema de notificaciones)
+  function showAlert(message, type) {
+    // Por ahora usamos alert nativo, puedes reemplazar con un sistema de notificaciones bonito
+    alert(message);
+  }
+
+  // Inicializar contadores
+  updateCounters();
+});
+</script>
+
+<script src="/static/js/animacion de nav-bar.js"></script>
+{% endblock %}

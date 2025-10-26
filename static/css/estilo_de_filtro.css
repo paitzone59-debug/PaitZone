@@ -1,0 +1,210 @@
+/* Estilos Premium para Filtros */
+.filter-card {
+  background: linear-gradient(135deg, #113c7c 0%, #c6610f 100%);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.filter-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.filter-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #3498db, #9b59b6, #e74c3c);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.filter-header {
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.05) 0%, rgba(155, 89, 182, 0.05) 100%);
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+}
+
+.filter-icon {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 14px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  transition: all 0.3s ease;
+}
+
+.filter-card:hover .filter-icon {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+}
+
+.filter-title {
+  font-weight: 700;
+  color: #f0f0f0;
+  margin: 0;
+  font-size: 1.15rem;
+  letter-spacing: -0.2px;
+}
+
+.filter-body {
+  padding: 24px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 250px;
+}
+
+.filter-label {
+  font-weight: 600;
+  color: #f7fbff;
+  min-width: 80px;
+  font-size: 0.95rem;
+  letter-spacing: -0.1px;
+}
+
+.filter-value {
+  color: #fafcff;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.badge-custom {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.badge-custom:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.badge-matutino {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+}
+
+.badge-vespertino {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+}
+
+.results-count {
+  background: linear-gradient(135deg, rgba(246, 243, 247, 0.08) 0%, rgba(52, 152, 219, 0.08) 100%);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(155, 89, 182, 0.1);
+  transition: all 0.3s ease;
+}
+
+.results-count:hover {
+  background: linear-gradient(135deg, rgba(155, 89, 182, 0.12) 0%, rgba(52, 152, 219, 0.12) 100%);
+  transform: translateY(-1px);
+}
+
+.count-value {
+  font-weight: 800;
+  font-size: 1.3rem;
+  background: linear-gradient(135deg, #f5f3f5, #3498db);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .filter-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .filter-item {
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: auto;
+  }
+  
+  .filter-label {
+    margin-bottom: 6px;
+    min-width: auto;
+    font-size: 0.9rem;
+  }
+  
+  .filter-header {
+    padding: 16px 20px;
+  }
+  
+  .filter-body {
+    padding: 20px;
+  }
+  
+  .filter-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+  
+  .filter-title {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-header {
+    padding: 14px 16px;
+  }
+  
+  .filter-body {
+    padding: 16px;
+  }
+  
+  .results-count {
+    padding: 14px 16px;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  
+  .count-value {
+    font-size: 1.2rem;
+  }
+}

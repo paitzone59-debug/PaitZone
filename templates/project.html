@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PaitZone</title>
+<link rel="stylesheet" href="/static/css/fondo.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="/static/css/nav-bar.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/static/css/notificacion.css">
+<link rel="stylesheet" href="/static/css/animacion.css">
+<link rel="stylesheet" href="/static/css/noticias.css">
+<link rel="stylesheet" href="/static/css/estilo_de_filtro.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+<style>
+/* ESTILOS ADICIONALES PARA MEJORAR LA APARIENCIA */
+.main-content {
+    margin-top: 90px; /* Espacio para el navbar fijo */
+    min-height: calc(100vh - 90px);
+    padding-bottom: 2rem;
+}
+
+.floating-alerts {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 1050;
+    max-width: 350px;
+}
+
+.floating-alert {
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Mejoras para las cards */
+.equipo-card {
+    background: linear-gradient(145deg, rgba(20,20,20,0.95), rgba(35,35,35,0.9));
+    border-radius: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.equipo-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border-color: rgba(0, 123, 255, 0.4);
+}
+
+/* Alert info - COMPLETAMENTE OPACO */
+.alert-info-custom {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+    border: 1px solid #0a58ca;
+    border-radius: 15px;
+    color: white;
+    padding: 1.25rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.alert-info-custom h6 {
+    color: white;
+    font-weight: 600;
+}
+
+.alert-info-custom strong {
+    color: white;
+}
+
+.alert-info-custom .badge {
+    font-size: 0.9rem;
+    padding: 0.5em 0.8em;
+}
+/* Contenedor principal mejorado */
+.container-custom {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+</style>
+</head>
+<body>
+
+<nav id="mainNavbar" class="navbar navbar-expand-lg custom-navbar fixed-top shadow-sm py-3">
+  <div class="container-fluid d-flex align-items-center justify-content-between px-4">
+
+    <!-- LOGO IZQUIERDA -->
+    <a class="navbar-brand fw-bold letra1" href="/">PaitZone</a>
+
+    <!-- BOTÓN HAMBURGUESA -->
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+      aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fa-solid fa-bars" style="color: #b7b7bc; font-size: 1.4rem;"></i>
+    </button>
+
+    <!-- CONTENIDO -->
+    <div class="collapse navbar-collapse justify-content-center" id="navbarContent">
+      <ul class="navbar-nav gap-4">
+    <!-- DERECHA (BOTONES DE USUARIO) -->
+    <div class="d-flex align-items-center navbar-right">
+{% if usuario %}
+    <!-- BOTÓN  notis-->
+    <span class="username me-3 text-white">Hola, {{ usuario['nombre_completo'] }}</span>
+<a href="#" data-bs-toggle="modal" data-bs-target="#notificacionesModal"
+   class="btn btn-light position-relative me-3">
+  <i class="bi bi-bell fs-5"></i>
+  {% if notificaciones_pendientes > 0 %}
+    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+      {{ notificaciones_pendientes }}
+    </span>
+  {% endif %}
+</a>
+    {% if mi_proyecto %}
+      <a href="{{ url_for('mi_equipo') }}" class="btn btn-cafe me-2">Mi Proyecto</a>
+    {% else %}
+      <a href="{{ url_for('create_project') }}" class="btn btn-cafe me-2">Nuevo Proyecto</a>
+    {% endif %}
+    <!-- BOTÓN MI PERFIL -->
+    <a href="{{ url_for('perfil', id=usuario['id']) }}" class="btn btn-outline-light me-2">Mi perfil</a>
+    <a href="{{ url_for('logout') }}" class="btn btn-outline-light"><i class="fa-solid fa-right-from-bracket"></i></a>
+{% else %}
+    <a href="{{ url_for('login') }}" class="btn btn-outline-light me-2"><i class="fa-solid fa-user"></i></a>
+    <a href="{{ url_for('register') }}" class="btn btn-cafe"><i class="fa-solid fa-address-card"></i></a>
+{% endif %}
+    </div>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="main-content">
+    <div class="container container-custom">
+        
+        <!-- Mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="floating-alerts">
+              {% for category, message in messages %}
+                <div class="floating-alert alert-{{ category }} alert alert-{{ category }} alert-dismissible fade show">
+                  <span>{{ message }}</span>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        <!-- Mensaje informativo - SOLO SI NO TIENES EQUIPO -->
+        {% if not mi_proyecto %}
+<div class="filter-card premium-card mb-4">
+  <div class="filter-header">
+    <div class="filter-icon">
+      <i class="fas fa-search"></i>
+    </div>
+    <h5 class="filter-title">Filtros Aplicados</h5>
+  </div>
+  <div class="filter-body">
+    <div class="filter-row">
+      <div class="filter-item">
+        <span class="filter-label">Carrera:</span>
+        <span class="filter-value">{{ usuario.carrera }}</span>
+      </div>
+      <div class="filter-item">
+        <span class="filter-label">Turno:</span>
+        <span class="badge-custom {% if usuario.turno == 'Matutino' %}badge-matutino{% elif usuario.turno == 'Vespertino' %}badge-vespertino{% else %}badge-nocturno{% endif %}">
+          {{ usuario.turno }}
+        </span>
+      </div>
+      
+    </div>
+    <div class="results-count">
+      <span class="filter-label">Equipos encontrados:</span>
+      <span class="count-value">{{ equipos | length }}</span>
+    </div>
+  </div>
+</div>
+        {% endif %}
+
+        <!-- MOSTRAR NOTICIAS DEL USUARIO -->
+        {% if mi_proyecto %}
+<section class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+      <div class="card shadow-lg border-0">
+        <!-- Cabecera de la tarjeta -->
+        <div class="card-header bg-primary text-white py-4">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <h2 class="h4 mb-1 fw-bold"><i class="fas fa-newspaper me-2"></i>Noticias y Actualizaciones</h2>
+              <p class="mb-0 opacity-75">Mantente informado sobre las novedades de la plataforma</p>
+            </div>
+            <div class="d-none d-md-block">
+              <span class="badge bg-light text-primary fs-6">3 Nuevas</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Cuerpo principal con carrusel -->
+        <div class="card-body p-0">
+          <!-- Carrusel de noticias destacadas -->
+          <div id="carouselNoticias" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselNoticias" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselNoticias" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselNoticias" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            
+            <div class="carousel-inner">
+              <!-- Noticia destacada 1 -->
+              <div class="carousel-item active">
+                <div class="row g-0 align-items-stretch">
+                  <div class="col-md-6">
+                    <img src="/static/img/n1.jpg" class="img-fluid h-100 w-100" alt="Noticia 1" style="object-fit: cover; min-height: 300px;">
+                  </div>
+                  <div class="col-md-6 d-flex align-items-center">
+                    <div class="p-4 p-lg-5">
+                      <span class="badge bg-danger mb-2">Destacado</span>
+                      <h3 class="h4 mb-3">Nueva función de colaboración en equipo</h3>
+                      <p class="text-muted mb-4">Hemos implementado herramientas mejoradas para que los equipos puedan trabajar de manera más eficiente en sus proyectos académicos.</p>
+                      <div class="d-flex align-items-center justify-content-between">
+                        <a href="/noticia-1" class="btn btn-primary px-4">Leer más <i class="fas fa-arrow-right ms-2"></i></a>
+                        <small class="text-muted">Hace 2 días</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Noticia destacada 2 -->
+              <div class="carousel-item">
+                <div class="row g-0 align-items-stretch">
+                  <div class="col-md-6">
+                    <img src="/static/img/n2.jpeg" class="img-fluid h-100 w-100" alt="Noticia 2" style="object-fit: cover; min-height: 300px;">
+                  </div>
+                  <div class="col-md-6 d-flex align-items-center">
+                    <div class="p-4 p-lg-5">
+                      <span class="badge bg-success mb-2">Actualización</span>
+                      <h3 class="h4 mb-3">Mejoras en la interfaz de usuario</h3>
+                      <p class="text-muted mb-4">Hemos rediseñado completamente la experiencia de usuario para hacerla más intuitiva y accesible para todos los estudiantes.</p>
+                      <div class="d-flex align-items-center justify-content-between">
+                        <a href="/noticia-2" class="btn btn-primary px-4">Leer más <i class="fas fa-arrow-right ms-2"></i></a>
+                        <small class="text-muted">Hace 1 semana</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Noticia destacada 3 -->
+              <div class="carousel-item">
+                <div class="row g-0 align-items-stretch">
+                  <div class="col-md-6">
+                    <img src="/static/img/n3.jpeg" class="img-fluid h-100 w-100" alt="Noticia 3" style="object-fit: cover; min-height: 300px;">
+                  </div>
+                  <div class="col-md-6 d-flex align-items-center">
+                    <div class="p-4 p-lg-5">
+                      <span class="badge bg-warning text-dark mb-2">Consejo</span>
+                      <h3 class="h4 mb-3">Cómo encontrar el equipo perfecto</h3>
+                      <p class="text-muted mb-4">Descubre estrategias efectivas para encontrar compañeros de equipo que complementen tus habilidades y objetivos académicos.</p>
+                      <div class="d-flex align-items-center justify-content-between">
+                        <a href="/noticia-3" class="btn btn-primary px-4">Leer más <i class="fas fa-arrow-right ms-2"></i></a>
+                        <small class="text-muted">Hace 2 semanas</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselNoticias" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
+              <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselNoticias" data-bs-slide="next">
+              <span class="carousel-control-next-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
+              <span class="visually-hidden">Siguiente</span>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Sección de noticias adicionales -->
+        <div class="p-4 border-top">
+          <h4 class="mb-4 text-center">Más Noticias Recientes</h4>
+          
+          <div class="row g-4">
+            <!-- Noticia adicional 1 -->
+            <div class="col-md-6 col-lg-4">
+              <div class="card h-100 border-0 shadow-sm">
+                <img src="/static/img/noticia1.jpg" class="card-img-top" alt="Noticia 4" style="height: 180px; object-fit: cover;">
+                <div class="card-body">
+                  <span class="badge bg-info mb-2">Evento</span>
+                  <h5 class="card-title"> evento que está enfocado en la capacitación y apoyo de nuevos empresarios</h5>
+                  <p class="card-text text-muted small">Con el objetivo de impulsar el emprendimiento, la formación integral y fortalecer el tejido social.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <a href="#" class="btn btn-outline-primary btn-sm">Leer más</a>
+                    <small class="text-muted">Hace 2 semanas</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Noticia adicional 2 -->
+            <div class="col-md-6 col-lg-4">
+              <div class="card h-100 border-0 shadow-sm">
+                <img src="/static/img/noticia2.jpeg" class="card-img-top" alt="Noticia 5" style="height: 180px; object-fit: cover;">
+                <div class="card-body">
+                  <span class="badge bg-secondary mb-2">Noticia</span>
+                  <h5 class="card-title">Distinguirá la Escuela Politécnica “Ing. Jorge Matute Remus” a lo mejor de su comunidad</h5>
+                  <p class="card-text text-muted small">En rueda de prensa, el director del plantel, maestro Luis Alberto Robles Villaseñor, expresó que para esa comunidad es importante darse a conocer no sólo como escuela, sino impulsores en el fomento de la cultura de reconocimiento a las personas que hacen una labor extraordinaria.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <a href="#" class="btn btn-outline-primary btn-sm">Leer más</a>
+                    <small class="text-muted">Hace 1 mes</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Noticia adicional 3 -->
+            <div class="col-md-6 col-lg-4">
+              <div class="card h-100 border-0 shadow-sm">
+                <img src="/static/img/noticia3.png" class="card-img-top" alt="Noticia 6" style="height: 180px; object-fit: cover;">
+                <div class="card-body">
+                  <span class="badge bg-success mb-2">Campaña</span>
+                  <h5 class="card-title">Campaña de recolección de víveres</h5>
+                  <p class="card-text text-muted small">Campaña de recoleccion para ayudar a los afectados con las recientes inundaciones.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <a href="#" class="btn btn-outline-primary btn-sm">Leer más</a>
+                    <small class="text-muted">Hace 1 semana</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+          <!-- Llamada a la acción -->
+<div class="row mt-4">
+<p></p>
+</div>
+        </div>
+        
+        <!-- Pie de la tarjeta -->
+        <div class="card-footer bg-light py-3 text-center">
+          <a href="/todas-las-noticias" class="text-decoration-none fw-semibold">
+            Ver todas las noticias <i class="fas fa-chevron-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+        {% endif %}
+
+
+
+
+
+        <!-- MOSTRAR EQUIPOS DISPONIBLES SOLO SI NO HAY PROYECTO -->
+        {% if not mi_proyecto %}
+        <h2 class="mb-4 text-center text-light fw-bold">Equipos Disponibles para {{ usuario.turno }}</h2>
+
+        <div class="row g-4">
+          {% for equipo in equipos %}
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card equipo-card h-100 text-light">
+              <div class="card-body d-flex flex-column">
+                
+                <!-- Nombre del proyecto -->
+                <div class="mb-3">
+                  <h6 class="text-uppercase text-info fw-bold mb-1" style="letter-spacing: 0.5px;">
+                    Nombre del proyecto
+                  </h6>
+                  <h5 class="fw-semibold text-light mb-3">{{ equipo.nombre_proyecto }}</h5>
+                </div>
+
+                <!-- Descripción del proyecto -->
+                <div class="mb-3">
+                  <h6 class="text-uppercase text-info fw-bold mb-1" style="letter-spacing: 0.5px;">
+                    Descripción del proyecto
+                  </h6>
+                  <p class="card-text small mb-3" style="color: rgba(255, 255, 255, 0.9);">
+                    {{ equipo.descripcion }}
+                  </p>
+                </div>
+
+                <!-- Información del equipo en columnas -->
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <strong>Asesor:</strong><br>
+                    <span class="small">{{ equipo.asesor or "No asignado" }}</span>
+                  </div>
+                  <div class="col-6">
+                    <strong>Turno:</strong><br>
+                    <span class="badge {% if equipo.turno == 'Matutino' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %}">
+                      {{ equipo.turno }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Carreras necesarias -->
+                <div class="mb-3">
+                  <strong>Carreras necesarias:</strong><br>
+                  {% for carrera in equipo.carreras_necesarias %}
+                    <span class="badge bg-info text-dark mb-1">{{ carrera }}</span>
+                  {% else %}
+                    <span class="text-muted small">No especificadas</span>
+                  {% endfor %}
+                </div>
+
+                <!-- Integrantes -->
+                <div class="mb-3">
+                  <strong>Integrantes ({{ equipo.integrantes | length }}/{{ equipo.max_integrantes }}):</strong>
+                  <ul class="list-unstyled mt-2 mb-0">
+                    {% for integrante in equipo.integrantes %}
+                      <li class="d-flex align-items-center justify-content-between bg-secondary bg-opacity-10 rounded px-2 py-1 mb-1">
+                        <div>
+                          <span>{{ integrante.nombre_completo }}</span>
+                          {% if integrante.id == equipo.creador_id %}
+                            <span class="badge bg-warning text-dark ms-1">Admin</span>
+                          {% endif %}
+                        </div>
+                        <a href="{{ url_for('perfil', id=integrante.id) }}" class="btn btn-sm btn-outline-light">Ver perfil</a>
+                      </li>
+                    {% else %}
+                      <li class="text-muted small">Sin integrantes</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+
+                <!-- Privacidad -->
+                <div class="mb-3">
+                  <strong>Privacidad:</strong>
+                  {% if equipo.privacidad == 'publico' %}
+                    <span class="badge bg-success">Público</span>
+                  {% else %}
+                    <span class="badge bg-warning text-dark">Privado</span>
+                  {% endif %}
+                </div>
+
+                <!-- Botón de acción -->
+                <div class="mt-auto">
+                  {% if usuario %}
+                    {% if equipo.privacidad == 'publico' %}
+                      <a href="{{ url_for('unirse', equipo_id=equipo.id) }}" class="btn btn-primary w-100">Unirme</a>
+                    {% else %}
+                      <a href="{{ url_for('enviar_solicitud', equipo_id=equipo.id) }}" class="btn btn-outline-warning w-100">
+                        Enviar solicitud
+                      </a>
+                    {% endif %}
+                  {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light w-100">Inicia sesión para unirte</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <div class="col-12">
+            <p class="text-center text-light">No hay equipos disponibles para tu turno ({{ usuario.turno }}) en este momento.</p>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+
+
+<!-- Modal de Notificaciones -->
+<div class="modal fade" id="notificacionesModal" tabindex="-1" aria-labelledby="notificacionesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-content shadow-lg">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="notificacionesModalLabel">📢 Notificaciones</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" id="modal-body-notificaciones">
+        <div class="text-center py-4 text-muted">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <p class="mt-2">Cargando notificaciones...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script de notificaciones  -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const modal = document.getElementById('notificacionesModal');
+    const modalBody = document.getElementById('modal-body-notificaciones');
+    
+    // Buscar el badge de notificaciones - usa el selector correcto
+    const badgeNotificaciones = document.querySelector('.position-absolute.badge.bg-danger');
+
+    // Cuando se abre la modal
+    modal.addEventListener('show.bs.modal', function () {
+        modalBody.innerHTML = `
+            <div class="text-center py-4 text-muted">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-2">Cargando notificaciones...</p>
+            </div>
+        `;
+
+        // Marcar como leídas
+        fetch('/notificaciones/marcar_leidas', { 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).catch(err => console.error('Error marcando notificaciones:', err));
+
+        // Cargar las notificaciones
+        fetch('/notificaciones/data')
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return res.text();
+            })
+            .then(html => {
+                modalBody.innerHTML = html;
+                initBotonesSolicitudes(); // Inicializa botones aceptar/rechazar
+            })
+            .catch(err => {
+                console.error('Error cargando notificaciones:', err);
+                modalBody.innerHTML = `
+                    <div class="text-center py-4">
+                        <div class="text-danger mb-2">
+                            <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+                        </div>
+                        <p class="text-danger">Error al cargar notificaciones</p>
+                        <button class="btn btn-primary btn-sm" onclick="location.reload()">Reintentar</button>
+                    </div>
+                `;
+            });
+    });
+
+    // Inicializa eventos de botones aceptar/rechazar
+    function initBotonesSolicitudes() {
+        document.querySelectorAll('.btn-aceptar, .btn-rechazar').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const solicitudId = btn.dataset.solicitud;
+                const usuarioId = btn.dataset.usuario;
+                const esAceptar = btn.classList.contains('btn-aceptar');
+
+                const url = esAceptar 
+                    ? `/aceptar_solicitud_modal/${solicitudId}/${usuarioId}`
+                    : `/rechazar_solicitud_admin/${solicitudId}/${usuarioId}`;
+
+                btn.disabled = true;
+                btn.innerHTML = esAceptar ? '⌛ Aceptando...' : '⌛ Rechazando...';
+
+                try {
+                    const resp = await fetch(url, { 
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+
+                    const data = await resp.json();
+
+                    if (data.success) {
+                        const li = btn.closest('.notificacion-item') || btn.closest('li');
+                        if (!li) return;
+
+                        // Animación de salida
+                        li.style.transition = 'all 0.4s ease';
+                        li.style.opacity = '0';
+                        li.style.transform = 'scale(0.95)';
+
+                        setTimeout(() => {
+                            li.innerHTML = `
+                                <div>
+                                    <strong>${esAceptar ? '✅ Solicitud aceptada' : '❌ Solicitud rechazada'}</strong><br>
+                                    <small class="text-muted">Actualizado correctamente</small>
+                                </div>
+                            `;
+                            li.style.opacity = '1';
+                            li.style.transform = 'scale(1)';
+                            actualizarContador();
+
+                            if (!esAceptar) {
+                                setTimeout(() => li.remove(), 1200);
+                            }
+                        }, 400);
+                    } else {
+                        mostrarToast(data.message || 'Error al procesar la solicitud', 'danger');
+                        btn.disabled = false;
+                        btn.innerHTML = esAceptar ? 'Aceptar' : 'Rechazar';
+                    }
+                } catch (err) {
+                    console.error('Error en la solicitud:', err);
+                    mostrarToast('🚨 Error en la conexión', 'danger');
+                    btn.disabled = false;
+                    btn.innerHTML = esAceptar ? 'Aceptar' : 'Rechazar';
+                }
+            });
+        });
+    }
+
+    // Actualiza el contador del ícono de notificaciones
+    function actualizarContador() {
+        if (!badgeNotificaciones) return;
+        let num = parseInt(badgeNotificaciones.textContent || '0');
+        if (num > 1) {
+            badgeNotificaciones.textContent = num - 1;
+        } else {
+            badgeNotificaciones.style.display = 'none';
+        }
+    }
+
+    // Muestra un toast elegante
+    function mostrarToast(mensaje, tipo = 'info') {
+        const colores = {
+            info: 'text-bg-info',
+            success: 'text-bg-success',
+            warning: 'text-bg-warning',
+            danger: 'text-bg-danger'
+        };
+
+        // Crear contenedor de toasts si no existe
+        let toastContainer = document.getElementById('toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-container';
+            toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+            toastContainer.style.zIndex = '2000';
+            document.body.appendChild(toastContainer);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = `toast align-items-center ${colores[tipo] || 'text-bg-secondary'} border-0`;
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body fw-semibold">${mensaje}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        `;
+
+        toastContainer.appendChild(toast);
+        const bsToast = new bootstrap.Toast(toast, { delay: 4000 });
+        bsToast.show();
+        
+        toast.addEventListener('hidden.bs.toast', () => {
+            toast.remove();
+        });
+    }
+});
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/formularioequipo.js"></script>
+<script src="/static/js/animacion de nav-bar.js"></script>
+<script src="/static/js/notificacion.js"></script>
+<script src="/static/js/animacion_inicio.js"></script>
+</body>
+</html>

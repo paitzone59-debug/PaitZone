@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+
+    <!-- Botón dinámico de regreso -->
+    {% if origen == 'mi_equipo' %}
+        <a href="{{ url_for('mi_equipo') }}" class="btn btn-secondary mb-3">← Regresar a Mi Proyecto</a>
+    {% elif origen == 'project' %}
+        <a href="{{ url_for('index') }}" class="btn btn-secondary mb-3">← Regresar a Equipos</a>
+    {% else %}
+        <a href="{{ url_for('index') }}" class="btn btn-secondary mb-3">← Regresar al Inicio</a>
+    {% endif %}
+
+    <!-- Card principal del perfil -->
+    <div class="card p-4 border-0 shadow-lg" style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); border-radius: 15px;">
+        <!-- Header del perfil -->
+        <div class="text-center mb-4">
+            <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                <i class="fas fa-user fa-2x text-white"></i>
+            </div>
+            <h2 class="text-white fw-bold">{{ perfil.nombre_completo }}</h2>
+            {% if usuario and usuario.id == perfil.id %}
+                <span class="badge bg-warning text-dark">Tu perfil</span>
+            {% endif %}
+        </div>
+
+        <!-- Información del usuario en grid -->
+        <div class="row g-3">
+            <!-- Carrera -->
+            <div class="col-md-6">
+                <div class="p-3 text-white rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-graduation-cap me-2 text-info"></i>
+                        <strong>Carrera</strong>
+                    </div>
+                    <span>{{ perfil.carrera }}</span>
+                </div>
+            </div>
+
+            <!-- Turno -->
+            <div class="col-md-6">
+                <div class="p-3 text-white rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-clock me-2 text-warning"></i>
+                        <strong>Turno</strong>
+                    </div>
+                    <span class="badge {% if perfil.turno == 'Matutino' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %}">
+                        {{ perfil.turno }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Grado -->
+            <div class="col-md-6">
+                <div class="p-3 text-white rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-star me-2 text-success"></i>
+                        <strong>Grado</strong>
+                    </div>
+                    <span>{{ perfil.grado }}°</span>
+                </div>
+            </div>
+
+            <!-- Grupo -->
+            <div class="col-md-6">
+                <div class="p-3 text-white rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-users me-2 text-primary"></i>
+                        <strong>Grupo</strong>
+                    </div>
+                    <span>{{ perfil.grupo }}</span>
+                </div>
+            </div>
+
+            <!-- Teléfono -->
+            <div class="col-12">
+                <div class="p-3 text-white rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-phone me-2 text-success"></i>
+                        <strong>Teléfono</strong>
+                    </div>
+                    <span>{{ perfil.telefono or "No proporcionado" }}</span>
+                    {% if perfil.telefono %}
+                        <a href="https://wa.me/{{ perfil.telefono }}" target="_blank" class="btn btn-success btn-sm ms-2">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="col-12">
+                <div class="p-3 text-white rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-info-circle me-2 text-info"></i>
+                        <strong>Descripción</strong>
+                    </div>
+                    <p class="mb-0">{{ perfil.descripcion or "No ha agregado descripción aún" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón de editar (solo para el propio usuario) -->
+        {% if usuario and usuario.id == perfil.id %}
+            <div class="text-center mt-4">
+                <a href="{{ url_for('editar_perfil') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-edit me-2"></i>Editar perfil
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Información adicional si es el propio usuario -->
+    {% if usuario and usuario.id == perfil.id %}
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-envelope fa-2x mb-2"></i>
+                    <h5>Correo</h5>
+                    <p class="mb-0">{{ usuario.correo }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-id-card fa-2x mb-2"></i>
+                    <h5>Código</h5>
+                    <p class="mb-0">{{ usuario.codigo }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.card {
+    transition: transform 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+.badge {
+    font-size: 0.8rem;
+}
+</style>
+{% endblock %}

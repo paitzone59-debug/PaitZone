@@ -1,0 +1,73 @@
+/* 📱 Contenedor de notificaciones flotantes */
+.floating-alerts {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  pointer-events: none; /* no bloquea clics en otros elementos */
+}
+
+/* 🌈 Estilo base de cada alerta */
+.floating-alert {
+  background-color: #323232;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 30px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  font-size: 15px;
+  font-weight: 500;
+  animation: slideIn 0.4s ease, fadeOut 0.5s ease 3.5s forwards;
+  opacity: 0.95;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 240px;
+  max-width: 320px;
+  text-align: center;
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.floating-alert:hover {
+  opacity: 1;
+  transform: scale(1.03);
+}
+
+/* 🎨 Colores por categoría (tipo Xiaomi) */
+.alert-success {
+  background-color: #00c851; /* Verde brillante */
+}
+.alert-danger {
+  background-color: #ff4444; /* Rojo */
+}
+.alert-warning {
+  background-color: #ffbb33; /* Amarillo */
+  color: #222;
+}
+.alert-info {
+  background-color: #33b5e5; /* Azul */
+}
+
+/* ✨ Animaciones */
+@keyframes slideIn {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}

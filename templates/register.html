@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+{% block content %}
+    <link rel="stylesheet" href="/static/css/botones.css">
+    <link rel="stylesheet" href="/static/css/nav-bar.css">
+    <link rel="stylesheet" href="/static/css/fondo.css">
+    <link rel="stylesheet" href="/static/css/estilo_de_register.css">
+
+<div class="register-container">
+  <div class="register-wrapper">
+    <!-- Tarjeta de Registro -->
+    <div class="register-card">
+      <!-- Header de la tarjeta -->
+      <div class="register-header">
+        <div class="register-logo">
+          <img src="{{ url_for('static', filename='img/logo1.jpg') }}" alt="Entrelaza Logo">
+        </div>
+        <h2>Únete a nuestra comunidad</h2>
+        <p>Crea tu cuenta y comienza a conectar</p>
+      </div>
+
+      <!-- Formulario -->
+      <form method="post" class="register-form">
+        <div class="row">
+          <!-- Columna izquierda -->
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="nombre" class="form-label">Nombre completo</label>
+              <div class="input-with-icon">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="nombre" name="nombre" placeholder="Tu nombre completo" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="codigo" class="form-label">Código de estudiante</label>
+              <div class="input-with-icon">
+                <i class="fa-solid fa-id-card"></i>
+                <input type="text" id="codigo" name="codigo" placeholder="Tu código de estudiante" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="carrera" class="form-label">Carrera</label>
+              <div class="input-with-icon">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <select id="carrera" name="carrera" required>
+                  <option value="" disabled selected>Selecciona tu carrera</option>
+                  <option value="Administración">Administración</option>
+                  <option value="Gestión aduanal">Gestión aduanal</option>
+                  <option value="Biotecnología">Biotecnología</option>
+                  <option value="Energías alternativas">Energías alternas</option>
+                  <option value="Telecomunicaciones">Telecomunicaciones</option>
+                  <option value="Informática">Informática</option>
+                  <option value="Procesos de manufactura competitiva">Procesos de manufactura competitiva</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="grado" class="form-label">Grado</label>
+              <div class="input-with-icon">
+                <i class="fa-solid fa-layer-group"></i>
+                <select id="grado" name="grado" required>
+                  <option value="" disabled selected>Selecciona tu grado</option>
+                  <option value="1">3 (tercero)</option>
+                  <option value="2">4 (cuarto)</option>
+                  <option value="3">5 (quinto)</option>
+                  <option value="4">6 (sexto)</option>
+                  <option value="5">7 (séptimo)</option>
+                  <option value="6">8 (octavo)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna derecha -->
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="grupo" class="form-label">Grupo</label>
+              <div class="input-with-icon">
+                <i class="fa-solid fa-users"></i>
+                <select id="grupo" name="grupo" required>
+                  <option value="" disabled selected>Selecciona tu grupo</option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="turno" class="form-label">Turno</label>
+              <div class="input-with-icon">
+                <i class="fa-solid fa-clock"></i>
+                <select id="turno" name="turno" required>
+                  <option value="" disabled selected>Selecciona tu turno</option>
+                  <option value="Matutino">Matutino</option>
+                  <option value="Vespertino">Vespertino</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="correo" class="form-label">Correo electrónico</label>
+              <div class="input-with-icon">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="correo" name="correo" placeholder="tu.correo@alumnos.udg.mx">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="telefono" class="form-label">Teléfono</label>
+              <div class="input-with-icon">
+                <i class="fa-solid fa-phone"></i>
+                <input type="tel" id="telefono" name="telefono" placeholder="+52 123 456 7890">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="password" class="form-label">Contraseña</label>
+              <div class="input-with-icon password-container">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="password" name="password" placeholder="Crea una contraseña segura" required>
+                <button type="button" class="password-toggle" id="passwordToggle">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Términos y condiciones -->
+        <div class="form-group terms-container">
+          <label class="checkbox-container">
+            <input type="checkbox" id="terms" required>
+            <span class="checkmark"></span>
+            Acepto los <a href="#" class="terms-link">términos y condiciones</a> y la <a href="#" class="terms-link">política de privacidad</a>
+          </label>
+        </div>
+
+        <button type="submit" class="register-btn">
+          <i class="fa-solid fa-user-plus"></i>
+          Crear Cuenta
+        </button>
+      </form>
+
+      <!-- Enlaces adicionales -->
+      <div class="register-links">
+        <p>¿Ya tienes cuenta? 
+          <a href="{{ url_for('login') }}" class="login-link">
+            Inicia sesión aquí
+          </a>
+        </p>
+        <a href="{{ url_for('index') }}" class="back-home">
+          <i class="fa-solid fa-house"></i>
+          Volver al inicio
+        </a>
+      </div>
+    </div>
+
+    <!-- Panel decorativo -->
+    <div class="register-side">
+      <div class="side-content">
+        <h3>Comienza tu viaje académico</h3>
+        <p>Forma parte de la comunidad estudiantil más colaborativa</p>
+        <div class="features-list">
+          <div class="feature-item">
+            <i class="fa-solid fa-shield-check"></i>
+            <span>Cuenta verificada y segura</span>
+          </div>
+          <div class="feature-item">
+            <i class="fa-solid fa-network-wired"></i>
+            <span>Conecta con compañeros de tu carrera</span>
+          </div>
+          <div class="feature-item">
+            <i class="fa-solid fa-project-diagram"></i>
+            <span>Participa en proyectos colaborativos</span>
+          </div>
+          <div class="feature-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Mejora tu experiencia académica</span>
+          </div>
+        </div>
+        <div class="stats-preview">
+          <div class="stat">
+            <h4>500+</h4>
+            <p>Estudiantes Registrados</p>
+          </div>
+          <div class="stat">
+            <h4>95%</h4>
+            <p>Satisfacción</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Funcionalidad del ojo para mostrar/ocultar contraseña
+  const passwordToggle = document.getElementById('passwordToggle');
+  const passwordInput = document.getElementById('password');
+  const eyeIcon = passwordToggle.querySelector('i');
+  
+  passwordToggle.addEventListener('click', function() {
+    // Cambiar el tipo de input
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    
+    // Cambiar el ícono
+    if (type === 'text') {
+      eyeIcon.classList.remove('fa-eye');
+      eyeIcon.classList.add('fa-eye-slash');
+      passwordToggle.setAttribute('aria-label', 'Ocultar contraseña');
+    } else {
+      eyeIcon.classList.remove('fa-eye-slash');
+      eyeIcon.classList.add('fa-eye');
+      passwordToggle.setAttribute('aria-label', 'Mostrar contraseña');
+    }
+  });
+  
+  // Validación de formulario
+  const form = document.querySelector('.register-form');
+  const termsCheckbox = document.getElementById('terms');
+  
+  form.addEventListener('submit', function(e) {
+    if (!termsCheckbox.checked) {
+      e.preventDefault();
+      alert('Por favor acepta los términos y condiciones para continuar.');
+      termsCheckbox.focus();
+    }
+  });
+  
+  // Mejorar la experiencia de usuario en selects
+  const selects = document.querySelectorAll('select');
+  selects.forEach(select => {
+    select.addEventListener('focus', function() {
+      this.parentElement.classList.add('focused');
+    });
+    
+    select.addEventListener('blur', function() {
+      this.parentElement.classList.remove('focused');
+    });
+  });
+});
+</script>
+
+{% endblock %}

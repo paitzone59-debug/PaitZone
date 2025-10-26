@@ -1,0 +1,443 @@
+
+/* Variables de colores usando tu paleta */
+:root {
+  --naranja: #FF6B35;
+  --azul-fuerte: #061A3F;
+  --azul-cielo: #87CEEB;
+  --azul-agua: #00CED1;
+  --blanco: #ffffff;
+  --gris-claro: #f8f9fa;
+  --gris-medio: #e9ecef;
+  --gris-oscuro: #6c757d;
+}
+
+.register-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--azul-fuerte) 0%, var(--azul-cielo) 50%, var(--azul-agua) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efectos de fondo animados */
+.register-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: float 20s infinite linear;
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(-50px, -50px) rotate(360deg); }
+}
+
+.register-wrapper {
+  display: flex;
+  max-width: 1200px;
+  width: 100%;
+  background: var(--blanco);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  overflow: hidden;
+  min-height: 700px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Tarjeta de registro */
+.register-card {
+  flex: 1.2;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  background: var(--blanco);
+  overflow-y: auto;
+  max-height: 700px;
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.register-logo {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--azul-cielo);
+}
+
+.register-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.register-header h2 {
+  color: var(--azul-fuerte);
+  margin-bottom: 8px;
+  font-weight: 700;
+  font-size: 1.8rem;
+}
+
+.register-header p {
+  color: var(--gris-oscuro);
+  margin: 0;
+}
+
+/* Formulario */
+.register-form {
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  color: var(--azul-fuerte);
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+  font-size: 0.9rem;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--azul-fuerte);
+  font-size: 1rem;
+}
+
+.input-with-icon input,
+.input-with-icon select {
+  width: 100%;
+  padding: 12px 15px 12px 45px;
+  border: 2px solid var(--gris-medio);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background: var(--gris-claro);
+  color: var(--azul-fuerte);
+}
+
+.input-with-icon input:focus,
+.input-with-icon select:focus {
+  outline: none;
+  border-color: var(--azul-agua);
+  background: var(--blanco);
+  box-shadow: 0 0 0 3px rgba(0, 206, 209, 0.1);
+}
+
+/* Estilos específicos para el contenedor de contraseña */
+.password-container {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--gris-oscuro);
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-toggle:hover {
+  color: var(--azul-fuerte);
+  background: var(--gris-medio);
+}
+
+.password-container input {
+  padding-right: 50px !important;
+}
+
+/* Términos y condiciones */
+.terms-container {
+  margin: 25px 0;
+  padding: 20px;
+  background: var(--gris-claro);
+  border-radius: 10px;
+  border-left: 4px solid var(--naranja);
+}
+
+.terms-link {
+  color: var(--naranja);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.terms-link:hover {
+  color: var(--azul-fuerte);
+  text-decoration: underline;
+}
+
+/* Botón de registro */
+.register-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, var(--naranja), #ff8c42);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.register-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+}
+
+.register-btn:active {
+  transform: translateY(0);
+}
+
+/* Enlaces */
+.register-links {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--gris-medio);
+}
+
+.register-links p {
+  color: var(--gris-oscuro);
+  margin-bottom: 15px;
+}
+
+.login-link {
+  color: var(--naranja);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.login-link:hover {
+  color: var(--azul-fuerte);
+}
+
+.back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--azul-agua);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.back-home:hover {
+  color: var(--azul-fuerte);
+}
+
+/* Panel lateral */
+.register-side {
+  flex: 0.8;
+  background: linear-gradient(135deg, var(--azul-fuerte), var(--azul-cielo));
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.register-side::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.side-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.side-content h3 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.side-content p {
+  margin-bottom: 30px;
+  opacity: 0.9;
+  font-size: 1.1rem;
+}
+
+.features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 1rem;
+}
+
+.feature-item i {
+  font-size: 1.2rem;
+  color: var(--naranja);
+  width: 20px;
+}
+
+.stats-preview {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat h4 {
+  font-size: 2rem;
+  margin-bottom: 5px;
+  font-weight: 700;
+  color: var(--naranja);
+}
+
+.stat p {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* Checkbox personalizado */
+.checkbox-container {
+  display: flex;
+  align-items: flex-start;
+  cursor: pointer;
+  color: var(--gris-oscuro);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.checkbox-container input {
+  display: none;
+}
+
+.checkmark {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--gris-medio);
+  border-radius: 4px;
+  margin-right: 10px;
+  position: relative;
+  transition: all 0.3s ease;
+  margin-top: 2px;
+}
+
+.checkbox-container input:checked + .checkmark {
+  background: var(--naranja);
+  border-color: var(--naranja);
+}
+
+.checkbox-container input:checked + .checkmark::after {
+  content: '✓';
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .register-wrapper {
+    flex-direction: column;
+    min-height: auto;
+    max-width: 600px;
+  }
+  
+  .register-side {
+    display: none;
+  }
+  
+  .register-card {
+    padding: 30px 25px;
+    max-height: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .register-container {
+    padding: 10px;
+  }
+  
+  .register-card {
+    padding: 25px 20px;
+  }
+  
+  .register-form .row {
+    flex-direction: column;
+  }
+  
+  .stats-preview {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .terms-container {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-card {
+    padding: 20px 15px;
+  }
+  
+  .register-header h2 {
+    font-size: 1.5rem;
+  }
+}

@@ -14,10 +14,13 @@ app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
 # ✅ CONFIGURACIÓN SIMPLE Y FUNCIONAL
+# ✅ CONFIGURACIÓN CON SSL PARA RAILWAY
 app.config['MYSQL_HOST'] = os.environ.get('MYSQLHOST', 'localhost')
 app.config['MYSQL_USER'] = os.environ.get('MYSQLUSER', 'root')
 app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQLPASSWORD', 'mysql')
 app.config['MYSQL_DB'] = os.environ.get('MYSQLDATABASE', 'Entrelaza')
+app.config['MYSQL_PORT'] = int(os.environ.get('MYSQLPORT', 3306))
+app.config['MYSQL_SSL'] = {'ssl': {'ca': '/etc/ssl/cert.pem'}}  # ✅ SSL forzado
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)

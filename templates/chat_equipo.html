@@ -31,7 +31,95 @@
                     <div class="input-group">
                         <input type="text" id="messageInput" class="form-control" 
                                placeholder="Escribe tu mensaje..." required>
+                        
+                        <!-- Botón para mostrar/ocultar emojis -->
+                        <button type="button" class="btn btn-outline-secondary" id="emojiToggle">
+                            😊
+                        </button>
+                        
                         <button type="submit" class="btn btn-primary">Enviar</button>
+                    </div>
+                    
+                    <!-- Selector de emojis (oculto inicialmente) -->
+                    <div class="emoji-picker mt-2" id="emojiPicker" style="display: none;">
+                        <!-- Categoría: Caritas -->
+                        <div class="emoji-category mb-2">
+                            <small class="text-muted">Caritas</small>
+                            <div class="emoji-grid">
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😀">😀</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😃">😃</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😄">😄</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😁">😁</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😆">😆</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😅">😅</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😂">😂</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🤣">🤣</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😊">😊</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😇">😇</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🙂">🙂</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🙃">🙃</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😉">😉</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😌">😌</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😍">😍</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🥰">🥰</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Categoría: Corazones -->
+                        <div class="emoji-category mb-2">
+                            <small class="text-muted">Corazones</small>
+                            <div class="emoji-grid">
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="❤️">❤️</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🧡">🧡</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💛">💛</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💚">💚</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💙">💙</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💜">💜</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🖤">🖤</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💖">💖</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💗">💗</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💘">💘</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💝">💝</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💞">💞</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Categoría: Símbolos -->
+                        <div class="emoji-category mb-2">
+                            <small class="text-muted">Símbolos</small>
+                            <div class="emoji-grid">
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="⭐">⭐</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🌟">🌟</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🎉">🎉</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🎊">🎊</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💯">💯</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🔥">🔥</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💪">💪</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="👏">👏</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🙌">🙌</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🎯">🎯</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🚀">🚀</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💡">💡</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Categoría: Manos -->
+                        <div class="emoji-category mb-2">
+                            <small class="text-muted">Manos</small>
+                            <div class="emoji-grid">
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="👍">👍</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="👎">👎</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="👌">👌</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="✌️">✌️</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🤞">🤞</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🤟">🤟</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🤘">🤘</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="👊">👊</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="✊">✊</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🤛">🤛</button>
+                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🤜">🤜</button>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -166,6 +254,47 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 console.log('🎯 Configuración completada');
+
+// Toggle del selector de emojis
+document.getElementById('emojiToggle').addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const emojiPicker = document.getElementById('emojiPicker');
+    if (emojiPicker.style.display === 'none' || !emojiPicker.style.display) {
+        emojiPicker.style.display = 'block';
+    } else {
+        emojiPicker.style.display = 'none';
+    }
+});
+
+// Agregar emoji al input
+document.querySelectorAll('.emoji-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const emoji = this.getAttribute('data-emoji');
+        const messageInput = document.getElementById('messageInput');
+        messageInput.value += emoji;
+        messageInput.focus();
+        
+        // Ocultar el picker después de seleccionar
+        document.getElementById('emojiPicker').style.display = 'none';
+    });
+});
+
+// Cerrar selector de emojis al hacer click fuera
+document.addEventListener('click', function(event) {
+    const emojiPicker = document.getElementById('emojiPicker');
+    const emojiToggle = document.getElementById('emojiToggle');
+    
+    if (emojiPicker && !emojiPicker.contains(event.target) && !emojiToggle.contains(event.target)) {
+        emojiPicker.style.display = 'none';
+    }
+});
+
+// Cerrar selector de emojis al enviar mensaje
+document.getElementById('messageForm').addEventListener('submit', function() {
+    document.getElementById('emojiPicker').style.display = 'none';
+});
 </script>
 {% endblock %}
 

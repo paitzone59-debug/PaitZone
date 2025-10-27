@@ -1,0 +1,80 @@
+/* Estilos para el selector de emojis */
+.emoji-picker {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.emoji-category {
+    border-bottom: 1px solid #f1f1f1;
+    padding-bottom: 10px;
+}
+
+.emoji-category:last-child {
+    border-bottom: none;
+}
+
+.emoji-category small {
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 5px;
+}
+
+.emoji-btn {
+    font-size: 1.3rem;
+    padding: 8px;
+    border: 2px solid transparent;
+    background: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    min-width: 45px;
+    min-height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emoji-btn:hover {
+    transform: scale(1.1);
+    background-color: #f8f9fa;
+    border-color: #007bff;
+}
+
+/* Scroll personalizado para el picker */
+.emoji-picker::-webkit-scrollbar {
+    width: 6px;
+}
+
+.emoji-picker::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.emoji-picker::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.emoji-picker::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Para que los emojis se vean bien en los mensajes */
+.message-text {
+    font-size: 1rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}

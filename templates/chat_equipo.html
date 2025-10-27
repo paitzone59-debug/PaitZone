@@ -203,6 +203,7 @@
 const equipoId = {{ equipo_id }};
 let isEmojiPickerOpen = false;
 let lastMessageId = 0;
+let isLoading = false;
 
 // Esperar a que el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
@@ -215,6 +216,7 @@ function initializeChat() {
     // Verificar que los elementos existan antes de configurar eventos
     if (!document.getElementById('messageForm') || !document.getElementById('chatMessages')) {
         console.error('Elementos del chat no encontrados');
+        setTimeout(initializeChat, 100); // Reintentar después de 100ms
         return;
     }
     
@@ -229,7 +231,7 @@ function setupEventListeners() {
     const emojiToggle = document.getElementById('emojiToggle');
     const closePicker = document.getElementById('closePicker');
     const charCounter = document.getElementById('charCounter');
-    const charCount = charCounter.querySelector('.char-count');
+    const charCount = charCounter ? charCounter.querySelector('.char-count') : null;
 
     // Envío de mensajes
     messageForm.addEventListener('submit', handleMessageSubmit);
@@ -237,25 +239,33 @@ function setupEventListeners() {
     // Input events
     messageInput.addEventListener('input', function() {
         const count = this.value.length;
-        charCount.textContent = count;
-        
-        // Actualizar contador de caracteres
-        if (count > 900) {
-            charCounter.style.color = 'var(--warning)';
-        } else if (count > 950) {
-            charCounter.style.color = 'var(--danger)';
-        } else {
-            charCounter.style.color = 'var(--gray-500)';
+        if (charCount) {
+            charCount.textContent = count;
+            
+            // Actualizar contador de caracteres
+            if (count > 900) {
+                charCounter.style.color = 'var(--warning)';
+            } else if (count > 950) {
+                charCounter.style.color = 'var(--danger)';
+            } else {
+                charCounter.style.color = 'var(--gray-500)';
+            }
         }
         
         // Habilitar/deshabilitar botón de enviar
         const sendBtn = document.getElementById('sendBtn');
-        sendBtn.disabled = count === 0 || count > 1000;
+        if (sendBtn) {
+            sendBtn.disabled = count === 0 || count > 1000;
+        }
     });
 
     // Emoji picker
-    emojiToggle.addEventListener('click', toggleEmojiPicker);
-    closePicker.addEventListener('click', closeEmojiPicker);
+    if (emojiToggle) {
+        emojiToggle.addEventListener('click', toggleEmojiPicker);
+    }
+    if (closePicker) {
+        closePicker.addEventListener('click', closeEmojiPicker);
+    }
 
     // Categorías de emojis
     document.querySelectorAll('.category-btn').forEach(btn => {
@@ -289,20 +299,37 @@ function setupEventListeners() {
     messageInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            messageForm.dispatchEvent(new Event('submit'));
+            handleMessageSubmit(e);
         }
     });
+
+    // Focus en el input al hacer click en el chat
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+        chatMessages.addEventListener('click', function() {
+            messageInput.focus();
+        });
+    }
 }
 
 async function handleMessageSubmit(e) {
     e.preventDefault();
+    
+    if (isLoading) {
+        console.log('⏳ Envío en progreso, esperando...');
+        return;
+    }
     
     const messageInput = document.getElementById('messageInput');
     const message = messageInput.value.trim();
     
     if (!message) return;
     
+    isLoading = true;
+    
     try {
+        console.log('📤 Intentando enviar mensaje:', message.substring(0, 50) + '...');
+        
         // Mostrar estado de envío
         const sendBtn = document.getElementById('sendBtn');
         const originalHTML = sendBtn.innerHTML;
@@ -310,29 +337,39 @@ async function handleMessageSubmit(e) {
         sendBtn.disabled = true;
         
         await enviarMensaje(message);
+        
+        console.log('✅ Mensaje enviado exitosamente');
         messageInput.value = '';
-        document.getElementById('charCounter').querySelector('.char-count').textContent = '0';
+        
+        // Resetear contador
+        const charCount = document.getElementById('charCounter')?.querySelector('.char-count');
+        if (charCount) charCount.textContent = '0';
+        
         closeEmojiPicker();
         
-        // Recargar mensajes después de enviar
-        setTimeout(cargarMensajes, 500);
+        // Recargar mensajes inmediatamente
+        await cargarMensajes();
         
         // Restaurar botón
         sendBtn.innerHTML = originalHTML;
         sendBtn.disabled = false;
         
     } catch (error) {
-        console.error('Error enviando mensaje:', error);
-        showNotification('Error al enviar el mensaje', 'error');
+        console.error('❌ Error enviando mensaje:', error);
+        showNotification('Error al enviar el mensaje: ' + error.message, 'error');
         
         // Restaurar botón en caso de error
         const sendBtn = document.getElementById('sendBtn');
         sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
         sendBtn.disabled = false;
+    } finally {
+        isLoading = false;
     }
 }
 
 async function enviarMensaje(mensaje) {
+    console.log('🔗 Enviando a:', `/equipo/chat/enviar/${equipoId}`);
+    
     // Usar FormData para mejor manejo de emojis y caracteres especiales
     const formData = new URLSearchParams();
     formData.append('mensaje', mensaje);
@@ -345,45 +382,70 @@ async function enviarMensaje(mensaje) {
         body: formData
     });
 
-    if (!response.ok) {
-        throw new Error('Error en la respuesta del servidor: ' + response.status);
+    console.log('📥 Respuesta del servidor - Status:', response.status);
+    console.log('📥 Respuesta del servidor - OK:', response.ok);
+
+    // Verificar si la respuesta es JSON
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+        const textResponse = await response.text();
+        console.error('❌ El servidor devolvió HTML en lugar de JSON:', textResponse.substring(0, 200));
+        throw new Error(`Error del servidor (${response.status}). Intenta nuevamente.`);
     }
 
     const data = await response.json();
+    console.log('📊 Datos recibidos:', data);
     
     if (!data.success) {
-        throw new Error(data.message || 'Error desconocido');
+        throw new Error(data.message || 'Error desconocido del servidor');
     }
 
     return data;
 }
 
 async function cargarMensajes() {
+    if (isLoading) return;
+    
     try {
+        console.log('🔄 Cargando mensajes...');
         const response = await fetch(`/equipo/chat/mensajes/${equipoId}?ultimo_id=${lastMessageId}`);
         
         if (!response.ok) {
             throw new Error('Error cargando mensajes: ' + response.status);
         }
 
+        // Verificar si la respuesta es JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('El servidor devolvió una respuesta no JSON');
+        }
+
         const data = await response.json();
         
-        if (data.success && data.mensajes && data.mensajes.length > 0) {
-            actualizarInterfazMensajes(data.mensajes);
+        if (data.success) {
+            console.log('✅ Mensajes cargados:', data.mensajes?.length || 0);
             
-            // Actualizar último ID
-            const nuevosIds = data.mensajes.map(m => m.id);
-            if (nuevosIds.length > 0) {
-                lastMessageId = Math.max(...nuevosIds);
+            if (data.mensajes && data.mensajes.length > 0) {
+                actualizarInterfazMensajes(data.mensajes);
+                
+                // Actualizar último ID
+                const nuevosIds = data.mensajes.map(m => m.id).filter(id => id);
+                if (nuevosIds.length > 0) {
+                    lastMessageId = Math.max(...nuevosIds);
+                }
             }
+        } else {
+            console.error('❌ Error en respuesta:', data.message);
         }
     } catch (error) {
-        console.error('Error cargando mensajes:', error);
+        console.error('🔥 Error cargando mensajes:', error);
+        // No mostrar notificación para errores de carga automática
     }
 }
 
 function actualizarInterfazMensajes(mensajes) {
     const chatMessages = document.getElementById('chatMessages');
+    if (!chatMessages) return;
     
     if (!mensajes || mensajes.length === 0) {
         if (!chatMessages.querySelector('.empty-state')) {
@@ -407,11 +469,14 @@ function actualizarInterfazMensajes(mensajes) {
     // Obtener IDs de mensajes actuales
     const currentMessageIds = new Set(
         Array.from(chatMessages.querySelectorAll('.message'))
-            .map(msg => parseInt(msg.dataset.messageId))
+            .map(msg => {
+                const id = parseInt(msg.dataset.messageId);
+                return isNaN(id) ? 0 : id;
+            })
     );
 
     // Filtrar solo mensajes nuevos
-    const newMessages = mensajes.filter(msg => !currentMessageIds.has(msg.id));
+    const newMessages = mensajes.filter(msg => msg.id && !currentMessageIds.has(msg.id));
     
     if (newMessages.length === 0) return;
 
@@ -436,8 +501,8 @@ function actualizarInterfazMensajes(mensajes) {
         }, index * 50);
     });
 
-    // Scroll al final si estábamos cerca del final
-    if (isNearBottom) {
+    // Scroll al final si estábamos cerca del final o hay nuevos mensajes
+    if (isNearBottom || newMessages.length > 0) {
         setTimeout(scrollToBottom, 100);
     }
 }
@@ -449,27 +514,14 @@ function crearElementoMensaje(mensaje) {
     messageDiv.className = `message ${isOwnMessage ? 'message-sent' : 'message-received'}`;
     messageDiv.dataset.messageId = mensaje.id;
     
-    // Formatear fecha - MANERA CORREGIDA
+    // Formatear fecha - MANERA SIMPLIFICADA
     let hora = '--:--';
     try {
-        // Si la fecha ya viene formateada del servidor, úsala directamente
         if (mensaje.fecha_formateada) {
             hora = mensaje.fecha_formateada;
-        } else {
-            // Intentar parsear la fecha de diferentes maneras
-            let fecha;
-            if (typeof mensaje.fecha === 'string') {
-                // Si es string, crear Date directamente
-                fecha = new Date(mensaje.fecha);
-            } else if (mensaje.fecha && typeof mensaje.fecha === 'object') {
-                // Si ya es objeto Date (desde Flask)
-                fecha = new Date(mensaje.fecha);
-            } else {
-                // Fallback: usar fecha actual
-                fecha = new Date();
-            }
-            
-            // Verificar si la fecha es válida
+        } else if (mensaje.fecha) {
+            // Intentar parsear la fecha
+            const fecha = new Date(mensaje.fecha);
             if (!isNaN(fecha.getTime())) {
                 hora = fecha.toLocaleTimeString('es-ES', { 
                     hour: '2-digit', 
@@ -478,11 +530,11 @@ function crearElementoMensaje(mensaje) {
             }
         }
     } catch (e) {
-        console.error('Error formateando fecha:', e, mensaje.fecha);
+        console.error('Error formateando fecha:', e);
     }
 
     // Usar valores por defecto para nombres
-    const nombreCompleto = mensaje.nombre_completo || 'Usuario';
+    const nombreCompleto = mensaje.nombre_completo || mensaje.usuario_nombre || 'Usuario';
     const avatarText = nombreCompleto.charAt(0).toUpperCase();
 
     messageDiv.innerHTML = `
@@ -520,13 +572,16 @@ function crearElementoMensaje(mensaje) {
 function formatearMensaje(texto) {
     if (!texto) return '';
     
+    // Escapar HTML primero para seguridad
+    texto = escapeHtml(texto);
+    
     // Convertir URLs en enlaces
-    texto = texto.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="message-link">$1</a>');
+    texto = texto.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" class="message-link">$1</a>');
     
     // Convertir saltos de línea en <br>
     texto = texto.replace(/\n/g, '<br>');
     
-    return escapeHtml(texto);
+    return texto;
 }
 
 function escapeHtml(text) {
@@ -556,6 +611,8 @@ function stringToColor(str) {
 
 function isChatNearBottom() {
     const chatMessages = document.getElementById('chatMessages');
+    if (!chatMessages) return true;
+    
     const threshold = 100; // píxeles desde el fondo
     return chatMessages.scrollHeight - chatMessages.clientHeight - chatMessages.scrollTop <= threshold;
 }
@@ -608,6 +665,9 @@ function insertEmoji(emoji) {
     
     // Actualizar contador
     messageInput.dispatchEvent(new Event('input'));
+    
+    // Cerrar el picker después de insertar
+    closeEmojiPicker();
 }
 
 function scrollToBottom() {

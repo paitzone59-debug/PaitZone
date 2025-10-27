@@ -1,301 +1,743 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="card">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">💬 Chat - {{ equipo_nombre }}</h4>
-            <a href="{{ url_for('mi_equipo') }}" class="btn btn-light btn-sm">← Volver al equipo</a>
-        </div>
-        <div class="card-body p-0">
-            <div class="chat-messages" id="chatMessages" style="height: 500px; overflow-y: auto; padding: 20px;">
-                {% for mensaje in mensajes %}
-                <div class="message {% if mensaje.usuario_id == usuario.id %}own-message{% else %}other-message{% endif %} mb-3">
-                    <div class="d-flex justify-content-{% if mensaje.usuario_id == usuario.id %}end{% else %}start{% endif %}">
-                        <div class="message-bubble {% if mensaje.usuario_id == usuario.id %}bg-primary text-white{% else %}bg-light{% endif %} rounded p-3" 
-                             style="max-width: 70%;">
-                            <div class="d-flex justify-content-between align-items-start mb-1">
-                                <small class="fw-bold">{{ mensaje.nombre_completo }}</small>
-                                <small class="{% if mensaje.usuario_id == usuario.id %}text-white-50{% else %}text-muted{% endif %} ms-2">
-                                    {{ mensaje.fecha.strftime('%H:%M') }}
-                                </small>
-                            </div>
-                            <div class="message-text">{{ mensaje.mensaje }}</div>
-                        </div>
+<div class="chat-container">
+    <!-- Header del Chat -->
+    <div class="chat-header">
+        <div class="header-content">
+            <div class="chat-info">
+                <div class="chat-avatar">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="chat-details">
+                    <h3 class="chat-title">{{ equipo_nombre }}</h3>
+                    <div class="chat-status">
+                        <span class="status-dot online"></span>
+                        <span class="status-text">Miembros activos</span>
                     </div>
                 </div>
-                {% endfor %}
             </div>
-            <div class="chat-input p-3 border-top">
-                <form id="messageForm">
-                    <div class="input-group">
-                        <input type="text" id="messageInput" class="form-control" 
-                               placeholder="Escribe tu mensaje..." required>
-                        
-                        <!-- Botón para mostrar/ocultar emojis -->
-                        <button type="button" class="btn btn-outline-secondary" id="emojiToggle">
-                            😊
-                        </button>
-                        
-                        <button type="submit" class="btn btn-primary">Enviar</button>
+            <div class="header-actions">
+                <button class="action-btn" title="Buscar mensajes">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="action-btn" title="Más opciones">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <a href="{{ url_for('mi_equipo') }}" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Volver</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Área de Mensajes -->
+    <div class="chat-messages" id="chatMessages">
+        {% for mensaje in mensajes %}
+        <div class="message {% if mensaje.usuario_id == usuario.id %}message-sent{% else %}message-received{% endif %}" 
+             data-message-id="{{ mensaje.id }}">
+            {% if mensaje.usuario_id != usuario.id %}
+            <div class="message-avatar">
+                <div class="avatar-circle">
+                    {{ mensaje.nombre_completo[0]|upper }}
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="message-content">
+                {% if mensaje.usuario_id != usuario.id %}
+                <div class="message-header">
+                    <span class="sender-name">{{ mensaje.nombre_completo }}</span>
+                    <span class="message-time">{{ mensaje.fecha.strftime('%H:%M') }}</span>
+                </div>
+                {% endif %}
+                
+                <div class="message-bubble">
+                    <div class="message-text">{{ mensaje.mensaje }}</div>
+                    {% if mensaje.usuario_id == usuario.id %}
+                    <div class="message-status">
+                        <span class="message-time">{{ mensaje.fecha.strftime('%H:%M') }}</span>
+                        <i class="fas fa-check-double delivered"></i>
                     </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Input de Mensajes -->
+    <div class="chat-input-container">
+        <div class="input-wrapper">
+            <!-- Botones de acción -->
+            <div class="input-actions">
+                <button class="action-btn emoji-toggle" id="emojiToggle" title="Emojis">
+                    <i class="far fa-smile"></i>
+                </button>
+                <button class="action-btn" title="Adjuntar archivo">
+                    <i class="fas fa-paperclip"></i>
+                </button>
+            </div>
+
+            <!-- Input principal -->
+            <form id="messageForm" class="message-form">
+                <div class="input-group">
+                    <input type="text" 
+                           id="messageInput" 
+                           class="message-input" 
+                           placeholder="Escribe un mensaje..." 
+                           autocomplete="off"
+                           maxlength="1000">
                     
-                    <!-- Selector de emojis (oculto inicialmente) -->
-                    <div class="emoji-picker mt-2" id="emojiPicker" style="display: none;">
-                        <!-- Categoría: Caritas -->
-                        <div class="emoji-category mb-2">
-                            <small class="text-muted">Caritas</small>
-                            <div class="emoji-grid">
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😀">😀</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😃">😃</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😄">😄</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😁">😁</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😆">😆</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😅">😅</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😂">😂</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🤣">🤣</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😊">😊</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😇">😇</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🙂">🙂</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🙃">🙃</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😉">😉</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😌">😌</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="😍">😍</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🥰">🥰</button>
-                            </div>
-                        </div>
-                        
-                        <!-- Categoría: Corazones -->
-                        <div class="emoji-category mb-2">
-                            <small class="text-muted">Corazones</small>
-                            <div class="emoji-grid">
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="❤️">❤️</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🧡">🧡</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💛">💛</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💚">💚</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💙">💙</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💜">💜</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🖤">🖤</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💖">💖</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💗">💗</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💘">💘</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💝">💝</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💞">💞</button>
-                            </div>
-                        </div>
-                        
-                        <!-- Categoría: Símbolos -->
-                        <div class="emoji-category mb-2">
-                            <small class="text-muted">Símbolos</small>
-                            <div class="emoji-grid">
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="⭐">⭐</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🌟">🌟</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🎉">🎉</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🎊">🎊</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💯">💯</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🔥">🔥</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💪">💪</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="👏">👏</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🙌">🙌</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🎯">🎯</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🚀">🚀</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="💡">💡</button>
-                            </div>
-                        </div>
-                        
-                        <!-- Categoría: Manos -->
-                        <div class="emoji-category mb-2">
-                            <small class="text-muted">Manos</small>
-                            <div class="emoji-grid">
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="👍">👍</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="👎">👎</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="👌">👌</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="✌️">✌️</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🤞">🤞</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🤟">🤟</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🤘">🤘</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="👊">👊</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="✊">✊</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🤛">🤛</button>
-                                <button type="button" class="emoji-btn btn btn-sm btn-outline-secondary m-1" data-emoji="🤜">🤜</button>
-                            </div>
-                        </div>
+                    <!-- Contador de caracteres -->
+                    <div class="char-counter" id="charCounter">
+                        <span class="char-count">0</span>/1000
                     </div>
-                </form>
+                </div>
+
+                <!-- Botón de enviar -->
+                <button type="submit" class="send-btn" id="sendBtn" title="Enviar mensaje">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Selector de Emojis Premium -->
+        <div class="emoji-picker" id="emojiPicker">
+            <div class="emoji-header">
+                <div class="emoji-categories">
+                    <button class="category-btn active" data-category="faces">
+                        <i class="far fa-smile"></i>
+                    </button>
+                    <button class="category-btn" data-category="hearts">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <button class="category-btn" data-category="symbols">
+                        <i class="fas fa-star"></i>
+                    </button>
+                    <button class="category-btn" data-category="hands">
+                        <i class="fas fa-thumbs-up"></i>
+                    </button>
+                </div>
+                <button class="close-picker" id="closePicker">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="emoji-content">
+                <!-- Caritas -->
+                <div class="emoji-category active" data-category="faces">
+                    <div class="emoji-grid">
+                        <button type="button" class="emoji-btn" data-emoji="😀">😀</button>
+                        <button type="button" class="emoji-btn" data-emoji="😃">😃</button>
+                        <button type="button" class="emoji-btn" data-emoji="😄">😄</button>
+                        <button type="button" class="emoji-btn" data-emoji="😁">😁</button>
+                        <button type="button" class="emoji-btn" data-emoji="😆">😆</button>
+                        <button type="button" class="emoji-btn" data-emoji="😅">😅</button>
+                        <button type="button" class="emoji-btn" data-emoji="😂">😂</button>
+                        <button type="button" class="emoji-btn" data-emoji="🤣">🤣</button>
+                        <button type="button" class="emoji-btn" data-emoji="😊">😊</button>
+                        <button type="button" class="emoji-btn" data-emoji="😇">😇</button>
+                        <button type="button" class="emoji-btn" data-emoji="🙂">🙂</button>
+                        <button type="button" class="emoji-btn" data-emoji="🙃">🙃</button>
+                        <button type="button" class="emoji-btn" data-emoji="😉">😉</button>
+                        <button type="button" class="emoji-btn" data-emoji="😌">😌</button>
+                        <button type="button" class="emoji-btn" data-emoji="😍">😍</button>
+                        <button type="button" class="emoji-btn" data-emoji="🥰">🥰</button>
+                    </div>
+                </div>
+
+                <!-- Corazones -->
+                <div class="emoji-category" data-category="hearts">
+                    <div class="emoji-grid">
+                        <button type="button" class="emoji-btn" data-emoji="❤️">❤️</button>
+                        <button type="button" class="emoji-btn" data-emoji="🧡">🧡</button>
+                        <button type="button" class="emoji-btn" data-emoji="💛">💛</button>
+                        <button type="button" class="emoji-btn" data-emoji="💚">💚</button>
+                        <button type="button" class="emoji-btn" data-emoji="💙">💙</button>
+                        <button type="button" class="emoji-btn" data-emoji="💜">💜</button>
+                        <button type="button" class="emoji-btn" data-emoji="🖤">🖤</button>
+                        <button type="button" class="emoji-btn" data-emoji="💖">💖</button>
+                        <button type="button" class="emoji-btn" data-emoji="💗">💗</button>
+                        <button type="button" class="emoji-btn" data-emoji="💘">💘</button>
+                        <button type="button" class="emoji-btn" data-emoji="💝">💝</button>
+                        <button type="button" class="emoji-btn" data-emoji="💞">💞</button>
+                    </div>
+                </div>
+
+                <!-- Símbolos -->
+                <div class="emoji-category" data-category="symbols">
+                    <div class="emoji-grid">
+                        <button type="button" class="emoji-btn" data-emoji="⭐">⭐</button>
+                        <button type="button" class="emoji-btn" data-emoji="🌟">🌟</button>
+                        <button type="button" class="emoji-btn" data-emoji="🎉">🎉</button>
+                        <button type="button" class="emoji-btn" data-emoji="🎊">🎊</button>
+                        <button type="button" class="emoji-btn" data-emoji="💯">💯</button>
+                        <button type="button" class="emoji-btn" data-emoji="🔥">🔥</button>
+                        <button type="button" class="emoji-btn" data-emoji="💪">💪</button>
+                        <button type="button" class="emoji-btn" data-emoji="👏">👏</button>
+                        <button type="button" class="emoji-btn" data-emoji="🙌">🙌</button>
+                        <button type="button" class="emoji-btn" data-emoji="🎯">🎯</button>
+                        <button type="button" class="emoji-btn" data-emoji="🚀">🚀</button>
+                        <button type="button" class="emoji-btn" data-emoji="💡">💡</button>
+                    </div>
+                </div>
+
+                <!-- Manos -->
+                <div class="emoji-category" data-category="hands">
+                    <div class="emoji-grid">
+                        <button type="button" class="emoji-btn" data-emoji="👍">👍</button>
+                        <button type="button" class="emoji-btn" data-emoji="👎">👎</button>
+                        <button type="button" class="emoji-btn" data-emoji="👌">👌</button>
+                        <button type="button" class="emoji-btn" data-emoji="✌️">✌️</button>
+                        <button type="button" class="emoji-btn" data-emoji="🤞">🤞</button>
+                        <button type="button" class="emoji-btn" data-emoji="🤟">🤟</button>
+                        <button type="button" class="emoji-btn" data-emoji="🤘">🤘</button>
+                        <button type="button" class="emoji-btn" data-emoji="👊">👊</button>
+                        <button type="button" class="emoji-btn" data-emoji="✊">✊</button>
+                        <button type="button" class="emoji-btn" data-emoji="🤛">🤛</button>
+                        <button type="button" class="emoji-btn" data-emoji="🤜">🤜</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+
+
 <script>
-// ========== DEBUGGING COMPLETO ==========
-console.log('✅ Script del chat cargado');
-
-// Verificar que equipo_id está definido
+// Configuración inicial
 const equipoId = {{ equipo_id }};
-console.log('🔍 equipoId:', equipoId);
-console.log('🔍 Tipo de equipoId:', typeof equipoId);
+let isEmojiPickerOpen = false;
+let lastMessageId = 0;
 
-// Verificar que los elementos del DOM existen
-console.log('🔍 Formulario existe:', !!document.getElementById('messageForm'));
-console.log('🔍 Input existe:', !!document.getElementById('messageInput'));
-console.log('🔍 Chat messages existe:', !!document.getElementById('chatMessages'));
+// Inicialización cuando el DOM está listo
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Chat premium inicializado');
+    initializeChat();
+    scrollToBottom();
+});
 
-function cargarMensajes() {
-    console.log('🔄 Intentando cargar mensajes...');
-    console.log('🔗 URL:', `/equipo/chat/mensajes/${equipoId}`);
+function initializeChat() {
+    // Configurar eventos
+    setupEventListeners();
     
-    fetch(`/equipo/chat/mensajes/${equipoId}`)
-    .then(response => {
-        console.log('📥 Respuesta recibida - Status:', response.status);
-        console.log('📥 Respuesta recibida - OK:', response.ok);
-        return response.json();
-    })
-    .then(data => {
-        console.log('📊 Datos recibidos:', data);
-        if (data.success) {
-            console.log('✅ Mensajes cargados exitosamente. Total:', data.mensajes.length);
-            const chatMessages = document.getElementById('chatMessages');
-            chatMessages.innerHTML = '';
-            
-            if (data.mensajes.length === 0) {
-                chatMessages.innerHTML = `
-                    <div class="text-center text-muted py-5">
-                        <p>💬 Sé el primero en enviar un mensaje</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            data.mensajes.forEach(msg => {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${msg.es_mio ? 'own-message' : 'other-message'} mb-3`;
-                
-                messageDiv.innerHTML = `
-                    <div class="d-flex justify-content-${msg.es_mio ? 'end' : 'start'}">
-                        <div class="message-bubble ${msg.es_mio ? 'bg-primary text-white' : 'bg-light'} rounded p-3" 
-                             style="max-width: 70%;">
-                            <div class="d-flex justify-content-between align-items-start mb-1">
-                                <small class="fw-bold">${msg.usuario_nombre}</small>
-                                <small class="${msg.es_mio ? 'text-white-50' : 'text-muted'} ms-2">${msg.fecha}</small>
-                            </div>
-                            <div class="message-text">${msg.mensaje}</div>
-                        </div>
-                    </div>
-                `;
-                
-                chatMessages.appendChild(messageDiv);
-            });
-            
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+    // Cargar mensajes iniciales
+    cargarMensajes();
+    
+    // Configurar recarga automática
+    setInterval(cargarMensajes, 3000);
+}
+
+function setupEventListeners() {
+    const messageForm = document.getElementById('messageForm');
+    const messageInput = document.getElementById('messageInput');
+    const emojiToggle = document.getElementById('emojiToggle');
+    const closePicker = document.getElementById('closePicker');
+    const charCounter = document.getElementById('charCounter');
+    const charCount = charCounter.querySelector('.char-count');
+
+    // Envío de mensajes
+    messageForm.addEventListener('submit', handleMessageSubmit);
+
+    // Input events
+    messageInput.addEventListener('input', function() {
+        const count = this.value.length;
+        charCount.textContent = count;
+        
+        // Actualizar contador de caracteres
+        if (count > 900) {
+            charCounter.style.color = 'var(--warning)';
+        } else if (count > 950) {
+            charCounter.style.color = 'var(--danger)';
         } else {
-            console.log('❌ Error al cargar mensajes:', data.message);
+            charCounter.style.color = 'var(--gray-500)';
         }
-    })
-    .catch(error => {
-        console.error('🔥 Error fatal cargando mensajes:', error);
+        
+        // Habilitar/deshabilitar botón de enviar
+        const sendBtn = document.getElementById('sendBtn');
+        sendBtn.disabled = count === 0 || count > 1000;
+    });
+
+    // Emoji picker
+    emojiToggle.addEventListener('click', toggleEmojiPicker);
+    closePicker.addEventListener('click', closeEmojiPicker);
+
+    // Categorías de emojis
+    document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const category = this.dataset.category;
+            switchEmojiCategory(category);
+            
+            // Actualizar botones activos
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Botones de emojis
+    document.querySelectorAll('.emoji-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const emoji = this.dataset.emoji;
+            insertEmoji(emoji);
+        });
+    });
+
+    // Cerrar emoji picker al hacer click fuera
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.emoji-picker') && 
+            !event.target.closest('.emoji-toggle')) {
+            closeEmojiPicker();
+        }
+    });
+
+    // Envío con Enter (sin Shift)
+    messageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            messageForm.dispatchEvent(new Event('submit'));
+        }
+    });
+
+    // Auto-expandir textarea
+    messageInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+
+    // Scroll suave al hacer clic en mensajes
+    document.getElementById('chatMessages').addEventListener('click', function(e) {
+        if (e.target.closest('.message-bubble')) {
+            e.target.closest('.message-bubble').style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                e.target.closest('.message-bubble').style.transform = '';
+            }, 150);
+        }
     });
 }
 
-// Event listener para enviar mensajes
-document.getElementById('messageForm').addEventListener('submit', function(e) {
+async function handleMessageSubmit(e) {
     e.preventDefault();
-    console.log('🔄 Formulario enviado detectado');
     
     const messageInput = document.getElementById('messageInput');
     const message = messageInput.value.trim();
     
-    console.log('💬 Mensaje capturado:', message);
-    console.log('🔗 URL de envío:', `/equipo/chat/enviar/${equipoId}`);
+    if (!message) return;
     
-    if (message) {
-        console.log('📤 Iniciando envío de mensaje...');
+    try {
+        // Mostrar estado de envío
+        const sendBtn = document.getElementById('sendBtn');
+        const originalHTML = sendBtn.innerHTML;
+        sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        sendBtn.disabled = true;
         
-        fetch(`/equipo/chat/enviar/${equipoId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'mensaje=' + encodeURIComponent(message)
-        })
-        .then(response => {
-            console.log('📥 Respuesta de envío - Status:', response.status);
-            console.log('📥 Respuesta de envío - OK:', response.ok);
-            return response.json();
-        })
-        .then(data => {
-            console.log('📊 Resultado del envío:', data);
-            if (data.success) {
-                console.log('✅ Mensaje enviado exitosamente');
-                messageInput.value = '';
-                cargarMensajes(); // Recargar mensajes después de enviar
-            } else {
-                console.log('❌ Error al enviar:', data.message);
-                alert('Error: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('🔥 Error fatal enviando mensaje:', error);
-        });
-    } else {
-        console.log('⚠️ Mensaje vacío, no se envía');
-    }
-});
-
-// Recargar mensajes cada 3 segundos
-console.log('⏰ Configurando intervalo de recarga...');
-setInterval(cargarMensajes, 3000);
-
-// Cargar mensajes al iniciar
-console.log('🚀 Iniciando carga inicial de mensajes...');
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('📄 DOM completamente cargado');
-    cargarMensajes();
-});
-
-console.log('🎯 Configuración completada');
-
-// Toggle del selector de emojis
-document.getElementById('emojiToggle').addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const emojiPicker = document.getElementById('emojiPicker');
-    if (emojiPicker.style.display === 'none' || !emojiPicker.style.display) {
-        emojiPicker.style.display = 'block';
-    } else {
-        emojiPicker.style.display = 'none';
-    }
-});
-
-// Agregar emoji al input
-document.querySelectorAll('.emoji-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const emoji = this.getAttribute('data-emoji');
-        const messageInput = document.getElementById('messageInput');
-        messageInput.value += emoji;
-        messageInput.focus();
+        await enviarMensaje(message);
+        messageInput.value = '';
+        messageInput.style.height = 'auto';
+        document.getElementById('charCounter').querySelector('.char-count').textContent = '0';
+        closeEmojiPicker();
         
-        // Ocultar el picker después de seleccionar
-        document.getElementById('emojiPicker').style.display = 'none';
+        // Restaurar botón
+        sendBtn.innerHTML = originalHTML;
+        
+    } catch (error) {
+        console.error('Error enviando mensaje:', error);
+        showNotification('Error al enviar el mensaje', 'error');
+        
+        // Restaurar botón en caso de error
+        const sendBtn = document.getElementById('sendBtn');
+        sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+        sendBtn.disabled = false;
+    }
+}
+
+async function enviarMensaje(mensaje) {
+    const response = await fetch(`/equipo/chat/enviar/${equipoId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'mensaje=' + encodeURIComponent(mensaje)
     });
-});
 
-// Cerrar selector de emojis al hacer click fuera
-document.addEventListener('click', function(event) {
+    if (!response.ok) {
+        throw new Error('Error en la respuesta del servidor');
+    }
+
+    const data = await response.json();
+    
+    if (!data.success) {
+        throw new Error(data.message || 'Error desconocido');
+    }
+
+    return data;
+}
+
+async function cargarMensajes() {
+    try {
+        const response = await fetch(`/equipo/chat/mensajes/${equipoId}?ultimo_id=${lastMessageId}`);
+        
+        if (!response.ok) {
+            throw new Error('Error cargando mensajes');
+        }
+
+        const data = await response.json();
+        
+        if (data.success && data.mensajes.length > 0) {
+            actualizarInterfazMensajes(data.mensajes);
+            
+            // Actualizar último ID
+            lastMessageId = Math.max(...data.mensajes.map(m => m.id));
+        }
+    } catch (error) {
+        console.error('Error cargando mensajes:', error);
+        
+        // Mostrar estado de error temporal
+        const chatMessages = document.getElementById('chatMessages');
+        if (!chatMessages.querySelector('.connection-error')) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'connection-error';
+            errorDiv.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-wifi-slash"></i>
+                    <span>Problema de conexión</span>
+                </div>
+            `;
+            chatMessages.appendChild(errorDiv);
+        }
+    }
+}
+
+function actualizarInterfazMensajes(mensajes) {
+    const chatMessages = document.getElementById('chatMessages');
+    
+    // Remover mensaje de error si existe
+    const errorDiv = chatMessages.querySelector('.connection-error');
+    if (errorDiv) {
+        errorDiv.remove();
+    }
+    
+    if (mensajes.length === 0) {
+        if (!chatMessages.querySelector('.empty-state')) {
+            chatMessages.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">💬</div>
+                    <p>Inicia la conversación con tu equipo</p>
+                    <small>Envía el primer mensaje para comenzar</small>
+                </div>
+            `;
+        }
+        return;
+    }
+
+    // Remover estado vacío si existe
+    const emptyState = chatMessages.querySelector('.empty-state');
+    if (emptyState) {
+        emptyState.remove();
+    }
+
+    // Obtener IDs de mensajes actuales
+    const currentMessageIds = new Set(
+        Array.from(chatMessages.querySelectorAll('.message'))
+            .map(msg => parseInt(msg.dataset.messageId))
+    );
+
+    // Filtrar solo mensajes nuevos
+    const newMessages = mensajes.filter(msg => !currentMessageIds.has(msg.id));
+    
+    if (newMessages.length === 0) return;
+
+    // Determinar si estamos cerca del final para hacer scroll
+    const isNearBottom = isChatNearBottom();
+
+    // Agregar nuevos mensajes
+    newMessages.forEach((msg, index) => {
+        const messageElement = crearElementoMensaje(msg);
+        
+        // Agregar con delay para efecto cascada
+        setTimeout(() => {
+            chatMessages.appendChild(messageElement);
+            
+            // Efecto de highlight para mensajes muy nuevos
+            if (index === newMessages.length - 1) {
+                messageElement.classList.add('new-message');
+                setTimeout(() => {
+                    messageElement.classList.remove('new-message');
+                }, 2000);
+            }
+        }, index * 50);
+    });
+
+    // Scroll al final si estábamos cerca del final
+    if (isNearBottom) {
+        setTimeout(scrollToBottom, 100);
+    }
+}
+
+function crearElementoMensaje(mensaje) {
+    const isOwnMessage = mensaje.usuario_id === {{ usuario.id }};
+    const messageDiv = document.createElement('div');
+    
+    messageDiv.className = `message ${isOwnMessage ? 'message-sent' : 'message-received'}`;
+    messageDiv.dataset.messageId = mensaje.id;
+    
+    // Formatear fecha
+    const fecha = new Date(mensaje.fecha);
+    const ahora = new Date();
+    const esHoy = fecha.toDateString() === ahora.toDateString();
+    const hora = fecha.toLocaleTimeString('es-ES', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    });
+
+    messageDiv.innerHTML = `
+        ${!isOwnMessage ? `
+            <div class="message-avatar">
+                <div class="avatar-circle" style="background: ${stringToColor(mensaje.nombre_completo)}">
+                    ${mensaje.nombre_completo ? mensaje.nombre_completo[0].toUpperCase() : 'U'}
+                </div>
+            </div>
+        ` : ''}
+        
+        <div class="message-content">
+            ${!isOwnMessage ? `
+                <div class="message-header">
+                    <span class="sender-name">${escapeHtml(mensaje.nombre_completo || 'Usuario')}</span>
+                    <span class="message-time">${hora}</span>
+                </div>
+            ` : ''}
+            
+            <div class="message-bubble">
+                <div class="message-text">${formatearMensaje(mensaje.mensaje)}</div>
+                ${isOwnMessage ? `
+                    <div class="message-status">
+                        <span class="message-time">${hora}</span>
+                        <i class="fas fa-check-double delivered"></i>
+                    </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+
+    return messageDiv;
+}
+
+function formatearMensaje(texto) {
+    // Convertir URLs en enlaces
+    texto = texto.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="message-link">$1</a>');
+    
+    // Convertir saltos de línea en <br>
+    texto = texto.replace(/\n/g, '<br>');
+    
+    return escapeHtml(texto);
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function stringToColor(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    
+    const colors = [
+        'var(--primary)', 'var(--secondary)', 'var(--accent)', 
+        '#06d6a0', '#ffd166', '#ef476f', '#118ab2', '#073b4c'
+    ];
+    
+    return colors[Math.abs(hash) % colors.length];
+}
+
+function isChatNearBottom() {
+    const chatMessages = document.getElementById('chatMessages');
+    const threshold = 100; // píxeles desde el fondo
+    return chatMessages.scrollHeight - chatMessages.clientHeight - chatMessages.scrollTop <= threshold;
+}
+
+function toggleEmojiPicker() {
     const emojiPicker = document.getElementById('emojiPicker');
     const emojiToggle = document.getElementById('emojiToggle');
     
-    if (emojiPicker && !emojiPicker.contains(event.target) && !emojiToggle.contains(event.target)) {
-        emojiPicker.style.display = 'none';
+    isEmojiPickerOpen = !isEmojiPickerOpen;
+    
+    if (isEmojiPickerOpen) {
+        emojiPicker.classList.add('show');
+        emojiToggle.classList.add('active');
+    } else {
+        closeEmojiPicker();
+    }
+}
+
+function closeEmojiPicker() {
+    const emojiPicker = document.getElementById('emojiPicker');
+    const emojiToggle = document.getElementById('emojiToggle');
+    
+    emojiPicker.classList.remove('show');
+    emojiToggle.classList.remove('active');
+    isEmojiPickerOpen = false;
+}
+
+function switchEmojiCategory(category) {
+    document.querySelectorAll('.emoji-category').forEach(cat => {
+        cat.classList.remove('active');
+    });
+    
+    const targetCategory = document.querySelector(`.emoji-category[data-category="${category}"]`);
+    if (targetCategory) {
+        targetCategory.classList.add('active');
+    }
+}
+
+function insertEmoji(emoji) {
+    const messageInput = document.getElementById('messageInput');
+    const startPos = messageInput.selectionStart;
+    const endPos = messageInput.selectionEnd;
+    
+    messageInput.value = messageInput.value.substring(0, startPos) + 
+                        emoji + 
+                        messageInput.value.substring(endPos);
+    
+    messageInput.focus();
+    messageInput.setSelectionRange(startPos + emoji.length, startPos + emoji.length);
+    
+    // Actualizar contador y altura
+    messageInput.dispatchEvent(new Event('input'));
+}
+
+function scrollToBottom() {
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.scrollTo({
+        top: chatMessages.scrollHeight,
+        behavior: 'smooth'
+    });
+}
+
+function showNotification(message, type = 'info') {
+    // Crear notificación toast
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas fa-${getNotificationIcon(type)}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Mostrar con animación
+    setTimeout(() => notification.classList.add('show'), 100);
+    
+    // Ocultar después de 3 segundos
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+function getNotificationIcon(type) {
+    const icons = {
+        'success': 'check-circle',
+        'error': 'exclamation-triangle',
+        'info': 'info-circle'
+    };
+    return icons[type] || 'info-circle';
+}
+
+// Manejar visibilidad de la página
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        // Página visible, recargar mensajes
+        cargarMensajes();
     }
 });
 
-// Cerrar selector de emojis al enviar mensaje
-document.getElementById('messageForm').addEventListener('submit', function() {
-    document.getElementById('emojiPicker').style.display = 'none';
-});
+// Estilos para notificaciones (agregar al CSS existente)
+const notificationStyles = `
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-xl);
+    border-left: 4px solid var(--primary);
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    z-index: 10000;
+    max-width: 300px;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification.success {
+    border-left-color: var(--success);
+}
+
+.notification.error {
+    border-left-color: var(--danger);
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification-content i {
+    font-size: 1.2rem;
+}
+
+.notification.success .notification-content i {
+    color: var(--success);
+}
+
+.notification.error .notification-content i {
+    color: var(--danger);
+}
+
+.connection-error {
+    text-align: center;
+    padding: 20px;
+    color: var(--gray-500);
+}
+
+.error-message {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gray-100);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+}
+
+.message-link {
+    color: var(--primary);
+    text-decoration: underline;
+    word-break: break-all;
+}
+
+.message-link:hover {
+    color: var(--primary-dark);
+}
+`;
+
+// Inyectar estilos de notificación
+const styleSheet = document.createElement('style');
+styleSheet.textContent = notificationStyles;
+document.head.appendChild(styleSheet);
 </script>
+
 {% endblock %}
 
 

@@ -96,414 +96,222 @@
 </style>
 
 
-<!-- HERO SECTION CON TUS COLORES -->
-<section class="hero-section">
-  <div class="hero-background">
-    <div class="color-wave color-1"></div>
-    <div class="color-wave color-2"></div>
-    <div class="color-wave color-3"></div>
-    <div class="color-wave color-4"></div>
-  </div>
-  <div class="container">
-    <div class="row align-items-center min-vh-100">
-      <div class="col-lg-6">
-        <h1 class="hero-title">Conecta. Colabora. <span class="text-naranja">Crece.</span></h1>
-        <p class="hero-subtitle">Encuentra tu equipo ideal para proyectos académicos y haz realidad tus ideas junto a otros estudiantes apasionados.</p>
-        <div class="hero-buttons">
-          <a href="{{ url_for('register') }}" class="btn btn-naranja btn-lg me-3">
-            <i class="fa-solid fa-rocket me-2"></i>Comenzar Ahora
-          </a>
-          <a href="#como-funciona" class="btn btn-outline-agua btn-lg">
-            <i class="fa-solid fa-circle-info me-2"></i>Cómo Funciona
-          </a>
+
+    <!-- HERO SECTION MEJORADO -->
+    <section class="hero-section">
+        <div class="hero-background">
+            <div class="gradient-overlay"></div>
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
         </div>
-        <div class="hero-stats mt-4">
-<section class="stats-section">
-    <div class="container">
-        <h2>📊 Nuestra Comunidad</h2>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number">{{ total_usuarios }}</div>
-                <div class="stat-label">Usuarios Registrados</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ total_equipos }}</div>
-                <div class="stat-label">Equipos Creados</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ equipos_activos }}</div>
-                <div class="stat-label">Equipos Activos</div>
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <h1 class="hero-title">Conecta. Colabora. <span class="text-gradient">Crece.</span></h1>
+                        <p class="hero-subtitle">Encuentra tu equipo ideal para proyectos académicos y haz realidad tus ideas junto a otros estudiantes apasionados.</p>
+                        <div class="hero-buttons">
+                            <a href="#" class="btn btn-primary btn-lg me-3">
+                                <i class="fa-solid fa-rocket me-2"></i>Comenzar Ahora
+                            </a>
+                            <a href="#como-funciona" class="btn btn-outline-light btn-lg">
+                                <i class="fa-solid fa-circle-info me-2"></i>Cómo Funciona
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image-container">
+                        <div class="image-frame">
+                            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80" alt="Estudiantes colaborando" class="hero-image">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+        <div class="scroll-indicator">
+            <div class="scroll-line"></div>
         </div>
-      </div>
-      <div class="col-lg-6">
-        <div class="hero-image">
-          <img src="{{ url_for('static', filename='img/foto1212.jpg') }}" alt="Estudiantes colaborando" class="img-fluid">
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- CÓMO FUNCIONA -->
-<section id="como-funciona" class="how-it-works py-5 bg-cielo">
-  <div class="container">
-    <h2 class="text-center mb-5">¿Cómo funciona <span class="text-fuerte">Entrelaza</span>?</h2>
-    <div class="row">
-      <div class="col-md-4 mb-4">
-        <div class="step-card text-center">
-          <div class="step-icon bg-naranja">1</div>
-          <h4 class="text-fuerte">Regístrate</h4>
-          <p class="text-muted">Crea tu perfil en minutos y comparte tus habilidades e intereses</p>
-        </div>
-      </div>
-      <div class="col-md-4 mb-4">
-        <div class="step-card text-center">
-          <div class="step-icon bg-fuerte">2</div>
-          <h4 class="text-fuerte">Encuentra Equipo</h4>
-          <p class="text-muted">Busca proyectos o publica el tuyo para encontrar compañeros ideales</p>
-        </div>
-      </div>
-      <div class="col-md-4 mb-4">
-        <div class="step-card text-center">
-          <div class="step-icon bg-agua">3</div>
-          <h4 class="text-fuerte">Colabora</h4>
-          <p class="text-muted">Trabaja en equipo usando nuestras herramientas integradas</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- QUIÉNES SOMOS -->
-<section id="quienes-somos" class="about-section py-5 bg-white">
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-6">
-        <h1>        
-          <a class="nav-link nav-link-black fw-semibold" href="#quienes-somos">Quiénes somos</a>
-        </h1>
-        <h2 class="text-fuerte">Transformando la forma de aprender</h2>
-        <p class="lead text-muted">En Entrelaza creemos que el aprendizaje colaborativo es la clave del éxito académico y profesional.</p>
-        <p class="text-muted">Nuestra plataforma nació para romper barreras y conectar a estudiantes talentosos que comparten la misma pasión por crear e innovar.</p>
-        <ul class="feature-list">
-          <li><i class="fa-solid fa-check text-naranja me-2"></i>Comunidad verificada de estudiantes</li>
-          <li><i class="fa-solid fa-check text-naranja me-2"></i>Herramientas de colaboración integradas</li>
-          <li><i class="fa-solid fa-check text-naranja me-2"></i>Soporte durante todo el proceso</li>
-        </ul>
-      </div>
-      <div class="col-lg-6">
-        <div class="about-image">
-          <img src="{{ url_for('static', filename='img/team .jpg') }}" alt="Equipo de trabajo" class="img-fluid">
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACTO -->
-<section id="contacto" class="contact-section py-5 bg-fuerte">
-  <div class="container">
-    <h2 class="text-center mb-5 text-white">¿Listo para comenzar?</h2>
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="contact-card bg-white">
-          <h4 class="text-center mb-4 text-fuerte">Únete a nuestra comunidad</h4>
-          <div class="text-center">
-            <a href="{{ url_for('register') }}" class="btn btn-naranja btn-lg me-3">
-              <i class="fa-solid fa-user-plus me-2"></i>Registrarse
-            </a>
-            <a href="{{ url_for('login') }}" class="btn btn-outline-fuerte btn-lg">
-              <i class="fa-solid fa-sign-in me-2"></i>Iniciar Sesión
-            </a>
-          </div>
-          <div class="contact-info text-center mt-4">
-            <p class="mb-2 text-muted"><i class="fa-solid fa-envelope me-2 text-naranja"></i>paitzone788@gmail.com</p>
-            <p class="text-muted"><i class="fa-solid fa-clock me-2 text-naranja"></i>Soporte 24/7 para nuestra comunidad</p>
-          </div>
-        </div>
-    <div class="professional-copyright">
-    <div class="container">
-        <div class="copyright-wrapper">
-            <div class="copyright-text">
-                <span class="copyright-symbol">&copy;</span>
-                <span class="copyright-year">2024</span>
-                <span class="brand-name">PaitZone</span>
-                <span class="copyright-message">- Plataforma de Gestión Académica. Todos los derechos reservados.</span>
-            </div>
-            <div class="copyright-legal">
-                <a href="/privacidad" class="legal-link">Privacidad</a>
-                <span class="separator">•</span>
-                <a href="/terminos" class="legal-link">Términos</a>
+    <!-- STATS SECTION MEJORADA -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" data-count="1250">0</div>
+                        <div class="stat-label">Usuarios Registrados</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" data-count="342">0</div>
+                        <div class="stat-label">Equipos Creados</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" data-count="189">0</div>
+                        <div class="stat-label">Equipos Activos</div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- ESTILOS CON TU PALETA DE COLORES -->
-<style>
-/* Definición de tus colores */
-:root {
-  --naranja: #FF6B35;     /* Color naranja principal */
-  --azul-fuerte: #061A3F; /* Azul fuerte (como tu navbar) */
-  --azul-cielo: #87CEEB;  /* Azul cielo */
-  --azul-agua: #00CED1;   /* Azul agua/cyan */
-}
+    <!-- CÓMO FUNCIONA MEJORADO -->
+    <section id="como-funciona" class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>¿Cómo funciona <span class="text-gradient">Entrelaza</span>?</h2>
+                <p class="section-subtitle">Un proceso simple para conectar con compañeros ideales</p>
+            </div>
+            <div class="steps-container">
+                <div class="step-line"></div>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="step-card">
+                            <div class="step-number">01</div>
+                            <div class="step-icon">
+                                <i class="fa-solid fa-user-plus"></i>
+                            </div>
+                            <h4>Regístrate</h4>
+                            <p>Crea tu perfil en minutos y comparte tus habilidades e intereses académicos.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="step-card">
+                            <div class="step-number">02</div>
+                            <div class="step-icon">
+                                <i class="fa-solid fa-search"></i>
+                            </div>
+                            <h4>Encuentra Equipo</h4>
+                            <p>Busca proyectos o publica el tuyo para encontrar compañeros ideales.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="step-card">
+                            <div class="step-number">03</div>
+                            <div class="step-icon">
+                                <i class="fa-solid fa-handshake"></i>
+                            </div>
+                            <h4>Colabora</h4>
+                            <p>Trabaja en equipo usando nuestras herramientas de colaboración integradas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-/* Clases de color para texto */
-.text-naranja { color: var(--naranja) !important; }
-.text-fuerte { color: var(--azul-fuerte) !important; }
-.text-cielo { color: var(--azul-cielo) !important; }
-.text-agua { color: var(--azul-agua) !important; }
+    <!-- QUIÉNES SOMOS MEJORADO -->
+    <section id="quienes-somos" class="about-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="section-header text-start">
+                        <h2>Transformando la forma de <span class="text-gradient">aprender</span></h2>
+                        <p class="section-subtitle">En Entrelaza creemos que el aprendizaje colaborativo es la clave del éxito académico y profesional.</p>
+                    </div>
+                    <p>Nuestra plataforma nació para romper barreras y conectar a estudiantes talentosos que comparten la misma pasión por crear e innovar.</p>
+                    <ul class="feature-list">
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            <span>Comunidad verificada de estudiantes</span>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            <span>Herramientas de colaboración integradas</span>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-check"></i>
+                            <span>Soporte durante todo el proceso</span>
+                        </li>
+                    </ul>
+                    <div class="about-actions">
+                        <a href="#" class="btn btn-primary">Conoce más</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="about-image-container">
+                        <div class="image-frame">
+                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Equipo de trabajo" class="about-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-/* Clases de color para fondos */
-.bg-naranja { background-color: var(--naranja) !important; }
-.bg-fuerte { background-color: var(--azul-fuerte) !important; }
-.bg-cielo { background-color: var(--azul-cielo) !important; }
-.bg-agua { background-color: var(--azul-agua) !important; }
+    <!-- CONTACTO MEJORADO -->
+    <section id="contacto" class="contact-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>¿Listo para comenzar?</h2>
+                <p class="section-subtitle">Únete a nuestra comunidad de estudiantes colaborativos</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="contact-card">
+                        <h4>Comienza tu viaje colaborativo hoy</h4>
+                        <div class="contact-buttons">
+                            <a href="#" class="btn btn-primary btn-lg">
+                                <i class="fa-solid fa-user-plus me-2"></i>Registrarse
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-lg">
+                                <i class="fa-solid fa-sign-in me-2"></i>Iniciar Sesión
+                            </a>
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <i class="fa-solid fa-envelope"></i>
+                                <span>paitzone788@gmail.com</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fa-solid fa-clock"></i>
+                                <span>Soporte 24/7 para nuestra comunidad</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-/* Botones personalizados */
-.btn-naranja {
-  background-color: var(--naranja);
-  border-color: var(--naranja);
-  color: white;
-}
+    <!-- FOOTER MEJORADO -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Entrelaza</h3>
+                    <p>Conectando estudiantes para un aprendizaje colaborativo</p>
+                </div>
+                <div class="footer-links">
+                    <a href="/privacidad">Privacidad</a>
+                    <span class="separator">•</span>
+                    <a href="/terminos">Términos</a>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; 2024 PaitZone - Plataforma de Gestión Académica. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
 
-.btn-naranja:hover {
-  background-color: #e55a2b;
-  border-color: #e55a2b;
-  color: white;
-}
 
-.btn-outline-agua {
-  border-color: var(--azul-agua);
-  color: var(--azul-agua);
-}
 
-.btn-outline-agua:hover {
-  background-color: var(--azul-agua);
-  color: white;
-}
 
-.btn-outline-fuerte {
-  border-color: var(--azul-fuerte);
-  color: var(--azul-fuerte);
-}
 
-.btn-outline-fuerte:hover {
-  background-color: var(--azul-fuerte);
-  color: white;
-}
-
-/* Hero Section con fondos de colores */
-.hero-section {
-  position: relative;
-  color: white;
-  padding: 120px 0 80px;
-  margin-top: -80px;
-  overflow: hidden;
-}
-
-.hero-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-
-.color-wave {
-  position: absolute;
-  border-radius: 50%;
-  opacity: 0.1;
-  animation: float 6s ease-in-out infinite;
-}
-
-.color-1 {
-  background: var(--naranja);
-  width: 300px;
-  height: 300px;
-  top: -100px;
-  left: -50px;
-  animation-delay: 0s;
-}
-
-.color-2 {
-  background: var(--azul-fuerte);
-  width: 400px;
-  height: 400px;
-  top: -150px;
-  right: -100px;
-  animation-delay: 1.5s;
-}
-
-.color-3 {
-  background: var(--azul-cielo);
-  width: 250px;
-  height: 250px;
-  bottom: -50px;
-  left: 20%;
-  animation-delay: 3s;
-}
-
-.color-4 {
-  background: var(--azul-agua);
-  width: 350px;
-  height: 350px;
-  bottom: -100px;
-  right: 20%;
-  animation-delay: 4.5s;
-}
-
-.hero-title {
-  font-size: 3.5rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-}
-
-.hero-subtitle {
-  font-size: 1.3rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
-}
-
-.hero-stats {
-  display: flex;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.stat-item h4 {
-  font-size: 2rem;
-  margin-bottom: 0.2rem;
-  font-weight: 700;
-  color: var(--azul-agua);
-}
-
-.stat-item p {
-  margin: 0;
-  opacity: 0.8;
-  font-size: 0.9rem;
-}
-
-/* How It Works */
-.step-card {
-  padding: 2rem 1rem;
-  border-radius: 15px;
-  transition: transform 0.3s ease;
-  background: white;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.step-card:hover {
-  transform: translateY(-10px);
-}
-
-.step-icon {
-  width: 60px;
-  height: 60px;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin: 0 auto 1rem;
-}
-
-/* About Section */
-.feature-list {
-  list-style: none;
-  padding: 0;
-}
-
-.feature-list li {
-  margin-bottom: 0.5rem;
-}
-
-.about-image {
-  padding: 2rem;
-}
-
-/* Contact Section */
-.contact-card {
-  padding: 3rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  border: 2px solid var(--azul-cielo);
-}
-
-/* Animaciones */
-@keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(5deg); }
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .hero-title {
-    font-size: 2.5rem;
-  }
-  
-  .hero-stats {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .hero-buttons .btn {
-    display: block;
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-  
-  .color-wave {
-    display: none; /* Ocultar ondas en móvil para mejor rendimiento */
-  }
-}
-</style>
-
-<script>
-// Smooth scroll para los enlaces del navbar
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
-    if (target) {
-      target.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
-  });
-});
-
-// Animación para las cards
-document.addEventListener('DOMContentLoaded', function() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-      }
-    });
-  });
-
-  document.querySelectorAll('.step-card').forEach(card => {
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(30px)';
-    card.style.transition = 'all 0.6s ease';
-    observer.observe(card);
-  });
-});
-</script>
 
 {% endblock %}

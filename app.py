@@ -1394,7 +1394,114 @@ def notificaciones_data():
     return render_template('_notificaciones.html', notificaciones=notificaciones)
 
 
+@app.route('/equipo/chat/<int:equipo_id>')
+def chat_equipo(equipo_id):
+    if 'usuario' not in session:
+        flash("Debes iniciar sesión", "warning")
+        return redirect(url_for('login'))
+    
+    usuario = session['usuario']
+    cursor = mysql.connection.cursor()
+    
+    # Verificar que el usuario pertenece al equipo
+    cursor.execute('SELECT 1 FROM equipo_integrantes WHERE equipo_id = %s AND usuario_id = %s', (equipo_id, usuario['id']))
+    if not cursor.fetchone():
+        flash("No perteneces a este equipo", "danger")
+        cursor.close()
+        return redirect(url_for('index'))
+    
+    # Obtener información del equipo
+    cursor.execute('SELECT nombre_proyecto FROM equipos WHERE id = %s', (equipo_id,))
+    equipo = cursor.fetchone()
+    
+    # Obtener los últimos mensajes
+    cursor.execute('''
+        SELECT m.*, u.nombre_completo 
+        FROM mensajes_equipo m 
+        JOIN usuarios u ON m.usuario_id = u.id 
+        WHERE m.equipo_id = %s 
+        ORDER BY m.fecha ASC 
+        LIMIT 50
+    ''', (equipo_id,))
+    mensajes = cursor.fetchall()
+    
+    cursor.close()
+    
+    return render_template('chat_equipo.html', 
+                         equipo_id=equipo_id, 
+                         equipo_nombre=equipo['nombre_proyecto'],
+                         mensajes=mensajes,
+                         usuario=usuario)
 
+@app.route('/equipo/chat/enviar/<int:equipo_id>', methods=['POST'])
+def enviar_mensaje(equipo_id):
+    if 'usuario' not in session:
+        return jsonify({'success': False, 'message': 'No autenticado'}), 401
+    
+    usuario = session['usuario']
+    mensaje_texto = request.form.get('mensaje', '').strip()
+    
+    if not mensaje_texto:
+        return jsonify({'success': False, 'message': 'El mensaje no puede estar vacío'}), 400
+    
+    cursor = mysql.connection.cursor()
+    
+    # Verificar que el usuario pertenece al equipo
+    cursor.execute('SELECT 1 FROM equipo_integrantes WHERE equipo_id = %s AND usuario_id = %s', (equipo_id, usuario['id']))
+    if not cursor.fetchone():
+        cursor.close()
+        return jsonify({'success': False, 'message': 'No perteneces a este equipo'}), 403
+    
+    # Insertar mensaje
+    cursor.execute(
+        'INSERT INTO mensajes_equipo (equipo_id, usuario_id, mensaje) VALUES (%s, %s, %s)',
+        (equipo_id, usuario['id'], mensaje_texto)
+    )
+    mysql.connection.commit()
+    
+    cursor.close()
+    
+    return jsonify({'success': True, 'message': 'Mensaje enviado'})
+
+@app.route('/equipo/chat/mensajes/<int:equipo_id>')
+def obtener_mensajes(equipo_id):
+    if 'usuario' not in session:
+        return jsonify({'success': False, 'message': 'No autenticado'}), 401
+    
+    usuario = session['usuario']
+    cursor = mysql.connection.cursor()
+    
+    # Verificar que el usuario pertenece al equipo
+    cursor.execute('SELECT 1 FROM equipo_integrantes WHERE equipo_id = %s AND usuario_id = %s', (equipo_id, usuario['id']))
+    if not cursor.fetchone():
+        cursor.close()
+        return jsonify({'success': False, 'message': 'No perteneces a este equipo'}), 403
+    
+    # Obtener mensajes
+    cursor.execute('''
+        SELECT m.*, u.nombre_completo 
+        FROM mensajes_equipo m 
+        JOIN usuarios u ON m.usuario_id = u.id 
+        WHERE m.equipo_id = %s 
+        ORDER BY m.fecha ASC 
+        LIMIT 50
+    ''', (equipo_id,))
+    mensajes = cursor.fetchall()
+    
+    cursor.close()
+    
+    # Convertir a formato JSON
+    mensajes_list = []
+    for msg in mensajes:
+        mensajes_list.append({
+            'id': msg['id'],
+            'usuario_nombre': msg['nombre_completo'],
+            'mensaje': msg['mensaje'],
+            'fecha': msg['fecha'].strftime('%H:%M'),
+            'es_mio': msg['usuario_id'] == usuario['id']
+        })
+    
+    return jsonify({'success': True, 'mensajes': mensajes_list})
 
 
 # ---------- ACTUALIZAR ESTADO DE SOLICITUD ----------

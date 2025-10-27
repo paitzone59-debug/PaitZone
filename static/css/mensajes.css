@@ -1,0 +1,34 @@
+.message-bubble {
+    position: relative;
+    word-wrap: break-word;
+}
+
+.own-message .message-bubble {
+    border-bottom-right-radius: 5px !important;
+}
+
+.other-message .message-bubble {
+    border-bottom-left-radius: 5px !important;
+}
+
+.chat-messages {
+    background-color: #f8f9fa;
+}
+
+/* Scroll personalizado */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

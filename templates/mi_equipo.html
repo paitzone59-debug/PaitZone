@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="/static/css/botones.css">
 <link rel="stylesheet" href="/static/css/nav-bar.css">
 <link rel="stylesheet" href="/static/css/fondo.css">
+<link rel="stylesheet" href="/static/css/mensajes.css">
 <style>
   body {
     padding-top: 70px;
@@ -121,8 +122,11 @@
 
         <button type="button" class="btn btn-primary flex-grow-1"
                 data-bs-toggle="modal" data-bs-target="#integrantesModal">
-          Enviar mensaje a los integrantes
+          Enviar mensaje al privado aun integrantes
         </button>
+        <a href="{{ url_for('chat_equipo', equipo_id=equipo.id) }}" class="btn btn-info">
+    💬 Chat del Equipo
+</a>
       </div>
 
       <!-- ✅ SECCIÓN DE DISOLVER EQUIPO (POSICIÓN CORRECTA - FUERA DEL MODAL) -->
@@ -393,6 +397,40 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 
+<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="chatModalLabel">
+                    💬 Chat - {{ equipo.nombre_proyecto }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages" style="height: 400px; overflow-y: auto; padding: 15px;">
+                        <!-- Los mensajes se cargarán aquí -->
+                        <div class="text-center text-muted py-5">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Cargando mensajes...</span>
+                            </div>
+                            <p class="mt-2">Cargando mensajes...</p>
+                        </div>
+                    </div>
+                    <div class="chat-input p-3 border-top">
+                        <form id="messageForm">
+                            <div class="input-group">
+                                <input type="text" id="messageInput" class="form-control" 
+                                       placeholder="Escribe tu mensaje..." required>
+                                <button type="submit" class="btn btn-primary">Enviar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Script para transferencia de administración -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -534,6 +572,97 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/static/js/animacion de nav-bar.js"></script>
+
+
+<script>
+// Variable global para el equipo_id
+const equipoId = {{ equipo.id }};
+
+// Función para cargar mensajes
+function cargarMensajes() {
+    fetch(`/equipo/chat/mensajes/${equipoId}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '';
+            
+            if (data.mensajes.length === 0) {
+                chatMessages.innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <p>💬 Sé el primero en enviar un mensaje</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            data.mensajes.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${msg.es_mio ? 'own-message' : 'other-message'} mb-3`;
+                
+                messageDiv.innerHTML = `
+                    <div class="d-flex justify-content-${msg.es_mio ? 'end' : 'start'}">
+                        <div class="message-bubble ${msg.es_mio ? 'bg-primary text-white' : 'bg-light'} rounded p-3" 
+                             style="max-width: 70%;">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <small class="fw-bold">${msg.usuario_nombre}</small>
+                                <small class="text-muted ms-2">${msg.fecha}</small>
+                            </div>
+                            <div class="message-text">${msg.mensaje}</div>
+                        </div>
+                    </div>
+                `;
+                
+                chatMessages.appendChild(messageDiv);
+            });
+            
+            // Scroll al final
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    });
+}
+
+// Función para enviar mensajes
+document.getElementById('messageForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const messageInput = document.getElementById('messageInput');
+    const message = messageInput.value.trim();
+    
+    if (message) {
+        fetch(`/equipo/chat/enviar/${equipoId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'mensaje=' + encodeURIComponent(message)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                messageInput.value = '';
+                cargarMensajes();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        });
+    }
+});
+
+// Cargar mensajes cuando se abre el modal
+document.getElementById('chatModal').addEventListener('shown.bs.modal', function() {
+    cargarMensajes();
+    // Recargar mensajes cada 3 segundos cuando el modal está abierto
+    window.chatInterval = setInterval(cargarMensajes, 3000);
+});
+
+// Limpiar intervalo cuando se cierra el modal
+document.getElementById('chatModal').addEventListener('hidden.bs.modal', function() {
+    if (window.chatInterval) {
+        clearInterval(window.chatInterval);
+    }
+});
+</script>
 
 <script>
   // Desaparecer alert automáticamente después de 4 segundos

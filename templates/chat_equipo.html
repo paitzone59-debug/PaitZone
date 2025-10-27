@@ -18,12 +18,7 @@
                 </div>
             </div>
             <div class="header-actions">
-                <button class="action-btn" title="Buscar mensajes">
-                    <i class="fas fa-search"></i>
-                </button>
-                <button class="action-btn" title="Más opciones">
-                    <i class="fas fa-ellipsis-v"></i>
-                </button>
+
                 <a href="{{ url_for('mi_equipo') }}" class="back-btn">
                     <i class="fas fa-arrow-left"></i>
                     <span>Volver</span>
@@ -74,9 +69,6 @@
             <div class="input-actions">
                 <button class="action-btn emoji-toggle" id="emojiToggle" title="Emojis">
                     <i class="far fa-smile"></i>
-                </button>
-                <button class="action-btn" title="Adjuntar archivo">
-                    <i class="fas fa-paperclip"></i>
                 </button>
             </div>
 
@@ -206,14 +198,13 @@
 </div>
 
 
-
 <script>
 // Configuración inicial
 const equipoId = {{ equipo_id }};
 let isEmojiPickerOpen = false;
 let lastMessageId = 0;
 
-// Inicialización cuando el DOM está listo
+// Esperar a que el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Chat premium inicializado');
     initializeChat();
@@ -221,13 +212,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeChat() {
-    // Configurar eventos
+    // Verificar que los elementos existan antes de configurar eventos
+    if (!document.getElementById('messageForm') || !document.getElementById('chatMessages')) {
+        console.error('Elementos del chat no encontrados');
+        return;
+    }
+    
     setupEventListeners();
-    
-    // Cargar mensajes iniciales
     cargarMensajes();
-    
-    // Configurar recarga automática
     setInterval(cargarMensajes, 3000);
 }
 
@@ -301,20 +293,9 @@ function setupEventListeners() {
         }
     });
 
-    // Auto-expandir textarea
+    // Auto-expandir input (para textarea cambiaría, pero es input text)
     messageInput.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-    });
-
-    // Scroll suave al hacer clic en mensajes
-    document.getElementById('chatMessages').addEventListener('click', function(e) {
-        if (e.target.closest('.message-bubble')) {
-            e.target.closest('.message-bubble').style.transform = 'scale(0.98)';
-            setTimeout(() => {
-                e.target.closest('.message-bubble').style.transform = '';
-            }, 150);
-        }
+        // Para input text no necesitamos ajustar altura
     });
 }
 
@@ -335,12 +316,12 @@ async function handleMessageSubmit(e) {
         
         await enviarMensaje(message);
         messageInput.value = '';
-        messageInput.style.height = 'auto';
         document.getElementById('charCounter').querySelector('.char-count').textContent = '0';
         closeEmojiPicker();
         
         // Restaurar botón
         sendBtn.innerHTML = originalHTML;
+        sendBtn.disabled = false;
         
     } catch (error) {
         console.error('Error enviando mensaje:', error);
@@ -385,7 +366,7 @@ async function cargarMensajes() {
 
         const data = await response.json();
         
-        if (data.success && data.mensajes.length > 0) {
+        if (data.success && data.mensajes && data.mensajes.length > 0) {
             actualizarInterfazMensajes(data.mensajes);
             
             // Actualizar último ID
@@ -393,33 +374,13 @@ async function cargarMensajes() {
         }
     } catch (error) {
         console.error('Error cargando mensajes:', error);
-        
-        // Mostrar estado de error temporal
-        const chatMessages = document.getElementById('chatMessages');
-        if (!chatMessages.querySelector('.connection-error')) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'connection-error';
-            errorDiv.innerHTML = `
-                <div class="error-message">
-                    <i class="fas fa-wifi-slash"></i>
-                    <span>Problema de conexión</span>
-                </div>
-            `;
-            chatMessages.appendChild(errorDiv);
-        }
     }
 }
 
 function actualizarInterfazMensajes(mensajes) {
     const chatMessages = document.getElementById('chatMessages');
     
-    // Remover mensaje de error si existe
-    const errorDiv = chatMessages.querySelector('.connection-error');
-    if (errorDiv) {
-        errorDiv.remove();
-    }
-    
-    if (mensajes.length === 0) {
+    if (!mensajes || mensajes.length === 0) {
         if (!chatMessages.querySelector('.empty-state')) {
             chatMessages.innerHTML = `
                 <div class="empty-state">
@@ -483,20 +444,27 @@ function crearElementoMensaje(mensaje) {
     messageDiv.className = `message ${isOwnMessage ? 'message-sent' : 'message-received'}`;
     messageDiv.dataset.messageId = mensaje.id;
     
-    // Formatear fecha
-    const fecha = new Date(mensaje.fecha);
-    const ahora = new Date();
-    const esHoy = fecha.toDateString() === ahora.toDateString();
-    const hora = fecha.toLocaleTimeString('es-ES', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-    });
+    // Formatear fecha - manejar posibles errores
+    let hora = '--:--';
+    try {
+        const fecha = new Date(mensaje.fecha);
+        hora = fecha.toLocaleTimeString('es-ES', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+    } catch (e) {
+        console.error('Error formateando fecha:', e);
+    }
+
+    // Usar valores por defecto para nombres
+    const nombreCompleto = mensaje.nombre_completo || 'Usuario';
+    const avatarText = nombreCompleto.charAt(0).toUpperCase();
 
     messageDiv.innerHTML = `
         ${!isOwnMessage ? `
             <div class="message-avatar">
-                <div class="avatar-circle" style="background: ${stringToColor(mensaje.nombre_completo)}">
-                    ${mensaje.nombre_completo ? mensaje.nombre_completo[0].toUpperCase() : 'U'}
+                <div class="avatar-circle" style="background: ${stringToColor(nombreCompleto)}">
+                    ${avatarText}
                 </div>
             </div>
         ` : ''}
@@ -504,13 +472,13 @@ function crearElementoMensaje(mensaje) {
         <div class="message-content">
             ${!isOwnMessage ? `
                 <div class="message-header">
-                    <span class="sender-name">${escapeHtml(mensaje.nombre_completo || 'Usuario')}</span>
+                    <span class="sender-name">${escapeHtml(nombreCompleto)}</span>
                     <span class="message-time">${hora}</span>
                 </div>
             ` : ''}
             
             <div class="message-bubble">
-                <div class="message-text">${formatearMensaje(mensaje.mensaje)}</div>
+                <div class="message-text">${formatearMensaje(mensaje.mensaje || '')}</div>
                 ${isOwnMessage ? `
                     <div class="message-status">
                         <span class="message-time">${hora}</span>
@@ -525,6 +493,8 @@ function crearElementoMensaje(mensaje) {
 }
 
 function formatearMensaje(texto) {
+    if (!texto) return '';
+    
     // Convertir URLs en enlaces
     texto = texto.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="message-link">$1</a>');
     
@@ -535,12 +505,17 @@ function formatearMensaje(texto) {
 }
 
 function escapeHtml(text) {
+    if (!text) return '';
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
 
 function stringToColor(str) {
+    if (!str || typeof str !== 'string') {
+        return 'var(--primary)';
+    }
+    
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
         hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -606,16 +581,18 @@ function insertEmoji(emoji) {
     messageInput.focus();
     messageInput.setSelectionRange(startPos + emoji.length, startPos + emoji.length);
     
-    // Actualizar contador y altura
+    // Actualizar contador
     messageInput.dispatchEvent(new Event('input'));
 }
 
 function scrollToBottom() {
     const chatMessages = document.getElementById('chatMessages');
-    chatMessages.scrollTo({
-        top: chatMessages.scrollHeight,
-        behavior: 'smooth'
-    });
+    if (chatMessages) {
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
 }
 
 function showNotification(message, type = 'info') {
@@ -658,7 +635,7 @@ document.addEventListener('visibilitychange', function() {
     }
 });
 
-// Estilos para notificaciones (agregar al CSS existente)
+// Estilos para notificaciones
 const notificationStyles = `
 .notification {
     position: fixed;
@@ -667,8 +644,8 @@ const notificationStyles = `
     background: white;
     padding: 16px 20px;
     border-radius: 12px;
-    box-shadow: var(--shadow-xl);
-    border-left: 4px solid var(--primary);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    border-left: 4px solid var(--primary, #007bff);
     transform: translateX(400px);
     transition: transform 0.3s ease;
     z-index: 10000;
@@ -680,11 +657,11 @@ const notificationStyles = `
 }
 
 .notification.success {
-    border-left-color: var(--success);
+    border-left-color: var(--success, #28a745);
 }
 
 .notification.error {
-    border-left-color: var(--danger);
+    border-left-color: var(--danger, #dc3545);
 }
 
 .notification-content {
@@ -698,37 +675,20 @@ const notificationStyles = `
 }
 
 .notification.success .notification-content i {
-    color: var(--success);
+    color: var(--success, #28a745);
 }
 
 .notification.error .notification-content i {
-    color: var(--danger);
+    color: var(--danger, #dc3545);
 }
 
-.connection-error {
-    text-align: center;
-    padding: 20px;
-    color: var(--gray-500);
+.message.new-message {
+    animation: highlightMessage 2s ease;
 }
 
-.error-message {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--gray-100);
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.875rem;
-}
-
-.message-link {
-    color: var(--primary);
-    text-decoration: underline;
-    word-break: break-all;
-}
-
-.message-link:hover {
-    color: var(--primary-dark);
+@keyframes highlightMessage {
+    0% { background-color: rgba(0, 123, 255, 0.1); }
+    100% { background-color: transparent; }
 }
 `;
 
@@ -737,7 +697,6 @@ const styleSheet = document.createElement('style');
 styleSheet.textContent = notificationStyles;
 document.head.appendChild(styleSheet);
 </script>
-
 {% endblock %}
 
 

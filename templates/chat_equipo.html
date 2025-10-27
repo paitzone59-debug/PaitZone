@@ -42,16 +42,44 @@
 
 {% block scripts %}
 <script>
-// El mismo JavaScript de arriba, adaptado para esta página
+// ========== DEBUGGING COMPLETO ==========
+console.log('✅ Script del chat cargado');
+
+// Verificar que equipo_id está definido
 const equipoId = {{ equipo_id }};
+console.log('🔍 equipoId:', equipoId);
+console.log('🔍 Tipo de equipoId:', typeof equipoId);
+
+// Verificar que los elementos del DOM existen
+console.log('🔍 Formulario existe:', !!document.getElementById('messageForm'));
+console.log('🔍 Input existe:', !!document.getElementById('messageInput'));
+console.log('🔍 Chat messages existe:', !!document.getElementById('chatMessages'));
 
 function cargarMensajes() {
+    console.log('🔄 Intentando cargar mensajes...');
+    console.log('🔗 URL:', `/equipo/chat/mensajes/${equipoId}`);
+    
     fetch(`/equipo/chat/mensajes/${equipoId}`)
-    .then(response => response.json())
+    .then(response => {
+        console.log('📥 Respuesta recibida - Status:', response.status);
+        console.log('📥 Respuesta recibida - OK:', response.ok);
+        return response.json();
+    })
     .then(data => {
+        console.log('📊 Datos recibidos:', data);
         if (data.success) {
+            console.log('✅ Mensajes cargados exitosamente. Total:', data.mensajes.length);
             const chatMessages = document.getElementById('chatMessages');
             chatMessages.innerHTML = '';
+            
+            if (data.mensajes.length === 0) {
+                chatMessages.innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <p>💬 Sé el primero en enviar un mensaje</p>
+                    </div>
+                `;
+                return;
+            }
             
             data.mensajes.forEach(msg => {
                 const messageDiv = document.createElement('div');
@@ -74,17 +102,29 @@ function cargarMensajes() {
             });
             
             chatMessages.scrollTop = chatMessages.scrollHeight;
+        } else {
+            console.log('❌ Error al cargar mensajes:', data.message);
         }
+    })
+    .catch(error => {
+        console.error('🔥 Error fatal cargando mensajes:', error);
     });
 }
 
+// Event listener para enviar mensajes
 document.getElementById('messageForm').addEventListener('submit', function(e) {
     e.preventDefault();
+    console.log('🔄 Formulario enviado detectado');
     
     const messageInput = document.getElementById('messageInput');
     const message = messageInput.value.trim();
     
+    console.log('💬 Mensaje capturado:', message);
+    console.log('🔗 URL de envío:', `/equipo/chat/enviar/${equipoId}`);
+    
     if (message) {
+        console.log('📤 Iniciando envío de mensaje...');
+        
         fetch(`/equipo/chat/enviar/${equipoId}`, {
             method: 'POST',
             headers: {
@@ -92,22 +132,41 @@ document.getElementById('messageForm').addEventListener('submit', function(e) {
             },
             body: 'mensaje=' + encodeURIComponent(message)
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('📥 Respuesta de envío - Status:', response.status);
+            console.log('📥 Respuesta de envío - OK:', response.ok);
+            return response.json();
+        })
         .then(data => {
+            console.log('📊 Resultado del envío:', data);
             if (data.success) {
+                console.log('✅ Mensaje enviado exitosamente');
                 messageInput.value = '';
-                cargarMensajes();
+                cargarMensajes(); // Recargar mensajes después de enviar
             } else {
+                console.log('❌ Error al enviar:', data.message);
                 alert('Error: ' + data.message);
             }
+        })
+        .catch(error => {
+            console.error('🔥 Error fatal enviando mensaje:', error);
         });
+    } else {
+        console.log('⚠️ Mensaje vacío, no se envía');
     }
 });
 
 // Recargar mensajes cada 3 segundos
+console.log('⏰ Configurando intervalo de recarga...');
 setInterval(cargarMensajes, 3000);
 
 // Cargar mensajes al iniciar
-document.addEventListener('DOMContentLoaded', cargarMensajes);
+console.log('🚀 Iniciando carga inicial de mensajes...');
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('📄 DOM completamente cargado');
+    cargarMensajes();
+});
+
+console.log('🎯 Configuración completada');
 </script>
 {% endblock %}

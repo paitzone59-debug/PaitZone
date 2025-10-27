@@ -292,11 +292,6 @@ function setupEventListeners() {
             messageForm.dispatchEvent(new Event('submit'));
         }
     });
-
-    // Auto-expandir input (para textarea cambiaría, pero es input text)
-    messageInput.addEventListener('input', function() {
-        // Para input text no necesitamos ajustar altura
-    });
 }
 
 async function handleMessageSubmit(e) {
@@ -319,6 +314,9 @@ async function handleMessageSubmit(e) {
         document.getElementById('charCounter').querySelector('.char-count').textContent = '0';
         closeEmojiPicker();
         
+        // Recargar mensajes después de enviar
+        setTimeout(cargarMensajes, 500);
+        
         // Restaurar botón
         sendBtn.innerHTML = originalHTML;
         sendBtn.disabled = false;
@@ -335,16 +333,20 @@ async function handleMessageSubmit(e) {
 }
 
 async function enviarMensaje(mensaje) {
+    // Usar FormData para mejor manejo de emojis y caracteres especiales
+    const formData = new URLSearchParams();
+    formData.append('mensaje', mensaje);
+    
     const response = await fetch(`/equipo/chat/enviar/${equipoId}`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         },
-        body: 'mensaje=' + encodeURIComponent(mensaje)
+        body: formData
     });
 
     if (!response.ok) {
-        throw new Error('Error en la respuesta del servidor');
+        throw new Error('Error en la respuesta del servidor: ' + response.status);
     }
 
     const data = await response.json();
@@ -361,7 +363,7 @@ async function cargarMensajes() {
         const response = await fetch(`/equipo/chat/mensajes/${equipoId}?ultimo_id=${lastMessageId}`);
         
         if (!response.ok) {
-            throw new Error('Error cargando mensajes');
+            throw new Error('Error cargando mensajes: ' + response.status);
         }
 
         const data = await response.json();
@@ -370,7 +372,10 @@ async function cargarMensajes() {
             actualizarInterfazMensajes(data.mensajes);
             
             // Actualizar último ID
-            lastMessageId = Math.max(...data.mensajes.map(m => m.id));
+            const nuevosIds = data.mensajes.map(m => m.id);
+            if (nuevosIds.length > 0) {
+                lastMessageId = Math.max(...nuevosIds);
+            }
         }
     } catch (error) {
         console.error('Error cargando mensajes:', error);
@@ -444,16 +449,36 @@ function crearElementoMensaje(mensaje) {
     messageDiv.className = `message ${isOwnMessage ? 'message-sent' : 'message-received'}`;
     messageDiv.dataset.messageId = mensaje.id;
     
-    // Formatear fecha - manejar posibles errores
+    // Formatear fecha - MANERA CORREGIDA
     let hora = '--:--';
     try {
-        const fecha = new Date(mensaje.fecha);
-        hora = fecha.toLocaleTimeString('es-ES', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
-        });
+        // Si la fecha ya viene formateada del servidor, úsala directamente
+        if (mensaje.fecha_formateada) {
+            hora = mensaje.fecha_formateada;
+        } else {
+            // Intentar parsear la fecha de diferentes maneras
+            let fecha;
+            if (typeof mensaje.fecha === 'string') {
+                // Si es string, crear Date directamente
+                fecha = new Date(mensaje.fecha);
+            } else if (mensaje.fecha && typeof mensaje.fecha === 'object') {
+                // Si ya es objeto Date (desde Flask)
+                fecha = new Date(mensaje.fecha);
+            } else {
+                // Fallback: usar fecha actual
+                fecha = new Date();
+            }
+            
+            // Verificar si la fecha es válida
+            if (!isNaN(fecha.getTime())) {
+                hora = fecha.toLocaleTimeString('es-ES', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            }
+        }
     } catch (e) {
-        console.error('Error formateando fecha:', e);
+        console.error('Error formateando fecha:', e, mensaje.fecha);
     }
 
     // Usar valores por defecto para nombres

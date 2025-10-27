@@ -1441,6 +1441,8 @@ def enviar_mensaje(equipo_id):
     usuario = session['usuario']
     mensaje_texto = request.form.get('mensaje', '').strip()
     
+    print(f"DEBUG: Usuario {usuario['id']} intentando enviar mensaje al equipo {equipo_id}")  # ← AGREGAR ESTO
+    
     if not mensaje_texto:
         return jsonify({'success': False, 'message': 'El mensaje no puede estar vacío'}), 400
     
@@ -1448,7 +1450,11 @@ def enviar_mensaje(equipo_id):
     
     # Verificar que el usuario pertenece al equipo
     cursor.execute('SELECT 1 FROM equipo_integrantes WHERE equipo_id = %s AND usuario_id = %s', (equipo_id, usuario['id']))
-    if not cursor.fetchone():
+    pertenece = cursor.fetchone()
+    
+    print(f"DEBUG: Usuario pertenece al equipo: {bool(pertenece)}")  # ← AGREGAR ESTO
+    
+    if not pertenece:
         cursor.close()
         return jsonify({'success': False, 'message': 'No perteneces a este equipo'}), 403
     
@@ -1458,6 +1464,8 @@ def enviar_mensaje(equipo_id):
         (equipo_id, usuario['id'], mensaje_texto)
     )
     mysql.connection.commit()
+    
+    print(f"DEBUG: Mensaje insertado correctamente")  # ← AGREGAR ESTO
     
     cursor.close()
     

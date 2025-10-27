@@ -124,7 +124,8 @@
                 data-bs-toggle="modal" data-bs-target="#integrantesModal">
           Enviar mensaje al privado aun integrantes
         </button>
-        <a href="{{ url_for('chat_equipo', equipo_id=equipo.id) }}" class="btn btn-info">
+<!-- Botón del chat con el ID correcto -->
+<a href="{{ url_for('chat_equipo', equipo_id=equipo.id) }}" class="btn btn-info">
     💬 Chat del Equipo
 </a>
       </div>

@@ -96,9 +96,34 @@ def debug_tables():
 def index():
     usuario = session.get('usuario')
 
-    # Si no hay sesión, mostrar la página pública de inicio
+    # Si no hay sesión, mostrar la página pública de inicio CON ESTADÍSTICAS
     if not usuario:
-        return render_template("inicio.html")
+        cursor = mysql.connection.cursor()
+        
+        # Contar usuarios totales
+        cursor.execute("SELECT COUNT(*) as total_usuarios FROM usuarios")
+        total_usuarios = cursor.fetchone()['total_usuarios']
+        
+        # Contar equipos totales
+        cursor.execute("SELECT COUNT(*) as total_equipos FROM equipos")
+        total_equipos = cursor.fetchone()['total_equipos']
+        
+        # Contar equipos activos (con integrantes)
+        cursor.execute("""
+            SELECT COUNT(DISTINCT e.id) as equipos_activos 
+            FROM equipos e 
+            JOIN equipo_integrantes ei ON e.id = ei.equipo_id
+        """)
+        equipos_activos = cursor.fetchone()['equipos_activos']
+        
+        cursor.close()
+        
+        return render_template(
+            "inicio.html", 
+            total_usuarios=total_usuarios,
+            total_equipos=total_equipos,
+            equipos_activos=equipos_activos
+        )
 
     # ✅ VERIFICAR SI EL USUARIO TIENE TURNO EN LA SESIÓN
     if 'turno' not in usuario:
@@ -205,14 +230,38 @@ def test_db():
         return f"❌ Error BD: {str(e)}"
 
 # ruta admin
+# ruta admin
 @app.route('/admin')
 @admin_required
 def admin_panel():
     cursor = mysql.connection.cursor()
+    
+    # Estadísticas para admin
+    cursor.execute("SELECT COUNT(*) as total_usuarios FROM usuarios")
+    total_usuarios = cursor.fetchone()['total_usuarios']
+    
+    cursor.execute("SELECT COUNT(*) as total_equipos FROM equipos")
+    total_equipos = cursor.fetchone()['total_equipos']
+    
+    cursor.execute("SELECT COUNT(*) as solicitudes_pendientes FROM solicitudes WHERE estado = 'pendiente'")
+    solicitudes_pendientes = cursor.fetchone()['solicitudes_pendientes']
+    
+    cursor.execute("SELECT COUNT(*) as notificaciones_sin_leer FROM notificaciones WHERE leida = FALSE")
+    notificaciones_sin_leer = cursor.fetchone()['notificaciones_sin_leer']
+    
     cursor.execute("SELECT nombre FROM carreras")
     carreras = [row['nombre'] for row in cursor.fetchall()]
+    
     cursor.close()
-    return render_template('admin.html', carreras=carreras)
+    
+    return render_template(
+        'admin.html', 
+        carreras=carreras,
+        total_usuarios=total_usuarios,
+        total_equipos=total_equipos,
+        solicitudes_pendientes=solicitudes_pendientes,
+        notificaciones_sin_leer=notificaciones_sin_leer
+    )
 
 # tabla de usuarios
 @app.route('/admin/usuarios')
@@ -1488,6 +1537,25 @@ def inject_notificaciones():
         return dict(notificaciones_pendientes=total_pendientes)
     
     return dict(notificaciones_pendientes=0)
+
+
+# ---------- ESTADÍSTICAS GLOBALES PARA TODAS LAS PÁGINAS ----------
+@app.context_processor
+def inject_estadisticas():
+    stats = {}
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT COUNT(*) as total_usuarios FROM usuarios")
+        stats['total_usuarios'] = cursor.fetchone()['total_usuarios']
+        
+        cursor.execute("SELECT COUNT(*) as total_equipos FROM equipos")
+        stats['total_equipos'] = cursor.fetchone()['total_equipos']
+        cursor.close()
+    except:
+        stats['total_usuarios'] = 0
+        stats['total_equipos'] = 0
+    
+    return stats
 
 
 

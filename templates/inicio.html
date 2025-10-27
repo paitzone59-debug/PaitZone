@@ -118,18 +118,25 @@
           </a>
         </div>
         <div class="hero-stats mt-4">
-          <div class="stat-item">
-            <h4>500+</h4>
-            <p>Estudiantes Conectados</p>
-          </div>
-          <div class="stat-item">
-            <h4>120+</h4>
-            <p>Proyectos Completados</p>
-          </div>
-          <div class="stat-item">
-            <h4>95%</h4>
-            <p>Equipos Satisfechos</p>
-          </div>
+<section class="stats-section">
+    <div class="container">
+        <h2>📊 Nuestra Comunidad</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_usuarios }}</div>
+                <div class="stat-label">Usuarios Registrados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_equipos }}</div>
+                <div class="stat-label">Equipos Creados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ equipos_activos }}</div>
+                <div class="stat-label">Equipos Activos</div>
+            </div>
+        </div>
+    </div>
+</section>
         </div>
       </div>
       <div class="col-lg-6">

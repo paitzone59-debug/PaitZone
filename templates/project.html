@@ -94,7 +94,7 @@
 <body>
 
 <nav id="mainNavbar" class="navbar navbar-expand-lg custom-navbar fixed-top shadow-sm py-3">
-  <div class="container-fluid d-flex align-items-center justify-content-between px-4">
+  <div class="container-fluid px-4">
 
     <!-- LOGO IZQUIERDA -->
     <a class="navbar-brand fw-bold letra1" href="/">PaitZone</a>
@@ -105,37 +105,57 @@
       <i class="fa-solid fa-bars" style="color: #b7b7bc; font-size: 1.4rem;"></i>
     </button>
 
-    <!-- CONTENIDO -->
-    <div class="collapse navbar-collapse justify-content-center" id="navbarContent">
-      <ul class="navbar-nav gap-4">
-    <!-- DERECHA (BOTONES DE USUARIO) -->
-    <div class="d-flex align-items-center navbar-right">
-{% if usuario %}
-    <!-- BOTÓN  notis-->
-    <span class="username me-3 text-white">Hola, {{ usuario['nombre_completo'] }}</span>
-<a href="#" data-bs-toggle="modal" data-bs-target="#notificacionesModal"
-   class="btn btn-light position-relative me-3">
-  <i class="bi bi-bell fs-5"></i>
-  {% if notificaciones_pendientes > 0 %}
-    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-      {{ notificaciones_pendientes }}
-    </span>
-  {% endif %}
-</a>
-    {% if mi_proyecto %}
-      <a href="{{ url_for('mi_equipo') }}" class="btn btn-cafe me-2">Mi Proyecto</a>
-    {% else %}
-      <a href="{{ url_for('create_project') }}" class="btn btn-cafe me-2">Nuevo Proyecto</a>
-    {% endif %}
-    <!-- BOTÓN MI PERFIL -->
-    <a href="{{ url_for('perfil', id=usuario['id']) }}" class="btn btn-outline-light me-2">Mi perfil</a>
-    <a href="{{ url_for('logout') }}" class="btn btn-outline-light"><i class="fa-solid fa-right-from-bracket"></i></a>
-{% else %}
-    <a href="{{ url_for('login') }}" class="btn btn-outline-light me-2"><i class="fa-solid fa-user"></i></a>
-    <a href="{{ url_for('register') }}" class="btn btn-cafe"><i class="fa-solid fa-address-card"></i></a>
-{% endif %}
-    </div>
+    <!-- CONTENIDO DEL NAVBAR -->
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <!-- MENÚ CENTRAL (vacío o con opciones si las tienes) -->
+      <ul class="navbar-nav mx-auto">
+        <!-- Aquí puedes agregar opciones de menú si necesitas -->
       </ul>
+
+      <!-- SECCIÓN DERECHA (USUARIO) -->
+      <div class="navbar-nav align-items-lg-center">
+        {% if usuario %}
+          <div class="d-flex flex-column flex-lg-row align-items-center gap-3">
+            <!-- Nombre de usuario -->
+            <span class="username text-white text-center text-lg-start">Hola, {{ usuario['nombre_completo'] }}</span>
+            
+            <!-- Notificaciones -->
+            <a href="#" data-bs-toggle="modal" data-bs-target="#notificacionesModal"
+               class="btn btn-light position-relative">
+              <i class="bi bi-bell fs-5"></i>
+              {% if notificaciones_pendientes > 0 %}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  {{ notificaciones_pendientes }}
+                </span>
+              {% endif %}
+            </a>
+
+            <!-- Botón de proyecto -->
+            {% if mi_proyecto %}
+              <a href="{{ url_for('mi_equipo') }}" class="btn btn-cafe">Mi Proyecto</a>
+            {% else %}
+              <a href="{{ url_for('create_project') }}" class="btn btn-cafe">Nuevo Proyecto</a>
+            {% endif %}
+
+            <!-- Mi perfil -->
+            <a href="{{ url_for('perfil', id=usuario['id']) }}" class="btn btn-outline-light">Mi perfil</a>
+
+            <!-- Cerrar sesión (CON EMOJI VISIBLE) -->
+            <a href="{{ url_for('logout') }}" class="btn btn-outline-light">
+              <i class="fa-solid fa-right-from-bracket"></i> Salir
+            </a>
+          </div>
+        {% else %}
+          <div class="d-flex flex-column flex-lg-row align-items-center gap-2">
+            <a href="{{ url_for('login') }}" class="btn btn-outline-light">
+              <i class="fa-solid fa-user me-1"></i> Entrar
+            </a>
+            <a href="{{ url_for('register') }}" class="btn btn-cafe">
+              <i class="fa-solid fa-address-card me-1"></i> Registrarse
+            </a>
+          </div>
+        {% endif %}
+      </div>
     </div>
   </div>
 </nav>

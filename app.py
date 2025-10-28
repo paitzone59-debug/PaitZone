@@ -1447,7 +1447,12 @@ def enviar_mensaje(equipo_id):
     else:
         mensaje_texto = request.form.get('mensaje', '').strip()
     
-    print(f"📨 Mensaje recibido - Usuario: {usuario['id']}, Equipo: {equipo_id}, Mensaje: {mensaje_texto[:50]}...")
+    # ✅ DEBUG CRÍTICO PARA EMOJIS
+    print(f"🔍 DEBUG EMOJI - Mensaje recibido: {repr(mensaje_texto)}")
+    print(f"🔍 DEBUG EMOJI - Longitud: {len(mensaje_texto)}")
+    print(f"🔍 DEBUG EMOJI - Tipo de datos: {'JSON' if request.is_json else 'FORM'}")
+    print(f"🔍 DEBUG EMOJI - Headers: {dict(request.headers)}")
+    print(f"🔍 DEBUG EMOJI - Content-Type: {request.content_type}")
     
     if not mensaje_texto:
         return jsonify({'success': False, 'message': 'El mensaje no puede estar vacío'}), 400
@@ -1488,12 +1493,20 @@ def enviar_mensaje(equipo_id):
             ''', (equipo_id, mensajes_a_eliminar))
             print(f"⚠️ Límite cercano. Eliminados {mensajes_a_eliminar} mensajes antiguos")
         
+        # ✅ DEBUG: Antes de insertar en la base de datos
+        print(f"🔍 DEBUG EMOJI - Insertando en BD: {repr(mensaje_texto)}")
+        
         # 4. Insertar nuevo mensaje
         cursor.execute(
             'INSERT INTO mensajes_equipo (equipo_id, usuario_id, mensaje) VALUES (%s, %s, %s)',
             (equipo_id, usuario['id'], mensaje_texto)
         )
         mysql.connection.commit()
+        
+        # ✅ DEBUG: Verificar que se insertó correctamente
+        cursor.execute('SELECT mensaje FROM mensajes_equipo WHERE equipo_id = %s ORDER BY id DESC LIMIT 1', (equipo_id,))
+        mensaje_guardado = cursor.fetchone()
+        print(f"🔍 DEBUG EMOJI - Mensaje guardado en BD: {repr(mensaje_guardado['mensaje'])}")
         
         nuevo_total = total_mensajes + 1
         print(f"✅ Mensaje enviado - Equipo: {equipo_id}, Usuario: {usuario['id']}, Total: {nuevo_total}/{limite}")
@@ -1549,6 +1562,10 @@ def obtener_mensajes(equipo_id):
         # Convertir a formato JSON
         mensajes_list = []
         for msg in mensajes:
+            # ✅ DEBUG: Ver qué mensajes se están enviando al frontend
+            if '😊' in msg['mensaje'] or '🚀' in msg['mensaje']:
+                print(f"🔍 DEBUG EMOJI - Mensaje enviado al frontend: {repr(msg['mensaje'])}")
+            
             mensajes_list.append({
                 'id': msg['id'],
                 'usuario_id': msg['usuario_id'],

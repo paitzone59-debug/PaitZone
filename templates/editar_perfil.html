@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container mt-5">
-    <h2>Editar perfil</h2>
+    <h2 style="color: white;">Editar perfil</h2>
     <form method="POST">
         <div class="mb-3">
-            <label for="descripcion" class="form-label">Descripción</label>
+            <label style="color: white;" for="descripcion" class="form-label">Descripción</label>
             <textarea class="form-control" id="descripcion" name="descripcion" rows="5">{{ descripcion }}</textarea>
         </div>
         <button type="submit" class="btn btn-success">Guardar cambios</button>

@@ -1,7 +1,7 @@
 /* Fondo de la página */
 body {
     /* Imagen de fondo: puedes cambiar la URL por la que quieras */
-    background-image: url('/static/img/fondo01.jpg');
+    background-image: url('/static/img/fondo02.jpg');
     background-size: cover;     /* La imagen cubre toda la pantalla */
     background-position: center; /* Centrada */
     background-attachment: fixed; /* No se mueve al hacer scroll */

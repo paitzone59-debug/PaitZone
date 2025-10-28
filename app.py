@@ -1439,10 +1439,20 @@ def enviar_mensaje(equipo_id):
         return jsonify({'success': False, 'message': 'No autenticado'}), 401
     
     usuario = session['usuario']
-    mensaje_texto = request.form.get('mensaje', '').strip()
     
-    print(f"DEBUG: Usuario {usuario['id']} intentando enviar mensaje al equipo {equipo_id}")  # ← AGREGAR ESTO
+    # MANEJO DE DIFERENTES FORMATOS DE DATOS
+    if request.is_json:
+        # Si viene como JSON (desde el nuevo JavaScript)
+        data = request.get_json()
+        mensaje_texto = data.get('mensaje', '').strip()
+    else:
+        # Si viene como form-data (compatibilidad con versión anterior)
+        mensaje_texto = request.form.get('mensaje', '').strip()
     
+    print(f"DEBUG: Usuario {usuario['id']} intentando enviar mensaje al equipo {equipo_id}")
+    print(f"DEBUG: Mensaje recibido: {mensaje_texto}")
+    print(f"DEBUG: Tipo de datos: {'JSON' if request.is_json else 'FORM'}")
+
     if not mensaje_texto:
         return jsonify({'success': False, 'message': 'El mensaje no puede estar vacío'}), 400
     
@@ -1452,24 +1462,32 @@ def enviar_mensaje(equipo_id):
     cursor.execute('SELECT 1 FROM equipo_integrantes WHERE equipo_id = %s AND usuario_id = %s', (equipo_id, usuario['id']))
     pertenece = cursor.fetchone()
     
-    print(f"DEBUG: Usuario pertenece al equipo: {bool(pertenece)}")  # ← AGREGAR ESTO
+    print(f"DEBUG: Usuario pertenece al equipo: {bool(pertenece)}")
     
     if not pertenece:
         cursor.close()
         return jsonify({'success': False, 'message': 'No perteneces a este equipo'}), 403
     
-    # Insertar mensaje
-    cursor.execute(
-        'INSERT INTO mensajes_equipo (equipo_id, usuario_id, mensaje) VALUES (%s, %s, %s)',
-        (equipo_id, usuario['id'], mensaje_texto)
-    )
-    mysql.connection.commit()
-    
-    print(f"DEBUG: Mensaje insertado correctamente")  # ← AGREGAR ESTO
-    
-    cursor.close()
-    
-    return jsonify({'success': True, 'message': 'Mensaje enviado'})
+    try:
+        # Insertar mensaje
+        cursor.execute(
+            'INSERT INTO mensajes_equipo (equipo_id, usuario_id, mensaje) VALUES (%s, %s, %s)',
+            (equipo_id, usuario['id'], mensaje_texto)
+        )
+        mysql.connection.commit()
+        
+        print(f"DEBUG: Mensaje insertado correctamente")
+        print(f"DEBUG: Mensaje contenido: {mensaje_texto}")
+        
+        cursor.close()
+        
+        return jsonify({'success': True, 'message': 'Mensaje enviado'})
+        
+    except Exception as e:
+        print(f"ERROR: No se pudo insertar el mensaje: {str(e)}")
+        mysql.connection.rollback()
+        cursor.close()
+        return jsonify({'success': False, 'message': f'Error al guardar el mensaje: {str(e)}'}), 500
 
 @app.route('/equipo/chat/mensajes/<int:equipo_id>')
 def obtener_mensajes(equipo_id):
@@ -1485,15 +1503,28 @@ def obtener_mensajes(equipo_id):
         cursor.close()
         return jsonify({'success': False, 'message': 'No perteneces a este equipo'}), 403
     
-    # Obtener mensajes
-    cursor.execute('''
-        SELECT m.*, u.nombre_completo 
-        FROM mensajes_equipo m 
-        JOIN usuarios u ON m.usuario_id = u.id 
-        WHERE m.equipo_id = %s 
-        ORDER BY m.fecha ASC 
-        LIMIT 50
-    ''', (equipo_id,))
+    # Obtener el último ID si se proporciona
+    ultimo_id = request.args.get('ultimo_id', 0, type=int)
+    
+    # Obtener mensajes (solo los nuevos si se proporciona último_id)
+    if ultimo_id > 0:
+        cursor.execute('''
+            SELECT m.*, u.nombre_completo 
+            FROM mensajes_equipo m 
+            JOIN usuarios u ON m.usuario_id = u.id 
+            WHERE m.equipo_id = %s AND m.id > %s
+            ORDER BY m.fecha ASC
+        ''', (equipo_id, ultimo_id))
+    else:
+        cursor.execute('''
+            SELECT m.*, u.nombre_completo 
+            FROM mensajes_equipo m 
+            JOIN usuarios u ON m.usuario_id = u.id 
+            WHERE m.equipo_id = %s 
+            ORDER BY m.fecha ASC 
+            LIMIT 50
+        ''', (equipo_id,))
+        
     mensajes = cursor.fetchall()
     
     cursor.close()
@@ -1503,11 +1534,16 @@ def obtener_mensajes(equipo_id):
     for msg in mensajes:
         mensajes_list.append({
             'id': msg['id'],
+            'usuario_id': msg['usuario_id'],  # ← IMPORTANTE: agregar esto
             'usuario_nombre': msg['nombre_completo'],
+            'nombre_completo': msg['nombre_completo'],  # ← Para compatibilidad
             'mensaje': msg['mensaje'],
             'fecha': msg['fecha'].strftime('%H:%M'),
+            'fecha_formateada': msg['fecha'].strftime('%H:%M'),  # ← Para el nuevo JS
             'es_mio': msg['usuario_id'] == usuario['id']
         })
+    
+    print(f"DEBUG: Enviando {len(mensajes_list)} mensajes al usuario {usuario['id']}")
     
     return jsonify({'success': True, 'mensajes': mensajes_list})
 

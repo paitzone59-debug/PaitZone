@@ -216,7 +216,7 @@ function initializeChat() {
     // Verificar que los elementos existan antes de configurar eventos
     if (!document.getElementById('messageForm') || !document.getElementById('chatMessages')) {
         console.error('Elementos del chat no encontrados');
-        setTimeout(initializeChat, 100); // Reintentar después de 100ms
+        setTimeout(initializeChat, 100);
         return;
     }
     
@@ -242,7 +242,6 @@ function setupEventListeners() {
         if (charCount) {
             charCount.textContent = count;
             
-            // Actualizar contador de caracteres
             if (count > 900) {
                 charCounter.style.color = 'var(--warning)';
             } else if (count > 950) {
@@ -252,7 +251,6 @@ function setupEventListeners() {
             }
         }
         
-        // Habilitar/deshabilitar botón de enviar
         const sendBtn = document.getElementById('sendBtn');
         if (sendBtn) {
             sendBtn.disabled = count === 0 || count > 1000;
@@ -273,7 +271,6 @@ function setupEventListeners() {
             const category = this.dataset.category;
             switchEmojiCategory(category);
             
-            // Actualizar botones activos
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
         });
@@ -370,16 +367,17 @@ async function handleMessageSubmit(e) {
 async function enviarMensaje(mensaje) {
     console.log('🔗 Enviando a:', `/equipo/chat/enviar/${equipoId}`);
     
-    // Usar FormData para mejor manejo de emojis y caracteres especiales
-    const formData = new URLSearchParams();
-    formData.append('mensaje', mensaje);
+    // SOLUCIÓN PARA EMOJIS: Usar JSON en lugar de form-urlencoded
+    const payload = {
+        mensaje: mensaje
+    };
     
     const response = await fetch(`/equipo/chat/enviar/${equipoId}`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Content-Type': 'application/json; charset=utf-8',
         },
-        body: formData
+        body: JSON.stringify(payload)
     });
 
     console.log('📥 Respuesta del servidor - Status:', response.status);
@@ -390,7 +388,13 @@ async function enviarMensaje(mensaje) {
     if (!contentType || !contentType.includes('application/json')) {
         const textResponse = await response.text();
         console.error('❌ El servidor devolvió HTML en lugar de JSON:', textResponse.substring(0, 200));
-        throw new Error(`Error del servidor (${response.status}). Intenta nuevamente.`);
+        
+        // Si es error 500, es problema del servidor con emojis
+        if (response.status === 500) {
+            throw new Error('El servidor tiene problemas para procesar emojis. Contacta al administrador.');
+        } else {
+            throw new Error(`Error del servidor (${response.status}). Intenta nuevamente.`);
+        }
     }
 
     const data = await response.json();
@@ -414,7 +418,6 @@ async function cargarMensajes() {
             throw new Error('Error cargando mensajes: ' + response.status);
         }
 
-        // Verificar si la respuesta es JSON
         const contentType = response.headers.get('content-type');
         if (!contentType || !contentType.includes('application/json')) {
             throw new Error('El servidor devolvió una respuesta no JSON');
@@ -428,7 +431,6 @@ async function cargarMensajes() {
             if (data.mensajes && data.mensajes.length > 0) {
                 actualizarInterfazMensajes(data.mensajes);
                 
-                // Actualizar último ID
                 const nuevosIds = data.mensajes.map(m => m.id).filter(id => id);
                 if (nuevosIds.length > 0) {
                     lastMessageId = Math.max(...nuevosIds);
@@ -439,7 +441,6 @@ async function cargarMensajes() {
         }
     } catch (error) {
         console.error('🔥 Error cargando mensajes:', error);
-        // No mostrar notificación para errores de carga automática
     }
 }
 
@@ -460,13 +461,11 @@ function actualizarInterfazMensajes(mensajes) {
         return;
     }
 
-    // Remover estado vacío si existe
     const emptyState = chatMessages.querySelector('.empty-state');
     if (emptyState) {
         emptyState.remove();
     }
 
-    // Obtener IDs de mensajes actuales
     const currentMessageIds = new Set(
         Array.from(chatMessages.querySelectorAll('.message'))
             .map(msg => {
@@ -475,23 +474,18 @@ function actualizarInterfazMensajes(mensajes) {
             })
     );
 
-    // Filtrar solo mensajes nuevos
     const newMessages = mensajes.filter(msg => msg.id && !currentMessageIds.has(msg.id));
     
     if (newMessages.length === 0) return;
 
-    // Determinar si estamos cerca del final para hacer scroll
     const isNearBottom = isChatNearBottom();
 
-    // Agregar nuevos mensajes
     newMessages.forEach((msg, index) => {
         const messageElement = crearElementoMensaje(msg);
         
-        // Agregar con delay para efecto cascada
         setTimeout(() => {
             chatMessages.appendChild(messageElement);
             
-            // Efecto de highlight para mensajes muy nuevos
             if (index === newMessages.length - 1) {
                 messageElement.classList.add('new-message');
                 setTimeout(() => {
@@ -501,7 +495,6 @@ function actualizarInterfazMensajes(mensajes) {
         }, index * 50);
     });
 
-    // Scroll al final si estábamos cerca del final o hay nuevos mensajes
     if (isNearBottom || newMessages.length > 0) {
         setTimeout(scrollToBottom, 100);
     }
@@ -514,13 +507,11 @@ function crearElementoMensaje(mensaje) {
     messageDiv.className = `message ${isOwnMessage ? 'message-sent' : 'message-received'}`;
     messageDiv.dataset.messageId = mensaje.id;
     
-    // Formatear fecha - MANERA SIMPLIFICADA
     let hora = '--:--';
     try {
         if (mensaje.fecha_formateada) {
             hora = mensaje.fecha_formateada;
         } else if (mensaje.fecha) {
-            // Intentar parsear la fecha
             const fecha = new Date(mensaje.fecha);
             if (!isNaN(fecha.getTime())) {
                 hora = fecha.toLocaleTimeString('es-ES', { 
@@ -533,7 +524,6 @@ function crearElementoMensaje(mensaje) {
         console.error('Error formateando fecha:', e);
     }
 
-    // Usar valores por defecto para nombres
     const nombreCompleto = mensaje.nombre_completo || mensaje.usuario_nombre || 'Usuario';
     const avatarText = nombreCompleto.charAt(0).toUpperCase();
 
@@ -613,7 +603,7 @@ function isChatNearBottom() {
     const chatMessages = document.getElementById('chatMessages');
     if (!chatMessages) return true;
     
-    const threshold = 100; // píxeles desde el fondo
+    const threshold = 100;
     return chatMessages.scrollHeight - chatMessages.clientHeight - chatMessages.scrollTop <= threshold;
 }
 
@@ -663,10 +653,8 @@ function insertEmoji(emoji) {
     messageInput.focus();
     messageInput.setSelectionRange(startPos + emoji.length, startPos + emoji.length);
     
-    // Actualizar contador
     messageInput.dispatchEvent(new Event('input'));
     
-    // Cerrar el picker después de insertar
     closeEmojiPicker();
 }
 
@@ -681,7 +669,6 @@ function scrollToBottom() {
 }
 
 function showNotification(message, type = 'info') {
-    // Crear notificación toast
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.innerHTML = `
@@ -693,10 +680,8 @@ function showNotification(message, type = 'info') {
     
     document.body.appendChild(notification);
     
-    // Mostrar con animación
     setTimeout(() => notification.classList.add('show'), 100);
     
-    // Ocultar después de 3 segundos
     setTimeout(() => {
         notification.classList.remove('show');
         setTimeout(() => notification.remove(), 300);
@@ -715,72 +700,9 @@ function getNotificationIcon(type) {
 // Manejar visibilidad de la página
 document.addEventListener('visibilitychange', function() {
     if (!document.hidden) {
-        // Página visible, recargar mensajes
         cargarMensajes();
     }
 });
-
-// Estilos para notificaciones
-const notificationStyles = `
-.notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: white;
-    padding: 16px 20px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    border-left: 4px solid var(--primary, #007bff);
-    transform: translateX(400px);
-    transition: transform 0.3s ease;
-    z-index: 10000;
-    max-width: 300px;
-}
-
-.notification.show {
-    transform: translateX(0);
-}
-
-.notification.success {
-    border-left-color: var(--success, #28a745);
-}
-
-.notification.error {
-    border-left-color: var(--danger, #dc3545);
-}
-
-.notification-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.notification-content i {
-    font-size: 1.2rem;
-}
-
-.notification.success .notification-content i {
-    color: var(--success, #28a745);
-}
-
-.notification.error .notification-content i {
-    color: var(--danger, #dc3545);
-}
-
-.message.new-message {
-    animation: highlightMessage 2s ease;
-}
-
-@keyframes highlightMessage {
-    0% { background-color: rgba(0, 123, 255, 0.1); }
-    100% { background-color: transparent; }
-}
-`;
-
-// Inyectar estilos de notificación
-const styleSheet = document.createElement('style');
-styleSheet.textContent = notificationStyles;
-document.head.appendChild(styleSheet);
 </script>
 {% endblock %}
 

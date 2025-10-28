@@ -125,11 +125,11 @@
 
 <script>
 const equipoId = {{ equipo_id }};
+let isLoading = false;
 
 // Cargar mensajes al iniciar
 document.addEventListener('DOMContentLoaded', function() {
     cargarMensajes();
-    // Recargar cada 3 segundos
     setInterval(cargarMensajes, 3000);
 });
 
@@ -137,18 +137,21 @@ document.addEventListener('DOMContentLoaded', function() {
 document.getElementById('messageForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
+    if (isLoading) return;
+    
     const messageInput = document.getElementById('messageInput');
     const message = messageInput.value.trim();
     
     if (!message) return;
     
-    // Mostrar loading en el botón
+    isLoading = true;
+    
     const sendBtn = document.getElementById('sendBtn');
     const originalHTML = sendBtn.innerHTML;
     sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     sendBtn.disabled = true;
     
-    // Enviar mensaje con form-data (lo que tu servidor espera)
+    // Usar form-data que funciona seguro
     const formData = new URLSearchParams();
     formData.append('mensaje', message);
     
@@ -163,7 +166,8 @@ document.getElementById('messageForm').addEventListener('submit', function(e) {
     .then(data => {
         if (data.success) {
             messageInput.value = '';
-            cargarMensajes(); // Recargar mensajes inmediatamente
+            document.querySelector('.char-count').textContent = '0';
+            cargarMensajes();
         } else {
             alert('Error: ' + data.message);
         }
@@ -173,9 +177,9 @@ document.getElementById('messageForm').addEventListener('submit', function(e) {
         alert('Error al enviar mensaje');
     })
     .finally(() => {
-        // Restaurar botón
         sendBtn.innerHTML = originalHTML;
         sendBtn.disabled = false;
+        isLoading = false;
     });
 });
 
@@ -193,42 +197,39 @@ function cargarMensajes() {
     });
 }
 
-// Actualizar la interfaz con mensajes nuevos
+// Actualizar mensajes en la interfaz
 function actualizarMensajes(mensajes) {
     const chatMessages = document.getElementById('chatMessages');
     
-    if (!mensajes || mensajes.length === 0) {
-        return;
-    }
+    if (!mensajes || mensajes.length === 0) return;
     
-    // Obtener IDs de mensajes actuales
     const currentIds = new Set();
     chatMessages.querySelectorAll('.message').forEach(msg => {
         const id = msg.getAttribute('data-message-id');
         if (id) currentIds.add(parseInt(id));
     });
     
-    // Agregar solo mensajes nuevos
+    let nuevosMensajes = 0;
     mensajes.forEach(mensaje => {
         if (!currentIds.has(mensaje.id)) {
             const messageElement = crearMensajeHTML(mensaje);
             chatMessages.appendChild(messageElement);
+            nuevosMensajes++;
         }
     });
     
-    // Scroll al final
-    scrollToBottom();
+    if (nuevosMensajes > 0) {
+        scrollToBottom();
+    }
 }
 
-// Crear HTML para un mensaje
+// Crear HTML del mensaje
 function crearMensajeHTML(mensaje) {
     const isOwnMessage = mensaje.usuario_id === {{ usuario.id }};
     const messageDiv = document.createElement('div');
     
     messageDiv.className = `message ${isOwnMessage ? 'message-sent' : 'message-received'}`;
     messageDiv.setAttribute('data-message-id', mensaje.id);
-    
-    let hora = mensaje.fecha || '--:--';
     
     const nombreCompleto = mensaje.nombre_completo || 'Usuario';
     const avatarText = nombreCompleto.charAt(0).toUpperCase();
@@ -246,7 +247,7 @@ function crearMensajeHTML(mensaje) {
             ${!isOwnMessage ? `
                 <div class="message-header">
                     <span class="sender-name">${nombreCompleto}</span>
-                    <span class="message-time">${hora}</span>
+                    <span class="message-time">${mensaje.fecha}</span>
                 </div>
             ` : ''}
             
@@ -254,7 +255,7 @@ function crearMensajeHTML(mensaje) {
                 <div class="message-text">${mensaje.mensaje}</div>
                 ${isOwnMessage ? `
                     <div class="message-status">
-                        <span class="message-time">${hora}</span>
+                        <span class="message-time">${mensaje.fecha}</span>
                         <i class="fas fa-check-double delivered"></i>
                     </div>
                 ` : ''}
@@ -265,19 +266,17 @@ function crearMensajeHTML(mensaje) {
     return messageDiv;
 }
 
-// Scroll al final del chat
+// Scroll al final
 function scrollToBottom() {
     const chatMessages = document.getElementById('chatMessages');
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Contador de caracteres (opcional, pero útil)
+// Contador de caracteres
 document.getElementById('messageInput').addEventListener('input', function() {
     const count = this.value.length;
     const charCount = document.querySelector('.char-count');
-    if (charCount) {
-        charCount.textContent = count;
-    }
+    if (charCount) charCount.textContent = count;
     
     const sendBtn = document.getElementById('sendBtn');
     sendBtn.disabled = count === 0 || count > 1000;

@@ -1440,54 +1440,72 @@ def enviar_mensaje(equipo_id):
     
     usuario = session['usuario']
     
-    # MANEJO DE DIFERENTES FORMATOS DE DATOS
+    # Manejar ambos formatos
     if request.is_json:
-        # Si viene como JSON (desde el nuevo JavaScript)
         data = request.get_json()
         mensaje_texto = data.get('mensaje', '').strip()
     else:
-        # Si viene como form-data (compatibilidad con versión anterior)
         mensaje_texto = request.form.get('mensaje', '').strip()
     
-    print(f"DEBUG: Usuario {usuario['id']} intentando enviar mensaje al equipo {equipo_id}")
-    print(f"DEBUG: Mensaje recibido: {mensaje_texto}")
-    print(f"DEBUG: Tipo de datos: {'JSON' if request.is_json else 'FORM'}")
-
+    print(f"📨 Mensaje recibido - Usuario: {usuario['id']}, Equipo: {equipo_id}, Mensaje: {mensaje_texto[:50]}...")
+    
     if not mensaje_texto:
         return jsonify({'success': False, 'message': 'El mensaje no puede estar vacío'}), 400
     
     cursor = mysql.connection.cursor()
     
-    # Verificar que el usuario pertenece al equipo
-    cursor.execute('SELECT 1 FROM equipo_integrantes WHERE equipo_id = %s AND usuario_id = %s', (equipo_id, usuario['id']))
-    pertenece = cursor.fetchone()
-    
-    print(f"DEBUG: Usuario pertenece al equipo: {bool(pertenece)}")
-    
-    if not pertenece:
-        cursor.close()
-        return jsonify({'success': False, 'message': 'No perteneces a este equipo'}), 403
-    
     try:
-        # Insertar mensaje
+        # 1. Verificar que el equipo existe
+        cursor.execute('SELECT id, nombre_proyecto, max_mensajes FROM equipos WHERE id = %s', (equipo_id,))
+        equipo = cursor.fetchone()
+        
+        if not equipo:
+            cursor.close()
+            print(f"❌ Equipo {equipo_id} no existe")
+            return jsonify({'success': False, 'message': 'El equipo no existe'}), 404
+        
+        # 2. Verificar que el usuario pertenece al equipo
+        cursor.execute('SELECT 1 FROM equipo_integrantes WHERE equipo_id = %s AND usuario_id = %s', (equipo_id, usuario['id']))
+        if not cursor.fetchone():
+            cursor.close()
+            print(f"❌ Usuario {usuario['id']} no pertenece al equipo {equipo_id}")
+            return jsonify({'success': False, 'message': 'No perteneces a este equipo'}), 403
+        
+        # 3. Verificar límite de mensajes (solo si se acerca al límite)
+        cursor.execute('SELECT COUNT(*) as total FROM mensajes_equipo WHERE equipo_id = %s', (equipo_id,))
+        total_mensajes = cursor.fetchone()['total']
+        
+        limite = equipo['max_mensajes'] if equipo['max_mensajes'] else 1000
+        
+        # Solo eliminar mensajes antiguos si está cerca del límite (95%)
+        if total_mensajes >= limite * 0.95:
+            mensajes_a_eliminar = max(1, total_mensajes - limite + 1)
+            cursor.execute('''
+                DELETE FROM mensajes_equipo 
+                WHERE equipo_id = %s 
+                ORDER BY fecha ASC 
+                LIMIT %s
+            ''', (equipo_id, mensajes_a_eliminar))
+            print(f"⚠️ Límite cercano. Eliminados {mensajes_a_eliminar} mensajes antiguos")
+        
+        # 4. Insertar nuevo mensaje
         cursor.execute(
             'INSERT INTO mensajes_equipo (equipo_id, usuario_id, mensaje) VALUES (%s, %s, %s)',
             (equipo_id, usuario['id'], mensaje_texto)
         )
         mysql.connection.commit()
         
-        print(f"DEBUG: Mensaje insertado correctamente")
-        print(f"DEBUG: Mensaje contenido: {mensaje_texto}")
+        nuevo_total = total_mensajes + 1
+        print(f"✅ Mensaje enviado - Equipo: {equipo_id}, Usuario: {usuario['id']}, Total: {nuevo_total}/{limite}")
         
         cursor.close()
-        
         return jsonify({'success': True, 'message': 'Mensaje enviado'})
         
     except Exception as e:
-        print(f"ERROR: No se pudo insertar el mensaje: {str(e)}")
+        print(f"🔥 ERROR enviando mensaje: {str(e)}")
         mysql.connection.rollback()
         cursor.close()
-        return jsonify({'success': False, 'message': f'Error al guardar el mensaje: {str(e)}'}), 500
+        return jsonify({'success': False, 'message': 'Error interno del servidor'}), 500
 
 @app.route('/equipo/chat/mensajes/<int:equipo_id>')
 def obtener_mensajes(equipo_id):
@@ -1497,55 +1515,59 @@ def obtener_mensajes(equipo_id):
     usuario = session['usuario']
     cursor = mysql.connection.cursor()
     
-    # Verificar que el usuario pertenece al equipo
-    cursor.execute('SELECT 1 FROM equipo_integrantes WHERE equipo_id = %s AND usuario_id = %s', (equipo_id, usuario['id']))
-    if not cursor.fetchone():
-        cursor.close()
-        return jsonify({'success': False, 'message': 'No perteneces a este equipo'}), 403
-    
-    # Obtener el último ID si se proporciona
-    ultimo_id = request.args.get('ultimo_id', 0, type=int)
-    
-    # Obtener mensajes (solo los nuevos si se proporciona último_id)
-    if ultimo_id > 0:
-        cursor.execute('''
-            SELECT m.*, u.nombre_completo 
-            FROM mensajes_equipo m 
-            JOIN usuarios u ON m.usuario_id = u.id 
-            WHERE m.equipo_id = %s AND m.id > %s
-            ORDER BY m.fecha ASC
-        ''', (equipo_id, ultimo_id))
-    else:
+    try:
+        # 1. Verificar que el equipo existe
+        cursor.execute('SELECT id, nombre_proyecto FROM equipos WHERE id = %s', (equipo_id,))
+        equipo = cursor.fetchone()
+        
+        if not equipo:
+            cursor.close()
+            return jsonify({'success': False, 'message': 'El equipo no existe'}), 404
+        
+        # 2. Verificar que el usuario pertenece al equipo
+        cursor.execute('SELECT 1 FROM equipo_integrantes WHERE equipo_id = %s AND usuario_id = %s', (equipo_id, usuario['id']))
+        if not cursor.fetchone():
+            cursor.close()
+            return jsonify({'success': False, 'message': 'No perteneces a este equipo'}), 403
+        
+        # 3. Obtener mensajes (últimos 100 para optimizar)
         cursor.execute('''
             SELECT m.*, u.nombre_completo 
             FROM mensajes_equipo m 
             JOIN usuarios u ON m.usuario_id = u.id 
             WHERE m.equipo_id = %s 
-            ORDER BY m.fecha ASC 
-            LIMIT 50
+            ORDER BY m.fecha DESC 
+            LIMIT 100
         ''', (equipo_id,))
+        mensajes = cursor.fetchall()
         
-    mensajes = cursor.fetchall()
-    
-    cursor.close()
-    
-    # Convertir a formato JSON
-    mensajes_list = []
-    for msg in mensajes:
-        mensajes_list.append({
-            'id': msg['id'],
-            'usuario_id': msg['usuario_id'],  # ← IMPORTANTE: agregar esto
-            'usuario_nombre': msg['nombre_completo'],
-            'nombre_completo': msg['nombre_completo'],  # ← Para compatibilidad
-            'mensaje': msg['mensaje'],
-            'fecha': msg['fecha'].strftime('%H:%M'),
-            'fecha_formateada': msg['fecha'].strftime('%H:%M'),  # ← Para el nuevo JS
-            'es_mio': msg['usuario_id'] == usuario['id']
-        })
-    
-    print(f"DEBUG: Enviando {len(mensajes_list)} mensajes al usuario {usuario['id']}")
-    
-    return jsonify({'success': True, 'mensajes': mensajes_list})
+        # Invertir el orden para mostrar del más antiguo al más nuevo
+        mensajes = list(reversed(mensajes))
+        
+        cursor.close()
+        
+        # Convertir a formato JSON
+        mensajes_list = []
+        for msg in mensajes:
+            mensajes_list.append({
+                'id': msg['id'],
+                'usuario_id': msg['usuario_id'],
+                'usuario_nombre': msg['nombre_completo'],
+                'nombre_completo': msg['nombre_completo'],
+                'mensaje': msg['mensaje'],
+                'fecha': msg['fecha'].strftime('%H:%M'),
+                'fecha_formateada': msg['fecha'].strftime('%H:%M'),
+                'es_mio': msg['usuario_id'] == usuario['id']
+            })
+        
+        print(f"📥 Mensajes enviados - Equipo: {equipo_id}, Usuario: {usuario['id']}, Total: {len(mensajes_list)}")
+        
+        return jsonify({'success': True, 'mensajes': mensajes_list})
+        
+    except Exception as e:
+        print(f"🔥 ERROR cargando mensajes: {str(e)}")
+        cursor.close()
+        return jsonify({'success': False, 'message': 'Error interno del servidor'}), 500
 
 
 # ---------- ACTUALIZAR ESTADO DE SOLICITUD ----------

@@ -96,203 +96,94 @@
 </style>
 
 
-
-   <!-- HERO SECTION MEJORADO -->
-<section class="hero-section">
-    <div class="hero-background">
-        <div class="gradient-overlay"></div>
-        <div class="floating-shape shape-1"></div>
-        <div class="floating-shape shape-2"></div>
-        <div class="floating-shape shape-3"></div>
-    </div>
+<!-- SECCIÓN 1: TEXTO - IMAGEN -->
+<section class="section">
     <div class="container">
-        <div class="row align-items-center min-vh-100">
-            <div class="col-lg-6">
-                <div class="hero-content">
-                    <h1 class="hero-title">Conecta. Colabora. <span class="text-gradient">Crece.</span></h1>
-                    <p class="hero-subtitle">Encuentra tu equipo ideal para proyectos académicos y haz realidad tus ideas junto a otros estudiantes apasionados.</p>
-                    <div class="hero-buttons">
-                        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg me-3">
-                            <i class="fa-solid fa-rocket me-2"></i>Comenzar Ahora
-                        </a>
-                        <a href="#como-funciona" class="btn btn-outline-light btn-lg">
-                            <i class="fa-solid fa-circle-info me-2"></i>Cómo Funciona
-                        </a>
-                    </div>
-                    <!-- Stats integradas en el hero -->
-                    <div class="hero-stats">
-                        <div class="stats-grid">
-                            <div class="stat-item">
-                                <div class="stat-number"style="color: #0dcaf0;">{{ total_usuarios }}</div>
-                                <div class="stat-label" >Usuarios Registrados</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-number" style="color: #0dcaf0;">{{ total_equipos }}</div>
-                                <div class="stat-label">Equipos Creados</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-number" style="color: #0dcaf0;">{{ equipos_activos }}</div>
-                                <div class="stat-label">Equipos Activos</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="section-content">
+            <div class="section-text">
+                <h2>Conecta. Colabora. <span class="text-gradient">Crece.</span></h2>
+                <p>Encuentra tu equipo ideal para proyectos académicos y haz realidad tus ideas junto a otros estudiantes apasionados.</p>
+                <a href="#" class="btn btn-primary">Comenzar Ahora</a>
             </div>
-            <div class="col-lg-6">
-                <div class="hero-image-container">
-                    <div class="image-frame">
-                        <img src="{{ url_for('static', filename='img/foto1212.jpg') }}" alt="Estudiantes colaborando" class="hero-image">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="scroll-indicator">
-        <div class="scroll-line"></div>
-    </div>
-</section>
-
-<!-- CÓMO FUNCIONA MEJORADO -->
-<section id="como-funciona" class="how-it-works bg-cielo">
-    <div class="container">
-        <div class="section-header">
-            <h2>¿Cómo funciona <span class="text-gradient">PaitZone</span>?</h2>
-            <p class="section-subtitle">Un proceso simple para conectar con compañeros ideales</p>
-        </div>
-        <div class="steps-container">
-            <div class="step-line"></div>
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="step-card">
-                        <div class="step-number">01</div>
-                        <div class="step-icon bg-naranja">
-                            <i class="fa-solid fa-user-plus"></i>
-                        </div>
-                        <h4 class="text-fuerte">Regístrate</h4>
-                        <p class="text-muted">Crea tu perfil en minutos y comparte tus habilidades e intereses académicos.</p>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="step-card">
-                        <div class="step-number">02</div>
-                        <div class="step-icon bg-fuerte">
-                            <i class="fa-solid fa-search"></i>
-                        </div>
-                        <h4 class="text-fuerte">Encuentra Equipo</h4>
-                        <p class="text-muted">Busca proyectos o publica el tuyo para encontrar compañeros ideales.</p>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="step-card">
-                        <div class="step-number">03</div>
-                        <div class="step-icon bg-agua">
-                            <i class="fa-solid fa-handshake"></i>
-                        </div>
-                        <h4 class="text-fuerte">Colabora</h4>
-                        <p class="text-muted">Trabaja en equipo usando nuestras herramientas de colaboración integradas.</p>
-                    </div>
-                </div>
+            <div class="section-image">
+                <img src="ruta/a/tu/imagen1.jpg" alt="Descripción imagen 1">
             </div>
         </div>
     </div>
 </section>
 
-<!-- QUIÉNES SOMOS MEJORADO -->
-<section id="quienes-somos" class="about-section bg-black">
+<!-- SECCIÓN 2: IMAGEN - TEXTO -->
+<section class="section">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <div class="section-header text-start">
-                    <h1>        
-                        <a class="nav-link nav-link-black fw-semibold" href="#quienes-somos">Quiénes somos</a>
-                    </h1>
-                    <h2 class="text-fuerte">Transformando la forma de <span class="text-gradient">aprender</span></h2>
-                    <p class="section-subtitle">En PaitZone creemos que el aprendizaje colaborativo es la clave del éxito académico y profesional.</p>
-                </div>
-                <p class="text-muted">Nuestra plataforma nació para romper barreras y conectar a estudiantes talentosos que comparten la misma pasión por crear e innovar.</p>
+        <div class="section-content">
+            <div class="section-text">
+                <h2>¿Cómo funciona <span class="text-gradient">PaitZone</span>?</h2>
+                <p>Un proceso simple para conectar con compañeros ideales y trabajar en equipo de manera eficiente.</p>
                 <ul class="feature-list">
-                    <li>
-                        <i class="fa-solid fa-check text-naranja"></i>
-                        <span>Comunidad verificada de estudiantes</span>
-                    </li>
-                    <li>
-                        <i class="fa-solid fa-check text-naranja"></i>
-                        <span>Herramientas de colaboración integradas</span>
-                    </li>
-                    <li>
-                        <i class="fa-solid fa-check text-naranja"></i>
-                        <span>Soporte durante todo el proceso</span>
-                    </li>
+                    <li><i class="fa-solid fa-check"></i> Regístrate en minutos</li>
+                    <li><i class="fa-solid fa-check"></i> Encuentra tu equipo ideal</li>
+                    <li><i class="fa-solid fa-check"></i> Colabora y crece juntos</li>
                 </ul>
-                <div class="about-actions">
-                    <a href="#contacto" class="btn btn-primary">Conoce más</a>
-                </div>
             </div>
-            <div class="col-lg-6">
-                <div class="about-image-container">
-                    <div class="image-frame">
-                        <img src="{{ url_for('static', filename='img/team.jpg') }}" alt="Equipo de trabajo" class="about-image">
-                    </div>
-                </div>
+            <div class="section-image">
+                <img src="ruta/a/tu/imagen2.jpg" alt="Descripción imagen 2">
             </div>
         </div>
     </div>
 </section>
 
-<!-- NOTICIAS PREMIUM -->
-
-
-<!-- CONTACTO MEJORADO -->
-<section id="contacto" class="contact-section bg-fuerte">
+<!-- SECCIÓN 3: TEXTO - IMAGEN -->
+<section class="section">
     <div class="container">
-        <div class="section-header">
-            <h2 class="text-white">¿Listo para comenzar?</h2>
-            <p class="section-subtitle text-white">Únete a nuestra comunidad de estudiantes colaborativos</p>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="contact-card bg-white">
-                    <h4 class="text-center mb-4 text-fuerte">Comienza tu viaje colaborativo hoy</h4>
-                    <div class="contact-buttons">
-                        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
-                            <i class="fa-solid fa-user-plus me-2"></i>Registrarse
-                        </a>
-                        <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">
-                            <i class="fa-solid fa-sign-in me-2"></i>Iniciar Sesión
-                        </a>
-                    </div>
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <i class="fa-solid fa-envelope text-naranja"></i>
-                            <span style="color: black;">paitzone788@gmail.com</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fa-solid fa-clock text-naranja"></i>
-                            <span style="color: black;">Soporte 24/7 para nuestra comunidad</span>
-                        </div>
-                    </div>
-                </div>
+        <div class="section-content">
+            <div class="section-text">
+                <h2>Transformando la forma de <span class="text-gradient">aprender</span></h2>
+                <p>En PaitZone creemos que el aprendizaje colaborativo es la clave del éxito académico y profesional.</p>
+                <p>Nuestra plataforma nació para romper barreras y conectar a estudiantes talentosos.</p>
+                <a href="#" class="btn btn-primary">Conoce más</a>
+            </div>
+            <div class="section-image">
+                <img src="ruta/a/tu/imagen3.jpg" alt="Descripción imagen 3">
             </div>
         </div>
     </div>
 </section>
 
-<!-- FOOTER MEJORADO -->
+<!-- SECCIÓN 4: IMAGEN - TEXTO -->
+<section class="section">
+    <div class="container">
+        <div class="section-content">
+            <div class="section-text">
+                <h2>¿Listo para <span class="text-gradient">comenzar</span>?</h2>
+                <p>Únete a nuestra comunidad de estudiantes colaborativos y comienza tu viaje hoy mismo.</p>
+                <div class="contact-info">
+                    <p><strong>Email:</strong> paitzone788@gmail.com</p>
+                    <p><strong>Soporte:</strong> 24/7 para nuestra comunidad</p>
+                </div>
+                <a href="#" class="btn btn-primary">Registrarse</a>
+                <a href="#" class="btn" style="background: transparent; color: var(--azul-marino); border: 2px solid var(--azul-marino); margin-left: 10px;">Iniciar Sesión</a>
+            </div>
+            <div class="section-image">
+                <img src="ruta/a/tu/imagen4.jpg" alt="Descripción imagen 4">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
 <footer class="footer">
     <div class="container">
         <div class="footer-content">
-            <div class="footer-brand">
-                <h3>PaitZone</h3>
-                <p>Conectando estudiantes para un aprendizaje colaborativo</p>
-            </div>
-            <div class="footer-links">
-                <a href="/privacidad">Privacidad</a>
-                <span class="separator">•</span>
-                <a href="/terminos">Términos</a>
-            </div>
+            <h3>PaitZone</h3>
+            <p>Conectando estudiantes para un aprendizaje colaborativo</p>
+        </div>
+        <div class="footer-links">
+            <a href="/privacidad">Privacidad</a>
+            <a href="/terminos">Términos</a>
+            <a href="mailto:paitzone788@gmail.com">Contacto</a>
         </div>
         <div class="footer-copyright">
-            <p>&copy; 2024 PaitZone - Plataforma de Gestión Académica. Todos los derechos reservados.</p>
+            <p>&copy; 2024 PaitZone - Todos los derechos reservados.</p>
         </div>
     </div>
 </footer>
@@ -327,51 +218,76 @@ body {
     padding: 0 20px;
 }
 
-/* HERO SECTION SIMPLIFICADO */
-.hero-section {
-    background: linear-gradient(135deg, var(--azul-marino) 0%, #283593 100%);
-    color: white;
+/* SECCIONES ALTERNADAS */
+.section {
     padding: 80px 0;
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-content {
+    min-height: 60vh;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
-    gap: 30px;
 }
 
-.hero-title {
-    font-size: 3rem;
-    font-weight: 700;
+.section-content {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+}
+
+.section-text {
+    flex: 1;
+    padding: 20px;
+}
+
+.section-image {
+    flex: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.section-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ALTERNAR POSICIÓN */
+.section:nth-child(even) .section-content {
+    flex-direction: row-reverse;
+}
+
+/* COLORES DE FONDO ALTERNADOS */
+.section:nth-child(odd) {
+    background-color: var(--blanco);
+}
+
+.section:nth-child(even) {
+    background-color: var(--azul-claro);
+}
+
+/* TIPOGRAFÍA */
+.section h2 {
+    font-size: 2.5rem;
+    color: var(--azul-marino);
     margin-bottom: 20px;
+    font-weight: 700;
 }
 
-.hero-title .text-gradient {
+.section p {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 25px;
+    line-height: 1.8;
+}
+
+.text-gradient {
     background: linear-gradient(45deg, var(--naranja), var(--rosa));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    font-weight: 700;
 }
 
-.hero-subtitle {
-    font-size: 1.2rem;
-    max-width: 600px;
-    margin: 0 auto 30px;
-    opacity: 0.9;
-}
-
-.hero-buttons {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 40px;
-}
-
+/* BOTONES */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -383,6 +299,7 @@ body {
     border: none;
     cursor: pointer;
     font-size: 1rem;
+    margin-top: 10px;
 }
 
 .btn-primary {
@@ -396,228 +313,23 @@ body {
     box-shadow: 0 5px 15px rgba(255, 109, 0, 0.3);
 }
 
-.btn-outline-light {
-    background-color: transparent;
-    color: white;
-    border: 2px solid white;
-}
-
-.btn-outline-light:hover {
-    background-color: white;
-    color: var(--azul-marino);
-}
-
-.hero-image-container {
-    max-width: 600px;
-    margin: 0 auto;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-.hero-image {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-/* CÓMO FUNCIONA SIMPLIFICADO */
-.how-it-works {
-    padding: 80px 0;
-    background-color: var(--azul-claro);
-}
-
-.section-header {
-    text-align: center;
-    margin-bottom: 60px;
-}
-
-.section-header h2 {
-    font-size: 2.5rem;
-    color: var(--azul-marino);
-    margin-bottom: 15px;
-}
-
-.section-subtitle {
-    font-size: 1.1rem;
-    color: #666;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.steps-container {
-    position: relative;
-}
-
-.step-card {
-    background: white;
-    border-radius: 10px;
-    padding: 30px;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease;
-    height: 100%;
-}
-
-.step-card:hover {
-    transform: translateY(-5px);
-}
-
-.step-number {
-    font-size: 1rem;
-    color: var(--azul-marino);
-    font-weight: 700;
-    margin-bottom: 15px;
-}
-
-.step-icon {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px;
-    font-size: 1.5rem;
-    color: white;
-}
-
-.bg-naranja {
-    background-color: var(--naranja);
-}
-
-.bg-fuerte {
-    background-color: var(--azul-marino);
-}
-
-.bg-agua {
-    background-color: var(--rosa);
-}
-
-.step-card h4 {
-    color: var(--azul-marino);
-    margin-bottom: 15px;
-    font-size: 1.3rem;
-}
-
-.step-card p {
-    color: #666;
-}
-
-/* QUIÉNES SOMOS SIMPLIFICADO */
-.about-section {
-    padding: 80px 0;
-    background-color: white;
-}
-
-.about-content {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-}
-
-.about-section h2 {
-    font-size: 2.5rem;
-    color: var(--azul-marino);
-    margin-bottom: 20px;
-}
-
-.about-section p {
-    margin-bottom: 20px;
-    color: #555;
-}
-
+/* LISTA DE CARACTERÍSTICAS */
 .feature-list {
     list-style: none;
-    margin: 20px 0;
+    margin: 25px 0;
 }
 
 .feature-list li {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
 }
 
 .feature-list i {
-    margin-right: 10px;
+    margin-right: 12px;
     font-size: 1.2rem;
-}
-
-.text-naranja {
     color: var(--naranja);
-}
-
-.about-actions {
-    margin-top: 30px;
-}
-
-.about-image-container {
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-}
-
-.about-image {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-/* CONTACTO SIMPLIFICADO */
-.contact-section {
-    padding: 80px 0;
-    background: linear-gradient(135deg, var(--azul-marino) 0%, #283593 100%);
-    color: white;
-}
-
-.contact-card {
-    background: white;
-    border-radius: 10px;
-    padding: 40px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-}
-
-.contact-card h4 {
-    color: var(--azul-marino);
-    margin-bottom: 30px;
-    font-size: 1.5rem;
-}
-
-.contact-buttons {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 30px;
-}
-
-.btn-outline-primary {
-    background-color: transparent;
-    color: var(--azul-marino);
-    border: 2px solid var(--azul-marino);
-}
-
-.btn-outline-primary:hover {
-    background-color: var(--azul-marino);
-    color: white;
-}
-
-.contact-info {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    align-items: center;
-}
-
-.contact-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.contact-item span {
-    color: #333;
 }
 
 /* FOOTER SIMPLIFICADO */
@@ -625,25 +337,29 @@ body {
     background-color: var(--azul-marino);
     color: white;
     padding: 40px 0 20px;
+    text-align: center;
 }
 
 .footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
     margin-bottom: 20px;
 }
 
-.footer-brand h3 {
+.footer h3 {
     font-size: 1.8rem;
     margin-bottom: 10px;
+    color: var(--blanco);
+}
+
+.footer p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 15px;
 }
 
 .footer-links {
     display: flex;
-    gap: 15px;
-    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
 }
 
 .footer-links a {
@@ -656,12 +372,7 @@ body {
     color: var(--naranja);
 }
 
-.separator {
-    color: rgba(255, 255, 255, 0.5);
-}
-
 .footer-copyright {
-    text-align: center;
     padding-top: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.7);
@@ -669,27 +380,27 @@ body {
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-    .hero-title {
-        font-size: 2.2rem;
+    .section-content {
+        flex-direction: column !important;
+        gap: 40px;
     }
     
-    .section-header h2, .about-section h2 {
+    .section {
+        padding: 60px 0;
+    }
+    
+    .section h2 {
         font-size: 2rem;
-    }
-    
-    .hero-buttons, .contact-buttons {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .footer-content {
-        flex-direction: column;
-        gap: 20px;
         text-align: center;
     }
     
-    .step-card {
-        margin-bottom: 30px;
+    .section-text, .section-image {
+        text-align: center;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 10px;
     }
 }
 </style>
@@ -697,8 +408,8 @@ body {
 <script>
 // Script para animaciones simples
 document.addEventListener('DOMContentLoaded', function() {
-    // Animación de entrada para las tarjetas de pasos
-    const stepCards = document.querySelectorAll('.step-card');
+    // Animación de entrada para las secciones
+    const sections = document.querySelectorAll('.section');
     
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -709,14 +420,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, { threshold: 0.1 });
     
-    stepCards.forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        observer.observe(card);
+    sections.forEach(section => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(30px)';
+        section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(section);
     });
     
-    // Efecto hover mejorado para botones
+    // Efecto hover para botones
     const buttons = document.querySelectorAll('.btn');
     buttons.forEach(button => {
         button.addEventListener('mouseenter', function() {
@@ -746,7 +457,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
 
 {% if mi_proyecto %}
 <section class="news-section">

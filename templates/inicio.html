@@ -240,6 +240,514 @@
 </section>
 
 <!-- NOTICIAS PREMIUM -->
+
+
+<!-- CONTACTO MEJORADO -->
+<section id="contacto" class="contact-section bg-fuerte">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="text-white">¿Listo para comenzar?</h2>
+            <p class="section-subtitle text-white">Únete a nuestra comunidad de estudiantes colaborativos</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="contact-card bg-white">
+                    <h4 class="text-center mb-4 text-fuerte">Comienza tu viaje colaborativo hoy</h4>
+                    <div class="contact-buttons">
+                        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
+                            <i class="fa-solid fa-user-plus me-2"></i>Registrarse
+                        </a>
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fa-solid fa-sign-in me-2"></i>Iniciar Sesión
+                        </a>
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fa-solid fa-envelope text-naranja"></i>
+                            <span style="color: black;">paitzone788@gmail.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fa-solid fa-clock text-naranja"></i>
+                            <span style="color: black;">Soporte 24/7 para nuestra comunidad</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER MEJORADO -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>PaitZone</h3>
+                <p>Conectando estudiantes para un aprendizaje colaborativo</p>
+            </div>
+            <div class="footer-links">
+                <a href="/privacidad">Privacidad</a>
+                <span class="separator">•</span>
+                <a href="/terminos">Términos</a>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>&copy; 2024 PaitZone - Plataforma de Gestión Académica. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<style>
+:root {
+    --azul-marino: #1a237e;
+    --naranja: #ff6d00;
+    --rosa: #f06292;
+    --azul-claro: #e3f2fd;
+    --blanco: #ffffff;
+    --gris: #f5f5f5;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--gris);
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* HERO SECTION SIMPLIFICADO */
+.hero-section {
+    background: linear-gradient(135deg, var(--azul-marino) 0%, #283593 100%);
+    color: white;
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 30px;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.hero-title .text-gradient {
+    background: linear-gradient(45deg, var(--naranja), var(--rosa));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 30px;
+    opacity: 0.9;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 24px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: var(--naranja);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #e65100;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 109, 0, 0.3);
+}
+
+.btn-outline-light {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.btn-outline-light:hover {
+    background-color: white;
+    color: var(--azul-marino);
+}
+
+.hero-image-container {
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.hero-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* CÓMO FUNCIONA SIMPLIFICADO */
+.how-it-works {
+    padding: 80px 0;
+    background-color: var(--azul-claro);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.section-header h2 {
+    font-size: 2.5rem;
+    color: var(--azul-marino);
+    margin-bottom: 15px;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.steps-container {
+    position: relative;
+}
+
+.step-card {
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+}
+
+.step-number {
+    font-size: 1rem;
+    color: var(--azul-marino);
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.step-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.bg-naranja {
+    background-color: var(--naranja);
+}
+
+.bg-fuerte {
+    background-color: var(--azul-marino);
+}
+
+.bg-agua {
+    background-color: var(--rosa);
+}
+
+.step-card h4 {
+    color: var(--azul-marino);
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.step-card p {
+    color: #666;
+}
+
+/* QUIÉNES SOMOS SIMPLIFICADO */
+.about-section {
+    padding: 80px 0;
+    background-color: white;
+}
+
+.about-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.about-section h2 {
+    font-size: 2.5rem;
+    color: var(--azul-marino);
+    margin-bottom: 20px;
+}
+
+.about-section p {
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.feature-list {
+    list-style: none;
+    margin: 20px 0;
+}
+
+.feature-list li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.feature-list i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.text-naranja {
+    color: var(--naranja);
+}
+
+.about-actions {
+    margin-top: 30px;
+}
+
+.about-image-container {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.about-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* CONTACTO SIMPLIFICADO */
+.contact-section {
+    padding: 80px 0;
+    background: linear-gradient(135deg, var(--azul-marino) 0%, #283593 100%);
+    color: white;
+}
+
+.contact-card {
+    background: white;
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.contact-card h4 {
+    color: var(--azul-marino);
+    margin-bottom: 30px;
+    font-size: 1.5rem;
+}
+
+.contact-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.btn-outline-primary {
+    background-color: transparent;
+    color: var(--azul-marino);
+    border: 2px solid var(--azul-marino);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--azul-marino);
+    color: white;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.contact-item span {
+    color: #333;
+}
+
+/* FOOTER SIMPLIFICADO */
+.footer {
+    background-color: var(--azul-marino);
+    color: white;
+    padding: 40px 0 20px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.footer-brand h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: var(--naranja);
+}
+
+.separator {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.footer-copyright {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.2rem;
+    }
+    
+    .section-header h2, .about-section h2 {
+        font-size: 2rem;
+    }
+    
+    .hero-buttons, .contact-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+    
+    .step-card {
+        margin-bottom: 30px;
+    }
+}
+</style>
+
+<script>
+// Script para animaciones simples
+document.addEventListener('DOMContentLoaded', function() {
+    // Animación de entrada para las tarjetas de pasos
+    const stepCards = document.querySelectorAll('.step-card');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    stepCards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        observer.observe(card);
+    });
+    
+    // Efecto hover mejorado para botones
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+    
+    // Smooth scroll para enlaces internos
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+});
+</script>
+
+
 {% if mi_proyecto %}
 <section class="news-section">
     <div class="container">
@@ -482,64 +990,6 @@
     </div>
 </section>
 {% endif %}
-
-<!-- CONTACTO MEJORADO -->
-<section id="contacto" class="contact-section bg-fuerte">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="text-white">¿Listo para comenzar?</h2>
-            <p class="section-subtitle text-white">Únete a nuestra comunidad de estudiantes colaborativos</p>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="contact-card bg-white">
-                    <h4 class="text-center mb-4 text-fuerte">Comienza tu viaje colaborativo hoy</h4>
-                    <div class="contact-buttons">
-                        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
-                            <i class="fa-solid fa-user-plus me-2"></i>Registrarse
-                        </a>
-                        <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">
-                            <i class="fa-solid fa-sign-in me-2"></i>Iniciar Sesión
-                        </a>
-                    </div>
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <i class="fa-solid fa-envelope text-naranja"></i>
-                            <span style="color: black;">paitzone788@gmail.com</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fa-solid fa-clock text-naranja"></i>
-                            <span style="color: black;">Soporte 24/7 para nuestra comunidad</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- FOOTER MEJORADO -->
-<footer class="footer">
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <h3>PaitZone</h3>
-                <p>Conectando estudiantes para un aprendizaje colaborativo</p>
-            </div>
-            <div class="footer-links">
-                <a href="/privacidad">Privacidad</a>
-                <span class="separator">•</span>
-                <a href="/terminos">Términos</a>
-            </div>
-        </div>
-        <div class="footer-copyright">
-            <p>&copy; 2024 PaitZone - Plataforma de Gestión Académica. Todos los derechos reservados.</p>
-        </div>
-    </div>
-</footer>
-
-
-
 
 
 

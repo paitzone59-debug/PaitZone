@@ -125,7 +125,7 @@
                 </ul>
             </div>
             <div class="section-image">
-                <img src="ruta/a/tu/imagen2.jpg" alt="Descripción imagen 2">
+                <img src="/static/img/logo.jpg" alt="Descripción imagen 2">
             </div>
         </div>
     </div>
@@ -141,7 +141,7 @@
                 <p>Nuestra plataforma nació para romper barreras y conectar a estudiantes talentosos.</p>
             </div>
             <div class="section-image">
-                <img src="ruta/a/tu/imagen3.jpg" alt="Descripción imagen 3">
+                <img src="/static/img/equipo.jpeg" alt="Descripción imagen 3">
             </div>
         </div>
     </div>
@@ -180,7 +180,7 @@
     <a href="{{ url_for('terminos') }}">Términos</a>
         </div>
         <div class="footer-copyright">
-            <p>&copy; 2024 PaitZone - Todos los derechos reservados.</p>
+            <p>&copy; 2025 PaitZone - Todos los derechos reservados.</p>
         </div>
     </div>
 </footer>
@@ -455,230 +455,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-{% if mi_proyecto %}
-<section class="news-section">
-    <div class="container">
-        <!-- Encabezado premium -->
-        <div class="section-header">
-            <div class="header-content">
-                <div class="title-wrapper">
-                    <span class="section-badge">Actualizaciones</span>
-                    <h2 class="section-title">Noticias y <span class="text-gradient">Actualizaciones</span></h2>
-                    <p class="section-subtitle">Mantente informado sobre las novedades y mejoras de la plataforma</p>
-                </div>
-                <div class="header-actions">
-                    <div class="notification-badge">
-                        <i class="fas fa-bell"></i>
-                        <span class="badge-count">3</span>
-                    </div>
-                    <a href="/todas-las-noticias" class="view-all-link">
-                        Ver todas <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Carrusel premium de noticias destacadas -->
-        <div class="featured-news">
-            <div class="news-carousel-wrapper">
-                <div class="news-carousel" id="newsCarousel">
-                    <!-- Noticia destacada 1 -->
-                    <div class="carousel-item active">
-                        <div class="featured-card">
-                            <div class="card-image">
-                                <img src="/static/img/n1.jpg" alt="Nueva función de colaboración">
-                                <div class="image-overlay"></div>
-                                <span class="news-badge trending">Destacado</span>
-                            </div>
-                            <div class="card-content">
-                                <div class="meta-info">
-                                </div>
-                                <h3 class="card-title">Anuncian Enrédate 2025</h3>
-                                <p class="card-excerpt"> la feria de emprendedores de la Escuela Politécnica “Ing. Jorge Matute Remus” | Escuela Preparatoria de Jalisco</p>
-                                <div class="card-actions">
-                                    <a href="/static/img/enredate.jpg" class="read-more-btn">
-                                    </a>
-                                    <div class="action-buttons">
-                                        <button class="action-btn" title="Guardar">
-                                            <i class="far fa-bookmark"></i>
-                                        </button>
-                                        <button class="action-btn" title="Compartir">
-                                            <i class="far fa-share-square"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Noticia destacada 2 -->
-                    <div class="carousel-item">
-                        <div class="featured-card">
-                            <div class="card-image">
-                                <img src="/static/img/n2.jpeg" alt="Mejoras en la interfaz">
-                                <div class="image-overlay"></div>
-                                <span class="news-badge update">Actualización</span>
-                            </div>
-                            <div class="card-content">
-                                <div class="meta-info">
-                                </div>
-                                <h3 class="card-title">Mejoras en la interfaz de usuario</h3>
-                                <p class="card-excerpt">Hemos rediseñado completamente la experiencia de usuario para hacerla más intuitiva y accesible para todos los estudiantes.</p>
-                                <div class="card-actions">
-                                    <a href="/noticia-2" class="read-more-btn">
-                                    </a>
-                                    <div class="action-buttons">
-                                        <button class="action-btn" title="Guardar">
-                                            <i class="far fa-bookmark"></i>
-                                        </button>
-                                        <button class="action-btn" title="Compartir">
-                                            <i class="far fa-share-square"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Noticia destacada 3 -->
-                    <div class="carousel-item">
-                        <div class="featured-card">
-                            <div class="card-image">
-                                <img src="/static/img/n3.jpeg" alt="Consejos para equipos">
-                                <div class="image-overlay"></div>
-                                <span class="news-badge tip">Consejo</span>
-                            </div>
-                            <div class="card-content">
-                                <div class="meta-info">
-                                </div>
-                                <h3 class="card-title">Cómo encontrar el equipo perfecto</h3>
-                                <p class="card-excerpt">Descubre estrategias efectivas para encontrar compañeros de equipo que complementen tus habilidades y objetivos académicos.</p>
-                                <div class="card-actions">
-                                    <a href="/noticia-3" class="read-more-btn">
-                                    </a>
-                                    <div class="action-buttons">
-                                        <button class="action-btn" title="Guardar">
-                                            <i class="far fa-bookmark"></i>
-                                        </button>
-                                        <button class="action-btn" title="Compartir">
-                                            <i class="far fa-share-square"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Controles del carrusel -->
-                <div class="carousel-controls">
-                    <button class="control-btn prev" id="prevBtn">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <div class="carousel-indicators">
-                        <button class="indicator active" data-slide="0"></button>
-                        <button class="indicator" data-slide="1"></button>
-                        <button class="indicator" data-slide="2"></button>
-                    </div>
-                    <button class="control-btn next" id="nextBtn">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Grid de noticias recientes -->
-        <div class="recent-news">
-            <div class="section-subheader">
-                <h3>Más Noticias Recientes</h3>
-                <div class="filter-options">
-                    <button class="filter-btn active">Todas</button>
-                    <button class="filter-btn">Actualizaciones</button>
-                    <button class="filter-btn">Eventos</button>
-                    <button class="filter-btn">Consejos</button>
-                </div>
-            </div>
-
-            <div class="news-grid">
-                <!-- Noticia 1 -->
-                <article class="news-card">
-                    <div class="card-header">
-                        <img src="/static/img/noticia1.jpg" alt="Evento empresarial" class="news-image">
-                        <span class="card-badge event">Evento</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-meta">
-                            <span class="category">Emprendimiento</span>
-                        </div>
-                        <h4 class="news-title">Evento enfocado en la capacitación y apoyo de nuevos empresarios</h4>
-                        <p class="news-excerpt">Con el objetivo de impulsar el emprendimiento, la formación integral y fortalecer el tejido social.</p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="card-stats">
-                            <span class="stat">
-                                <i class="far fa-eye"></i> 245
-                            </span>
-                            <span class="stat">
-                                <i class="far fa-comment"></i> 12
-                            </span>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Noticia 2 -->
-                <article class="news-card">
-                    <div class="card-header">
-                        <img src="/static/img/noticia2.jpeg" alt="Reconocimiento escolar" class="news-image">
-                        <span class="card-badge news">Noticia</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-meta">
-                            <span class="category">Educación</span>
-                        </div>
-                        <h4 class="news-title">Distinguirá la Escuela Politécnica a lo mejor de su comunidad</h4>
-                        <p class="news-excerpt">Importante fomentar la cultura de reconocimiento a las personas que hacen una labor extraordinaria.</p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="card-stats">
-                            <span class="stat">
-                                <i class="far fa-eye"></i> 189
-                            </span>
-                            <span class="stat">
-                                <i class="far fa-comment"></i> 8
-                            </span>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Noticia 3 -->
-                <article class="news-card">
-                    <div class="card-header">
-                        <img src="/static/img/noticia3.png" alt="Campaña solidaria" class="news-image">
-                        <span class="card-badge campaign">Campaña</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-meta">
-                            <span class="category">Solidaridad</span>
-                        </div>
-                        <h4 class="news-title">Campaña de recolección de víveres</h4>
-                        <p class="news-excerpt">Campaña de recolección para ayudar a los afectados por las recientes inundaciones en la comunidad.</p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="card-stats">
-                            <span class="stat">
-                                <i class="far fa-eye"></i> 312
-                            </span>
-                            <span class="stat">
-                                <i class="far fa-comment"></i> 24
-                            </span>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </div>
-    </div>
-</section>
-{% endif %}
 
 
 

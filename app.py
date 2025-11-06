@@ -209,6 +209,9 @@ def index():
         mi_proyecto=mi_proyecto
     )
 
+@app.route('/terminos')
+def terminos():
+    return render_template('terminos_y_condiciones.html')  # Usa el nombre exacto de tu archivo
 
 @app.route('/test')
 def test():

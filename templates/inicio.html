@@ -96,110 +96,150 @@
 </style>
 
 
-  <!-- HERO SECTION PREMIUM -->
-    <section class="hero-premium">
-        <div class="hero-background">
-            <div class="floating-shape shape-1"></div>
-            <div class="floating-shape shape-2"></div>
-            <div class="floating-shape shape-3"></div>
-        </div>
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">Conecta. Colabora. Crea.</h1>
-                <p class="hero-subtitle">
-                    La plataforma definitiva para formar equipos de 5 integrantes y desarrollar proyectos innovadores. 
-                    Encuentra compañeros ideales y haz realidad tus ideas más ambiciosas.
-                </p>
-                <div class="hero-buttons">
-                    <a href="{{ url_for('register') }}" class="btn-hero btn-primary-large">
-                        <i class="fas fa-rocket"></i>
-                        Comenzar Ahora
-                    </a>
-                    <a href="#features" class="btn-hero btn-outline-light">
-                        <i class="fas fa-play-circle"></i>
-                        Ver Demo
-                    </a>
+
+   <!-- HERO SECTION MEJORADO -->
+<section class="hero-section">
+    <div class="hero-background">
+        <div class="gradient-overlay"></div>
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+    </div>
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="hero-title">Conecta. Colabora. <span class="text-gradient">Crece.</span></h1>
+                    <p class="hero-subtitle">Encuentra tu equipo ideal para proyectos académicos y haz realidad tus ideas junto a otros estudiantes apasionados.</p>
+                    <div class="hero-buttons">
+                        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg me-3">
+                            <i class="fa-solid fa-rocket me-2"></i>Comenzar Ahora
+                        </a>
+                        <a href="#como-funciona" class="btn btn-outline-light btn-lg">
+                            <i class="fa-solid fa-circle-info me-2"></i>Cómo Funciona
+                        </a>
+                    </div>
+                    <!-- Stats integradas en el hero -->
+                    <div class="hero-stats">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number"style="color: #0dcaf0;">{{ total_usuarios }}</div>
+                                <div class="stat-label" >Usuarios Registrados</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" style="color: #0dcaf0;">{{ total_equipos }}</div>
+                                <div class="stat-label">Equipos Creados</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" style="color: #0dcaf0;">{{ equipos_activos }}</div>
+                                <div class="stat-label">Equipos Activos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image-container">
+                    <div class="image-frame">
+                        <img src="{{ url_for('static', filename='img/foto1212.jpg') }}" alt="Estudiantes colaborando" class="hero-image">
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+    <div class="scroll-indicator">
+        <div class="scroll-line"></div>
+    </div>
+</section>
 
-    <!-- FEATURES SECTION -->
-    <section id="features" class="features-section">
+<!-- CÓMO FUNCIONA MEJORADO -->
+<section id="como-funciona" class="how-it-works bg-cielo">
+    <div class="container">
         <div class="section-header">
-            <h2 class="section-title">Potencia tu Creatividad</h2>
-            <p class="section-subtitle">Todo lo que necesitas para tus proyectos académicos en un solo lugar</p>
+            <h2>¿Cómo funciona <span class="text-gradient">PaitZone</span>?</h2>
+            <p class="section-subtitle">Un proceso simple para conectar con compañeros ideales</p>
         </div>
-        <div class="features-grid">
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-users"></i>
+        <div class="steps-container">
+            <div class="step-line"></div>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="step-card">
+                        <div class="step-number">01</div>
+                        <div class="step-icon bg-naranja">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                        <h4 class="text-fuerte">Regístrate</h4>
+                        <p class="text-muted">Crea tu perfil en minutos y comparte tus habilidades e intereses académicos.</p>
+                    </div>
                 </div>
-                <h3 class="feature-title">Equipos Perfectos</h3>
-                <p class="feature-description">
-                    Forma equipos de 5 integrantes con habilidades complementarias para maximizar el potencial de tu proyecto.
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-lightbulb"></i>
+                <div class="col-md-4 mb-4">
+                    <div class="step-card">
+                        <div class="step-number">02</div>
+                        <div class="step-icon bg-fuerte">
+                            <i class="fa-solid fa-search"></i>
+                        </div>
+                        <h4 class="text-fuerte">Encuentra Equipo</h4>
+                        <p class="text-muted">Busca proyectos o publica el tuyo para encontrar compañeros ideales.</p>
+                    </div>
                 </div>
-                <h3 class="feature-title">Proyectos Innovadores</h3>
-                <p class="feature-description">
-                    Desarrolla ideas creativas y transforma conceptos en proyectos tangibles con impacto real.
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-comments"></i>
+                <div class="col-md-4 mb-4">
+                    <div class="step-card">
+                        <div class="step-number">03</div>
+                        <div class="step-icon bg-agua">
+                            <i class="fa-solid fa-handshake"></i>
+                        </div>
+                        <h4 class="text-fuerte">Colabora</h4>
+                        <p class="text-muted">Trabaja en equipo usando nuestras herramientas de colaboración integradas.</p>
+                    </div>
                 </div>
-                <h3 class="feature-title">Colaboración Fluida</h3>
-                <p class="feature-description">
-                    Herramientas integradas para comunicación y coordinación en tiempo real con tu equipo.
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-trophy"></i>
-                </div>
-                <h3 class="feature-title">Logros Compartidos</h3>
-                <p class="feature-description">
-                    Celebra tus éxitos y construye un portafolio impresionante junto a tus compañeros.
-                </p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <script>
-        // Animación de aparición para las tarjetas
-        document.addEventListener('DOMContentLoaded', function() {
-            const featureCards = document.querySelectorAll('.feature-card');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, { threshold: 0.1 });
-            
-            featureCards.forEach(card => {
-                observer.observe(card);
-            });
-            
-            // Efecto parallax suave
-            window.addEventListener('scroll', function() {
-                const scrolled = window.pageYOffset;
-                const hero = document.querySelector('.hero-premium');
-                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
-            });
-        });
-    </script>
+<!-- QUIÉNES SOMOS MEJORADO -->
+<section id="quienes-somos" class="about-section bg-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="section-header text-start">
+                    <h1>        
+                        <a class="nav-link nav-link-black fw-semibold" href="#quienes-somos">Quiénes somos</a>
+                    </h1>
+                    <h2 class="text-fuerte">Transformando la forma de <span class="text-gradient">aprender</span></h2>
+                    <p class="section-subtitle">En PaitZone creemos que el aprendizaje colaborativo es la clave del éxito académico y profesional.</p>
+                </div>
+                <p class="text-muted">Nuestra plataforma nació para romper barreras y conectar a estudiantes talentosos que comparten la misma pasión por crear e innovar.</p>
+                <ul class="feature-list">
+                    <li>
+                        <i class="fa-solid fa-check text-naranja"></i>
+                        <span>Comunidad verificada de estudiantes</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-check text-naranja"></i>
+                        <span>Herramientas de colaboración integradas</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-check text-naranja"></i>
+                        <span>Soporte durante todo el proceso</span>
+                    </li>
+                </ul>
+                <div class="about-actions">
+                    <a href="#contacto" class="btn btn-primary">Conoce más</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-image-container">
+                    <div class="image-frame">
+                        <img src="{{ url_for('static', filename='img/team.jpg') }}" alt="Equipo de trabajo" class="about-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-
+<!-- NOTICIAS PREMIUM -->
 {% if mi_proyecto %}
 <section class="news-section">
     <div class="container">
@@ -442,6 +482,62 @@
     </div>
 </section>
 {% endif %}
+
+<!-- CONTACTO MEJORADO -->
+<section id="contacto" class="contact-section bg-fuerte">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="text-white">¿Listo para comenzar?</h2>
+            <p class="section-subtitle text-white">Únete a nuestra comunidad de estudiantes colaborativos</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="contact-card bg-white">
+                    <h4 class="text-center mb-4 text-fuerte">Comienza tu viaje colaborativo hoy</h4>
+                    <div class="contact-buttons">
+                        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
+                            <i class="fa-solid fa-user-plus me-2"></i>Registrarse
+                        </a>
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fa-solid fa-sign-in me-2"></i>Iniciar Sesión
+                        </a>
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fa-solid fa-envelope text-naranja"></i>
+                            <span style="color: black;">paitzone788@gmail.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fa-solid fa-clock text-naranja"></i>
+                            <span style="color: black;">Soporte 24/7 para nuestra comunidad</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER MEJORADO -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>PaitZone</h3>
+                <p>Conectando estudiantes para un aprendizaje colaborativo</p>
+            </div>
+            <div class="footer-links">
+                <a href="/privacidad">Privacidad</a>
+                <span class="separator">•</span>
+                <a href="/terminos">Términos</a>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>&copy; 2024 PaitZone - Plataforma de Gestión Académica. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
 
 
 

@@ -9,6 +9,20 @@
 
 </head>
 <body>
+
+          <!-- Mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="floating-alerts">
+              {% for category, message in messages %}
+                <div class="floating-alert alert-{{ category }} alert alert-{{ category }} alert-dismissible fade show">
+                  <span>{{ message }}</span>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
 <!-- admin_nav.html -->
 <!-- admin_nav.html -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">

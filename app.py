@@ -8,6 +8,7 @@ from flask import g
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask import jsonify
+from filtro_groserias import contiene_groserias, verificar_campos
 import os
 
 app = Flask(__name__)
@@ -343,12 +344,25 @@ def agregar_usuario():
         carrera = request.form['carrera']
         grado = request.form['grado']
         grupo = request.form['grupo']
-        turno = request.form['turno']  # ✅ NUEVO
+        turno = request.form['turno']  
         codigo = request.form['codigo']
         correo = request.form['correo']
         telefono = request.form['telefono']
         contrasena = request.form['contrasena']
         role = request.form.get('role', 'user')
+
+        campos = {
+            'nombre': nombre,
+            'carrera': carrera,
+            'grado': grado,
+            'grupo': grupo,
+            'código': codigo
+        }
+        
+        tiene_groseria, campo_problematico = verificar_campos(campos)
+        if tiene_groseria:
+            flash(f"El campo '{campo_problematico}' contiene palabras no permitidas. Por favor usa lenguaje apropiado.", "danger")
+            return redirect(url_for('agregar_usuario'))
 
         hashed_password = generate_password_hash(contrasena, method='pbkdf2:sha256')
 
@@ -383,6 +397,19 @@ def register():
         correo = request.form['correo']
         telefono = request.form['telefono']
         password = request.form['password']
+
+        campos = {
+            'nombre': nombre,
+            'carrera': carrera,
+            'grado': grado,
+            'grupo': grupo,
+            'código': codigo
+        }
+        
+        tiene_groseria, campo_problematico = verificar_campos(campos)
+        if tiene_groseria:
+            flash(f"El campo '{campo_problematico}' contiene palabras no permitidas. Por favor usa lenguaje apropiado.", "danger")
+            return redirect(url_for('register'))
         
         if not correo.endswith("@alumnos.udg.mx"):
             flash("Debes usar tu correo institucional (@alumnos.udg.mx)", "danger")
@@ -478,6 +505,18 @@ def agregar_equipo():
         privacidad = request.form['privacidad']  # ✅ NUEVO
         integrantes_raw = request.form.get('integrantes', '')
         carreras_seleccionadas = request.form.getlist('carreras')
+
+        campos = {
+            'nombre del proyecto': nombre,
+            'descripción': descripcion,
+            'asesor': asesor,
+            'integrantes': integrantes_raw
+        }
+        
+        tiene_groseria, campo_problematico = verificar_campos(campos)
+        if tiene_groseria:
+            flash(f"El campo '{campo_problematico}' contiene palabras no permitidas. Por favor usa lenguaje apropiado.", "danger")
+            return redirect(url_for('agregar_equipo'))
 
         # Insertar equipo
         cursor.execute(
@@ -618,6 +657,18 @@ def create_project():
         integrantes_raw = request.form.get('integrantes', '')
         carreras_seleccionadas = request.form.getlist('carreras')
         privacidad = request.form.get('privacidad', 'publico')
+
+        campos = {
+            'nombre del proyecto': nombre,
+            'descripción': descripcion,
+            'asesor': asesor,
+            'integrantes': integrantes_raw
+        }
+        
+        tiene_groseria, campo_problematico = verificar_campos(campos)
+        if tiene_groseria:
+            flash(f"El campo '{campo_problematico}' contiene palabras no permitidas. Por favor usa lenguaje apropiado.", "danger")
+            return redirect(url_for('create_project'))
 
         # Limitar el número de carreras al máximo permitido (7)
         carreras_seleccionadas = carreras_seleccionadas[:7]
@@ -1002,6 +1053,11 @@ def editar_perfil():
 
     if request.method == 'POST':
         descripcion = request.form.get('descripcion', '')
+
+        if contiene_groserias(descripcion):
+            flash("La descripción contiene palabras no permitidas. Por favor usa lenguaje apropiado.", "danger")
+            return redirect(url_for('editar_perfil'))
+
         cursor.execute("UPDATE usuarios SET descripcion=%s WHERE id=%s", (descripcion, usuario['id']))
         mysql.connection.commit()
         cursor.close()
@@ -1441,10 +1497,10 @@ def chat_equipo(equipo_id):
     cursor.close()
     
     return render_template('chat_equipo.html', 
-                         equipo_id=equipo_id, 
-                         equipo_nombre=equipo['nombre_proyecto'],
-                         mensajes=mensajes,
-                         usuario=usuario)
+                    equipo_id=equipo_id, 
+                    equipo_nombre=equipo['nombre_proyecto'],
+                    mensajes=mensajes,
+                    usuario=usuario)
 
 @app.route('/equipo/chat/enviar/<int:equipo_id>', methods=['POST'])
 def enviar_mensaje(equipo_id):
@@ -1459,6 +1515,9 @@ def enviar_mensaje(equipo_id):
         mensaje_texto = data.get('mensaje', '').strip()
     else:
         mensaje_texto = request.form.get('mensaje', '').strip()
+
+    if contiene_groserias(mensaje_texto):
+        return jsonify({'success': False, 'message': 'El mensaje contiene palabras no permitidas. Por favor usa lenguaje apropiado.'}), 400
     
     # ✅ DEBUG CRÍTICO PARA EMOJIS
     print(f"🔍 DEBUG EMOJI - Mensaje recibido: {repr(mensaje_texto)}")

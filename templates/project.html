@@ -1095,6 +1095,7 @@
 
                 <!-- Botón de acción -->
 <!-- Botón de acción -->
+<!-- Botón de acción -->
 <div class="mt-auto">
   {% if usuario %}
     {% if equipo.privacidad == 'publico' %}
@@ -1109,11 +1110,14 @@
       {% endfor %}
       
       {% if tiene_solicitud_pendiente %}
-        <button class="btn btn-secondary w-100" disabled>
+        <button class="btn btn-secondary w-100" disabled id="btn-solicitud-{{ equipo.id }}">
           ⏳ Solicitud enviada
         </button>
       {% else %}
-        <a href="{{ url_for('enviar_solicitud', equipo_id=equipo.id) }}" class="btn btn-outline-warning w-100">
+        <a href="{{ url_for('enviar_solicitud', equipo_id=equipo.id) }}" 
+           class="btn btn-outline-warning w-100 btn-enviar-solicitud"
+           id="btn-solicitud-{{ equipo.id }}"
+           data-equipo-id="{{ equipo.id }}">
           Enviar solicitud
         </a>
       {% endif %}
@@ -1122,6 +1126,68 @@
     <a href="{{ url_for('login') }}" class="btn btn-outline-light w-100">Inicia sesión para unirte</a>
   {% endif %}
 </div>
+
+<!-- Script para actualizar botones al enviar solicitud -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Manejar clic en botones de enviar solicitud
+    document.querySelectorAll('.btn-enviar-solicitud').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const equipoId = this.dataset.equipoId;
+            const btnId = `btn-solicitud-${equipoId}`;
+            
+            // Cambiar inmediatamente el botón
+            this.outerHTML = `
+                <button class="btn btn-secondary w-100" disabled id="${btnId}">
+                    ⏳ Enviando solicitud...
+                </button>
+            `;
+            
+            // Enviar la solicitud
+            fetch(this.href)
+                .then(response => {
+                    if (response.ok) {
+                        // Cambiar a estado "enviada"
+                        document.getElementById(btnId).outerHTML = `
+                            <button class="btn btn-secondary w-100" disabled id="${btnId}">
+                                ⏳ Solicitud enviada
+                            </button>
+                        `;
+                        
+                        // Mostrar mensaje de éxito
+                        mostrarToast('Solicitud enviada correctamente', 'success');
+                        
+                        // Recargar después de 2 segundos para asegurar sincronización
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        throw new Error('Error en la solicitud');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Restaurar botón original en caso de error
+                    document.getElementById(btnId).outerHTML = `
+                        <a href="{{ url_for('enviar_solicitud', equipo_id=equipo.id) }}" 
+                           class="btn btn-outline-warning w-100 btn-enviar-solicitud"
+                           id="${btnId}"
+                           data-equipo-id="${equipoId}">
+                            Enviar solicitud
+                        </a>
+                    `;
+                    mostrarToast('Error al enviar la solicitud', 'danger');
+                });
+        });
+    });
+    
+    function mostrarToast(mensaje, tipo) {
+        // Usa tu función toast existente o esta simple:
+        alert(mensaje); // Temporal - reemplaza con tu sistema de toasts
+    }
+});
+</script>
               </div>
             </div>
           </div>

@@ -1102,35 +1102,32 @@
       {# VERIFICAR ESTADO DE SOLICITUD #}
       {% set solicitud_usuario = none %}
       {% for solicitud in solicitudes_usuario %}
-        {% if solicitud['equipo_id'] == equipo.id %}  {# ← USA ['equipo_id'] #}
+        {% if solicitud['equipo_id'] == equipo.id %}
           {% set solicitud_usuario = solicitud %}
         {% endif %}
       {% endfor %}
       
       {% if solicitud_usuario %}
-        {% if solicitud_usuario['estado'] == 'pendiente' %}  {# ← USA ['estado'] #}
-          {# SOLICITUD PENDIENTE - MOSTRAR ESTADO #}
-          <div class="alert alert-warning text-center py-2 mb-0">
-            <small>⏳ Solicitud pendiente</small>
+        {% if solicitud_usuario['estado'] == 'pendiente' %}
+          {# SOLICITUD PENDIENTE - MOSTRAR ESTADO FIJO #}
+          <div class="alert alert-warning text-center py-2 mb-0" id="estado-{{ equipo.id }}">
+            <small>⏳ Solicitud enviada</small>
           </div>
-        {% elif solicitud_usuario['estado'] == 'rechazada' %}  {# ← USA ['estado'] #}
+        {% elif solicitud_usuario['estado'] == 'rechazada' %}
           {# SOLICITUD RECHAZADA - VOLVER A MOSTRAR BOTÓN #}
           <a href="{{ url_for('enviar_solicitud', equipo_id=equipo.id) }}" 
              class="btn btn-outline-warning w-100 btn-enviar-solicitud"
-             data-equipo-id="{{ equipo.id }}">
+             data-equipo-id="{{ equipo.id }}"
+             id="btn-{{ equipo.id }}">
             🔄 Reenviar solicitud
           </a>
-        {% elif solicitud_usuario['estado'] == 'aceptada' %}  {# ← USA ['estado'] #}
-          {# SOLICITUD ACEPTADA - NO MOSTRAR NADA (ya está en el equipo) #}
-          <div class="alert alert-success text-center py-2 mb-0">
-            <small>✅ Solicitud aceptada</small>
-          </div>
         {% endif %}
       {% else %}
         {# NO TIENE SOLICITUD - MOSTRAR BOTÓN NORMAL #}
         <a href="{{ url_for('enviar_solicitud', equipo_id=equipo.id) }}" 
            class="btn btn-outline-warning w-100 btn-enviar-solicitud"
-           data-equipo-id="{{ equipo.id }}">
+           data-equipo-id="{{ equipo.id }}"
+           id="btn-{{ equipo.id }}">
           Enviar solicitud
         </a>
       {% endif %}
@@ -1150,60 +1147,57 @@ document.addEventListener('DOMContentLoaded', function() {
             const equipoId = this.dataset.equipoId;
             const container = document.getElementById(`boton-container-${equipoId}`);
             
-            if (!container) {
-                console.error('No se encontró el contenedor para equipo:', equipoId);
-                return;
-            }
-            
             console.log('Enviando solicitud para equipo:', equipoId);
             
-            // Reemplazar botón por estado "pendiente"
+            // 1. Cambiar inmediatamente a "Solicitud enviada"
             container.innerHTML = `
-                <div class="alert alert-warning text-center py-2 mb-0">
-                    <small>⏳ Enviando solicitud...</small>
+                <div class="alert alert-warning text-center py-2 mb-0" id="estado-${equipoId}">
+                    <small>⏳ Solicitud enviada</small>
                 </div>
             `;
             
-            // Enviar la solicitud
-            fetch(this.href, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'text/html'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Solicitud enviada exitosamente');
-                    // Cambiar a estado "pendiente" definitivo
+            // 2. Enviar la solicitud al servidor (sin recargar)
+            fetch(this.href)
+                .then(response => {
+                    if (response.ok) {
+                        console.log('✅ Solicitud guardada en base de datos');
+                        // Aquí ya quedó el estado "Solicitud enviada"
+                        // NO recargamos la página
+                    } else {
+                        throw new Error('Error en el servidor');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Solo si hay error, volver al botón original
                     container.innerHTML = `
-                        <div class="alert alert-warning text-center py-2 mb-0">
-                            <small>⏳ Solicitud enviada</small>
-                        </div>
+                        <a href="{{ url_for('enviar_solicitud', equipo_id=0) }}".replace('0', equipoId)
+                           class="btn btn-outline-warning w-100 btn-enviar-solicitud"
+                           data-equipo-id="${equipoId}"
+                           id="btn-${equipoId}">
+                            Enviar solicitud
+                        </a>
                     `;
-                    
-                    // Recargar para sincronizar con base de datos
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
-                } else {
-                    throw new Error('Error en la solicitud: ' + response.status);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Restaurar botón original en caso de error
-                container.innerHTML = `
-                    <a href="{{ url_for('enviar_solicitud', equipo_id=0) }}".replace('0', equipoId)
-                       class="btn btn-outline-warning w-100 btn-enviar-solicitud"
-                       data-equipo-id="${equipoId}">
-                        Enviar solicitud
-                    </a>
-                `;
-                alert('Error al enviar la solicitud. Intenta nuevamente.');
-            });
+                    alert('Error al enviar la solicitud');
+                });
         });
     });
 });
+
+// Función para actualizar estado cuando sea rechazado (se llamaría desde notificaciones)
+function actualizarEstadoRechazado(equipoId) {
+    const container = document.getElementById(`boton-container-${equipoId}`);
+    if (container) {
+        container.innerHTML = `
+            <a href="{{ url_for('enviar_solicitud', equipo_id=0) }}".replace('0', equipoId)
+               class="btn btn-outline-warning w-100 btn-enviar-solicitud"
+               data-equipo-id="${equipoId}"
+               id="btn-${equipoId}">
+                🔄 Reenviar solicitud
+            </a>
+        `;
+    }
+}
 </script>
 
 

@@ -1134,8 +1134,9 @@ def enviar_solicitud(equipo_id):
 
     mysql.connection.commit()
     cursor.close()
-    flash("Solicitud enviada correctamente", "success")
-    return redirect(url_for('index'))
+    
+    # ✅ CAMBIA ESTA ÚLTIMA LÍNEA - NO REDIRIJAS, DEVUELVE ÉXITO
+    return "OK", 200
 
 
 

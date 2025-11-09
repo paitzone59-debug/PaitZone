@@ -19,8 +19,8 @@ app.config['MYSQL_HOST'] = os.environ.get('MYSQLHOST', 'localhost')
 app.config['MYSQL_USER'] = os.environ.get('MYSQLUSER', 'root')
 app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQLPASSWORD', 'mysql')
 app.config['MYSQL_DB'] = os.environ.get('MYSQLDATABASE', 'Entrelaza')
-app.config['MYSQL_PORT'] = int(os.environ.get('MYSQLPORT', 3306))
-app.config['MYSQL_SSL'] = {'ssl': {'ca': '/etc/ssl/cert.pem'}}  # ✅ SSL forzado
+app.config['MYSQL_PORT'] = int(os.environ.get('MYSQLPORT', 44135))  # 
+app.config['MYSQL_SSL'] = False  # 
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)

@@ -1060,14 +1060,14 @@ def enviar_solicitud(equipo_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     # Verificar si el equipo existe y es privado
-    cursor.execute('SELECT nombre_proyecto, privado, creador_id FROM equipos WHERE id = %s', (equipo_id,))
+    cursor.execute('SELECT nombre_proyecto, privacidad, creador_id FROM equipos WHERE id = %s', (equipo_id,))
     equipo = cursor.fetchone()
     if not equipo:
         flash("El equipo no existe", "danger")
         cursor.close()
         return redirect(url_for('index'))
 
-    if equipo['privado'] == 0:
+    if equipo['privacidad'] == 'publico':
         flash("Este equipo es público, puedes unirte directamente.", "info")
         cursor.close()
         return redirect(url_for('index'))

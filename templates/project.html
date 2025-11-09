@@ -1094,29 +1094,42 @@
                 </div>
 
                 <!-- Botón de acción -->
-<!-- Botón de acción -->
-<!-- Botón de acción -->
-<div class="mt-auto">
+<div class="mt-auto" id="boton-container-{{ equipo.id }}">
   {% if usuario %}
     {% if equipo.privacidad == 'publico' %}
       <a href="{{ url_for('unirse', equipo_id=equipo.id) }}" class="btn btn-primary w-100">Unirme</a>
     {% else %}
-      {# VERIFICAR SI YA TIENE SOLICITUD PENDIENTE #}
-      {% set tiene_solicitud_pendiente = false %}
+      {# VERIFICAR ESTADO DE SOLICITUD #}
+      {% set solicitud_usuario = none %}
       {% for solicitud in solicitudes_usuario %}
-        {% if solicitud.equipo_id == equipo.id and solicitud.estado == 'pendiente' %}
-          {% set tiene_solicitud_pendiente = true %}
+        {% if solicitud['equipo_id'] == equipo.id %}  {# ← USA ['equipo_id'] #}
+          {% set solicitud_usuario = solicitud %}
         {% endif %}
       {% endfor %}
       
-      {% if tiene_solicitud_pendiente %}
-        <button class="btn btn-secondary w-100" disabled id="btn-solicitud-{{ equipo.id }}">
-          ⏳ Solicitud enviada
-        </button>
+      {% if solicitud_usuario %}
+        {% if solicitud_usuario['estado'] == 'pendiente' %}  {# ← USA ['estado'] #}
+          {# SOLICITUD PENDIENTE - MOSTRAR ESTADO #}
+          <div class="alert alert-warning text-center py-2 mb-0">
+            <small>⏳ Solicitud pendiente</small>
+          </div>
+        {% elif solicitud_usuario['estado'] == 'rechazada' %}  {# ← USA ['estado'] #}
+          {# SOLICITUD RECHAZADA - VOLVER A MOSTRAR BOTÓN #}
+          <a href="{{ url_for('enviar_solicitud', equipo_id=equipo.id) }}" 
+             class="btn btn-outline-warning w-100 btn-enviar-solicitud"
+             data-equipo-id="{{ equipo.id }}">
+            🔄 Reenviar solicitud
+          </a>
+        {% elif solicitud_usuario['estado'] == 'aceptada' %}  {# ← USA ['estado'] #}
+          {# SOLICITUD ACEPTADA - NO MOSTRAR NADA (ya está en el equipo) #}
+          <div class="alert alert-success text-center py-2 mb-0">
+            <small>✅ Solicitud aceptada</small>
+          </div>
+        {% endif %}
       {% else %}
+        {# NO TIENE SOLICITUD - MOSTRAR BOTÓN NORMAL #}
         <a href="{{ url_for('enviar_solicitud', equipo_id=equipo.id) }}" 
            class="btn btn-outline-warning w-100 btn-enviar-solicitud"
-           id="btn-solicitud-{{ equipo.id }}"
            data-equipo-id="{{ equipo.id }}">
           Enviar solicitud
         </a>
@@ -1127,7 +1140,7 @@
   {% endif %}
 </div>
 
-<!-- Script para actualizar botones al enviar solicitud -->
+<!-- Script para manejar envío de solicitudes -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Manejar clic en botones de enviar solicitud
@@ -1135,59 +1148,65 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
             const equipoId = this.dataset.equipoId;
-            const btnId = `btn-solicitud-${equipoId}`;
+            const container = document.getElementById(`boton-container-${equipoId}`);
             
-            // Cambiar inmediatamente el botón
-            this.outerHTML = `
-                <button class="btn btn-secondary w-100" disabled id="${btnId}">
-                    ⏳ Enviando solicitud...
-                </button>
+            if (!container) {
+                console.error('No se encontró el contenedor para equipo:', equipoId);
+                return;
+            }
+            
+            console.log('Enviando solicitud para equipo:', equipoId);
+            
+            // Reemplazar botón por estado "pendiente"
+            container.innerHTML = `
+                <div class="alert alert-warning text-center py-2 mb-0">
+                    <small>⏳ Enviando solicitud...</small>
+                </div>
             `;
             
             // Enviar la solicitud
-            fetch(this.href)
-                .then(response => {
-                    if (response.ok) {
-                        // Cambiar a estado "enviada"
-                        document.getElementById(btnId).outerHTML = `
-                            <button class="btn btn-secondary w-100" disabled id="${btnId}">
-                                ⏳ Solicitud enviada
-                            </button>
-                        `;
-                        
-                        // Mostrar mensaje de éxito
-                        mostrarToast('Solicitud enviada correctamente', 'success');
-                        
-                        // Recargar después de 2 segundos para asegurar sincronización
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 2000);
-                    } else {
-                        throw new Error('Error en la solicitud');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    // Restaurar botón original en caso de error
-                    document.getElementById(btnId).outerHTML = `
-                        <a href="{{ url_for('enviar_solicitud', equipo_id=equipo.id) }}" 
-                           class="btn btn-outline-warning w-100 btn-enviar-solicitud"
-                           id="${btnId}"
-                           data-equipo-id="${equipoId}">
-                            Enviar solicitud
-                        </a>
+            fetch(this.href, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'text/html'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Solicitud enviada exitosamente');
+                    // Cambiar a estado "pendiente" definitivo
+                    container.innerHTML = `
+                        <div class="alert alert-warning text-center py-2 mb-0">
+                            <small>⏳ Solicitud enviada</small>
+                        </div>
                     `;
-                    mostrarToast('Error al enviar la solicitud', 'danger');
-                });
+                    
+                    // Recargar para sincronizar con base de datos
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    throw new Error('Error en la solicitud: ' + response.status);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Restaurar botón original en caso de error
+                container.innerHTML = `
+                    <a href="{{ url_for('enviar_solicitud', equipo_id=0) }}".replace('0', equipoId)
+                       class="btn btn-outline-warning w-100 btn-enviar-solicitud"
+                       data-equipo-id="${equipoId}">
+                        Enviar solicitud
+                    </a>
+                `;
+                alert('Error al enviar la solicitud. Intenta nuevamente.');
+            });
         });
     });
-    
-    function mostrarToast(mensaje, tipo) {
-        // Usa tu función toast existente o esta simple:
-        alert(mensaje); // Temporal - reemplaza con tu sistema de toasts
-    }
 });
 </script>
+
+
               </div>
             </div>
           </div>

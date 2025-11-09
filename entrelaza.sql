@@ -502,6 +502,14 @@ ALTER TABLE `solicitudes_equipo`
   ADD CONSTRAINT `solicitudes_equipo_ibfk_2` FOREIGN KEY (`equipo_id`) REFERENCES `equipos` (`id`) ON DELETE CASCADE;
 COMMIT;
 
+CREATE TABLE `mensajes_equipo` (
+  `id` int NOT NULL,
+  `equipo_id` int NOT NULL,
+  `usuario_id` int NOT NULL,
+  `mensaje` text NOT NULL,
+  `fecha` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

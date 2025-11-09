@@ -136,7 +136,7 @@ def index():
 
     cursor.execute('''
         SELECT DISTINCT e.*, 
-               (SELECT COUNT(*) FROM equipo_integrantes ei WHERE ei.equipo_id = e.id) AS integrantes_actuales
+            (SELECT COUNT(*) FROM equipo_integrantes ei WHERE ei.equipo_id = e.id) AS integrantes_actuales
         FROM equipos e
         JOIN equipo_carreras ec ON e.id = ec.equipo_id
         JOIN carreras c ON ec.carrera_id = c.id
@@ -200,13 +200,22 @@ def index():
         mi_proyecto['carreras_necesarias'] = [c['nombre'] for c in cursor.fetchall()]
         equipos_disponibles = [eq for eq in equipos if eq['id'] != mi_proyecto['id']]
 
+    # ✅ NUEVO: OBTENER SOLICITUDES DEL USUARIO PARA CONTROLAR BOTONES
+    cursor.execute('''
+        SELECT equipo_id, estado 
+        FROM solicitudes 
+        WHERE usuario_id = %s
+    ''', (usuario['id'],))
+    solicitudes_usuario = cursor.fetchall()
+
     cursor.close()
 
     return render_template(
         "project.html",
         equipos=equipos_disponibles,
         usuario=usuario,
-        mi_proyecto=mi_proyecto
+        mi_proyecto=mi_proyecto,
+        solicitudes_usuario=solicitudes_usuario  # ← AGREGAR ESTO
     )
 
 @app.route('/terminos')

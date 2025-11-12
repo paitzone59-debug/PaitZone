@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="chat-container">
-    <!-- Header del Chat -->
+
     <div class="chat-header">
         <div class="header-content">
             <div class="chat-info">
@@ -27,7 +27,6 @@
         </div>
     </div>
 
-    <!-- Área de Mensajes -->
     <div class="chat-messages" id="chatMessages">
         {% for mensaje in mensajes %}
         <div class="message {% if mensaje.usuario_id == usuario.id %}message-sent{% else %}message-received{% endif %}" 
@@ -62,12 +61,10 @@
         {% endfor %}
     </div>
 
-    <!-- Input de Mensajes -->
     <div class="chat-input-container">
         <div class="input-wrapper">
 
 
-            <!-- Input principal -->
             <form id="messageForm" class="message-form">
                 <div class="input-group">
                     <input type="text" 
@@ -77,20 +74,17 @@
                            autocomplete="off"
                            maxlength="1000">
                     
-                    <!-- Contador de caracteres -->
                     <div class="char-counter" id="charCounter">
                         <span class="char-count">0</span>/1000
                     </div>
                 </div>
 
-                <!-- Botón de enviar -->
                 <button type="submit" class="send-btn" id="sendBtn" title="Enviar mensaje">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </form>
         </div>
 
-        <!-- Selector de Emojis Premium -->
         <div class="emoji-picker" id="emojiPicker">
             <div class="emoji-header">
                 <div class="emoji-categories">

@@ -1,21 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Contenedor de animación -->
 <div id="splash-screen">
   <div class="splash-content">
     <img src="{{ url_for('static', filename='img/icono.jpg') }}" alt="Logo" class="splash-logo">
   </div>
 </div>
 
-<!-- Navbar de inicio solamente -->
 <nav id="mainNavbar" class="navbar navbar-expand-lg custom-navbar fixed-top shadow-sm py-3">
   <div class="container-fluid d-flex align-items-center justify-content-between px-4">
 
-    <!-- LOGO -->
     <a class="navbar-brand fw-bold letra1" href="#">PaitZone</a>
 
-    <!-- BOTÓN HAMBURGUESA -->
     <button 
       class="navbar-toggler border-0" 
       type="button" 
@@ -27,10 +23,8 @@
       <i class="fa-solid fa-bars" style="color: #ffffff; font-size: 1.4rem;"></i>
     </button>
 
-    <!-- CONTENIDO DEL NAV -->
     <div class="collapse navbar-collapse justify-content-center" id="navbarContent">
       <ul class="navbar-nav gap-4 align-items-center">
-        <!-- BOTONES EXISTENTES -->
         <li class="nav-item">
           <a class="nav-link nav-link-white" href="{{ url_for('login') }}">
             <i class="fa-solid fa-user"></i>
@@ -96,7 +90,6 @@
 </style>
 
 
-<!-- SECCIÓN 1: TEXTO - IMAGEN -->
 <section class="section">
     <div class="container">
         <div class="section-content">
@@ -111,7 +104,6 @@
     </div>
 </section>
 
-<!-- SECCIÓN 2: IMAGEN - TEXTO -->
 <section class="section">
     <div class="container">
         <div class="section-content">
@@ -131,7 +123,6 @@
     </div>
 </section>
 
-<!-- SECCIÓN 3: TEXTO - IMAGEN -->
 <section class="section">
     <div class="container">
         <div class="section-content">
@@ -147,7 +138,6 @@
     </div>
 </section>
 
-<!-- SECCIÓN 4: IMAGEN - TEXTO -->
 <section class="section">
     <div class="container">
         <div class="section-content">
@@ -167,7 +157,6 @@
     </div>
 </section>
 
-<!-- FOOTER -->
 <footer class="footer">
     <div class="container">
         <div class="footer-content">

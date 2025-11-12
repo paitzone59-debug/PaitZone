@@ -2,7 +2,6 @@
 {% block content %}
 <div class="container mt-5">
 
-    <!-- Botón dinámico de regreso -->
     {% if origen == 'mi_equipo' %}
         <a href="{{ url_for('mi_equipo') }}" class="btn btn-secondary mb-3">← Regresar a Mi Proyecto</a>
     {% elif origen == 'project' %}
@@ -11,9 +10,7 @@
         <a href="{{ url_for('index') }}" class="btn btn-secondary mb-3">← Regresar al Inicio</a>
     {% endif %}
 
-    <!-- Card principal del perfil -->
     <div class="card p-4 border-0 shadow-lg" style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); border-radius: 15px;">
-        <!-- Header del perfil -->
         <div class="text-center mb-4">
             <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
                 <i class="fas fa-user fa-2x text-white"></i>
@@ -24,9 +21,7 @@
             {% endif %}
         </div>
 
-        <!-- Información del usuario en grid -->
         <div class="row g-3">
-            <!-- Carrera -->
             <div class="col-md-6">
                 <div class="p-3 text-white rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
                     <div class="d-flex align-items-center mb-2">
@@ -37,7 +32,6 @@
                 </div>
             </div>
 
-            <!-- Turno -->
             <div class="col-md-6">
                 <div class="p-3 text-white rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
                     <div class="d-flex align-items-center mb-2">
@@ -50,7 +44,6 @@
                 </div>
             </div>
 
-            <!-- Grado -->
             <div class="col-md-6">
                 <div class="p-3 text-white rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
                     <div class="d-flex align-items-center mb-2">
@@ -61,7 +54,6 @@
                 </div>
             </div>
 
-            <!-- Grupo -->
             <div class="col-md-6">
                 <div class="p-3 text-white rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
                     <div class="d-flex align-items-center mb-2">
@@ -72,7 +64,6 @@
                 </div>
             </div>
 
-            <!-- Teléfono -->
             <div class="col-12">
                 <div class="p-3 text-white rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
                     <div class="d-flex align-items-center mb-2">
@@ -88,7 +79,6 @@
                 </div>
             </div>
 
-            <!-- Descripción -->
             <div class="col-12">
                 <div class="p-3 text-white rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
                     <div class="d-flex align-items-center mb-2">
@@ -100,7 +90,6 @@
             </div>
         </div>
 
-        <!-- Botón de editar (solo para el propio usuario) -->
         {% if usuario and usuario.id == perfil.id %}
             <div class="text-center mt-4">
                 <a href="{{ url_for('editar_perfil') }}" class="btn btn-primary btn-lg">
@@ -110,7 +99,6 @@
         {% endif %}
     </div>
 
-    <!-- Información adicional si es el propio usuario -->
     {% if usuario and usuario.id == perfil.id %}
     <div class="row mt-4">
         <div class="col-md-6">

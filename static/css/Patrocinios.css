@@ -1,39 +1,173 @@
-/* ===== BANNER PREMIUM (HEADER)  ===== */
+/* ===== SISTEMA PREMIUM CON COLORES PERSONALIZABLES ===== */
 .premium-banner {
-    background: linear-gradient(135deg, #ffd700, #ffed4e);
-    padding: 12px 20px;
+    --primary-color: #ffd700;    /* Color principal - DORADO por defecto */
+    --secondary-color: #ff6b00;  /* Color secundario - NARANJA por defecto */
+    --text-color: #333;          /* Color de texto - OSCURO por defecto */
+    
+    background: linear-gradient(135deg, 
+        var(--primary-color), 
+        color-mix(in srgb, var(--primary-color) 80%, white 20%),
+        var(--primary-color)
+    );
+    padding: 22px 35px;
     text-align: center;
-    border-bottom: 3px solid #ff6b00;
-    box-shadow: 0 2px 10px rgba(255, 107, 0, 0.3);
+    border-bottom: 4px solid var(--secondary-color);
+    box-shadow: 0 4px 25px color-mix(in srgb, var(--secondary-color) 40%, transparent 60%);
     position: relative;
-    z-index: 999; 
-    margin-top: 60px; 
+    z-index: 999;
+    margin-top: 76px;
+    min-height: 85px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.premium-banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
 }
 
 .premium-banner span {
-    color: #333;
-    font-weight: 600;
-    margin-right: 10px;
-    font-size: 0.9rem;
+    color: var(--text-color);
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    background: rgba(255, 255, 255, 0.3);
+    padding: 6px 12px;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
 }
 
 .premium-banner img {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
+    width: 55px;
+    height: 55px;
+    border-radius: 12px;
     object-fit: cover;
-    border: 2px solid #ff6b00;
-    vertical-align: middle;
-    margin: 0 10px;
+    border: 3px solid var(--secondary-color);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    transition: transform 0.3s ease;
 }
 
 .premium-banner strong {
-    color: #333;
-    font-size: 1rem;
-    vertical-align: middle;
+    color: var(--text-color);
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 3px rgba(255,255,255,0.8);
+    letter-spacing: 0.5px;
 }
-.premium-banner {
-    margin-top: 60px; 
+
+.premium-banner .contact-info {
+    background: color-mix(in srgb, var(--secondary-color) 15%, transparent 85%);
+    padding: 8px 16px;
+    border-radius: 25px;
+    border: 2px solid var(--secondary-color);
+    font-size: 0.95rem;
+    color: var(--text-color);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+/* Efectos hover mejorados */
+.premium-banner:hover {
+    background: linear-gradient(135deg, 
+        color-mix(in srgb, var(--primary-color) 90%, white 10%),
+        var(--primary-color),
+        color-mix(in srgb, var(--primary-color) 90%, white 10%)
+    );
+    box-shadow: 0 6px 30px color-mix(in srgb, var(--secondary-color) 50%, transparent 50%);
+    transform: translateY(-1px);
+}
+
+.premium-banner:hover img {
+    transform: scale(1.05) rotate(2deg);
+}
+
+.premium-banner:hover .contact-info {
+    background: color-mix(in srgb, var(--secondary-color) 25%, transparent 75%);
+    transform: translateY(-1px);
+}
+
+/* CLASES DE COLORES PREDEFINIDOS PARA PATROCINADORES */
+.premium-banner.azul-corporativo {
+    --primary-color: #2563eb;   /* Azul corporativo */
+    --secondary-color: #1d4ed8; /* Azul oscuro */
+    --text-color: #ffffff;      /* Texto blanco */
+}
+
+.premium-banner.verde-ecologico {
+    --primary-color: #10b981;   /* Verde ecológico */
+    --secondary-color: #059669; /* Verde oscuro */
+    --text-color: #ffffff;      /* Texto blanco */
+}
+
+.premium-banner.rojo-pasion {
+    --primary-color: #dc2626;   /* Rojo pasión */
+    --secondary-color: #b91c1c; /* Rojo oscuro */
+    --text-color: #ffffff;      /* Texto blanco */
+}
+
+.premium-banner.morado-creativo {
+    --primary-color: #7c3aed;   /* Morado creativo */
+    --secondary-color: #6d28d9; /* Morado oscuro */
+    --text-color: #ffffff;      /* Texto blanco */
+}
+
+.premium-banner.rosa-moderno {
+    --primary-color: #ec4899;   /* Rosa moderno */
+    --secondary-color: #db2777; /* Rosa oscuro */
+    --text-color: #ffffff;      /* Texto blanco */
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .premium-banner {
+        margin-top: 70px;
+        padding: 18px 25px;
+        min-height: 75px;
+        gap: 12px;
+    }
+    
+    .premium-banner-content {
+        gap: 12px;
+        flex-direction: column;
+    }
+    
+    .premium-banner img {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .premium-banner span {
+        font-size: 1rem;
+        padding: 5px 10px;
+    }
+    
+    .premium-banner strong {
+        font-size: 1.1rem;
+        text-align: center;
+    }
+    
+    .premium-banner .contact-info {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .premium-banner {
+        padding: 15px 20px;
+        min-height: 70px;
+    }
+    
+    .premium-banner strong {
+        font-size: 1rem;
+    }
 }
 
 /* ===== ANUNCIOS ESTÁNDAR - INTEGRADO CON TEMA OSCURO ===== */

@@ -34,9 +34,6 @@
           <a class="nav-link nav-link-white" href="{{ url_for('register') }}">
             <i class="fa-solid fa-address-card"></i>
           </a>
-            <a href="{{ url_for('patrocinios') }}" class="floating-btn">
-                💼 Sé un Patrocinador
-            </a>
         </li>
 
       </ul>
@@ -173,28 +170,34 @@
             <h3>PaitZone</h3>
             <p>Conectando estudiantes para un aprendizaje colaborativo</p>
         </div>
-        <footer>
-    <div class="patrocinadores-footer">
-        <h4>Nuestros Patrocinadores</h4>
-        <div class="patrocinador-basico">
-            <img src="/static/img/pape.webp" alt="Tu Negocio">
-            <p>Papelería La Económica</p>
-        </div>
+        
+        <!-- SECCIÓN PATROCINADORES -->
+        <div class="patrocinadores-footer">
+            <h4>Nuestros Patrocinadores</h4>
+            <div class="patrocinadores-container">
                 <div class="patrocinador-basico">
-            <img src="/static/img/cafe.avif" alt="Tu Negocio">
-            <p>Cafetería  </p>
-        </div>
+                    <img src="/static/img/pape.webp" alt="Papelería La Económica">
+                    <p>Papelería La Económica</p>
+                </div>
                 <div class="patrocinador-basico">
-            <img src="/static/img/copias.jpg" alt="Tu Negocio">
-            <p>Copias </p>
+                    <img src="/static/img/cafe.avif" alt="Cafetería">
+                    <p>Cafetería Don José</p>
+                </div>
+                <div class="patrocinador-basico">
+                    <img src="/static/img/copias.jpg" alt="Copias">
+                    <p>Centro de Copiado</p>
+                </div>
+            </div>
         </div>
-    </div>
-</footer>
+        
+        <!-- ENLACES LEGALES -->
         <div class="footer-links">
-    <a href="{{ url_for('terminos') }}">Privacidad</a>
-    <span class="separator">•</span>
-    <a href="{{ url_for('terminos') }}">Términos</a>
+            <a href="{{ url_for('terminos') }}">Privacidad</a>
+            <span class="separator">•</span>
+            <a href="{{ url_for('terminos') }}">Términos</a>
         </div>
+        
+        <!-- COPYRIGHT -->
         <div class="footer-copyright">
             <p>&copy; 2025 PaitZone - Todos los derechos reservados.</p>
         </div>

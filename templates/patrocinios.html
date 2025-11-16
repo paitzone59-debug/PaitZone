@@ -1,91 +1,362 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sé un Patrocinador - PaitZone</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 30px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .back-home:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(-5px);
+        }
+
+        .back-home::before {
+            content: "←";
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
         .plan-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
         }
+
         .plan-card {
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
             text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
         }
+
+        .plan-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+        }
+
+        .plan-basico::before { background: linear-gradient(135deg, #28a745, #20c997); }
+        .plan-estandar::before { background: linear-gradient(135deg, #007bff, #0056b3); }
+        .plan-premium::before { background: linear-gradient(135deg, #ffc107, #ff8c00); }
+
         .plan-basico { border-color: #28a745; }
         .plan-estandar { border-color: #007bff; }
         .plan-premium { border-color: #ffc107; }
-        
+
+        .plan-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .plan-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .price {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .price-period {
+            font-size: 1rem;
+            color: #7f8c8d;
+            font-weight: normal;
+        }
+
+        .features {
+            list-style: none;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .features li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f8f9fa;
+            color: #555;
+        }
+
+        .features li::before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
         .preview {
             background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+
+        .preview h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .preview-demo {
+            background: white;
             padding: 15px;
-            border-radius: 5px;
-            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            margin-top: 10px;
+        }
+
+        .btn-plan {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .btn-plan:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .recommended-badge {
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: #ff6b00;
+            color: white;
+            padding: 8px 40px;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .plan-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .plan-card {
+                padding: 20px;
+            }
+        }
+
+        .whatsapp-info {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
         }
     </style>
 </head>
 <body>
-    <h1>🎯 Conviértete en Patrocinador de PaitZone</h1>
-    
-    <div class="plan-container">
-        <!-- PLAN BÁSICO -->
-        <div class="plan-card plan-basico">
-            <h3>🥉 Plan Básico</h3>
-            <p><strong>MX$ 350/año</strong></p>
-            <div class="preview">
-                <h4>📱 Se verá así:</h4>
-                <p>Logo en el footer de todas las páginas</p>
-                <img src="" alt="">
-                <div style="background: #e9ecef; padding: 10px; border-radius: 5px;">
-                    <small>Footer ↓</small><br>
-                    [🔹 Tu Logo] [🔹 Otro Logo] [🔹 Más Logos]
-                </div>
-            </div>
-            <button onclick="solicitarPlan('Básico')">Elegir este Plan</button>
+    <div class="container">
+        <!-- Botón de regreso -->
+        <a href="{{ url_for('index') }}" class="back-home">
+            Volver al Inicio
+        </a>
+
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 Conviértete en Patrocinador</h1>
+            <p>Llega a cientos de estudiantes y forma parte de nuestra comunidad educativa</p>
         </div>
 
-        <!-- PLAN ESTÁNDAR -->
-        <div class="plan-card plan-estandar">
-            <h3>🥈 Plan Estándar</h3>
-            <p><strong>MX$ 600/año</strong></p>
-            <div class="preview">
-                <h4>📱 Se verá así:</h4>
-                <p>Banner en sidebar + logo en footer</p>
-                <img src="" alt="">
-                <div style="border: 1px solid #007bff; padding: 10px; border-radius: 5px;">
-                    <strong>Tu Banner Aquí</strong><br>
-                    <small>¡Promoción activa!</small><br>
-                    <button style="background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 3px;">
-                        Visitar
-                    </button>
+        <!-- Planes -->
+        <div class="plan-container">
+            <!-- PLAN BÁSICO -->
+            <div class="plan-card plan-basico">
+                <div class="plan-icon">🥉</div>
+                <h3>Plan Básico</h3>
+                <div class="price">MX$ <span class="price-amount">350</span><span class="price-period">/año</span></div>
+                
+                <ul class="features">
+                    <li>Logo en footer de todas las páginas</li>
+                    <li>Presencia constante</li>
+                    <li>Ideal para negocios locales</li>
+                    <li>Renovación anual</li>
+                </ul>
+
+                <div class="preview">
+                    <h4>📱 Así se verá tu anuncio:</h4>
+                    <div class="preview-demo">
+                        <small>Footer de la página ↓</small>
+                        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 10px;">
+                            <div style="text-align: center;">
+                                <div style="width: 40px; height: 40px; background: #007bff; border-radius: 8px; margin: 0 auto 5px;"></div>
+                                <small style="font-size: 0.7rem;">Tu Logo</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <button class="btn-plan" onclick="solicitarPlan('Básico')">
+                    Elegir Plan Básico
+                </button>
             </div>
-            <button onclick="solicitarPlan('Estándar')">Elegir este Plan</button>
+
+            <!-- PLAN ESTÁNDAR -->
+            <div class="plan-card plan-estandar">
+                <div class="plan-icon">🥈</div>
+                <h3>Plan Estándar</h3>
+                <div class="price">MX$ <span class="price-amount">600</span><span class="price-period">/año</span></div>
+                
+                <ul class="features">
+                    <li>Banner destacado en sidebar</li>
+                    <li>Logo en footer</li>
+                    <li>Botón de acción "Visitar"</li>
+                    <li>Mayor visibilidad</li>
+                    <li>Renovación anual</li>
+                </ul>
+
+                <div class="preview">
+                    <h4>📱 Así se verá tu anuncio:</h4>
+                    <div class="preview-demo">
+                        <div style="border: 2px solid #007bff; border-radius: 10px; padding: 15px; text-align: center;">
+                            <strong style="color: #007bff;">Tu Empresa Aquí</strong><br>
+                            <small style="color: #666;">¡Promoción especial!</small><br>
+                            <button style="background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 5px; margin-top: 8px; cursor: pointer;">
+                                Visitar Sitio
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-plan" onclick="solicitarPlan('Estándar')">
+                    Elegir Plan Estándar
+                </button>
+            </div>
+
+            <!-- PLAN PREMIUM -->
+            <div class="plan-card plan-premium">
+                <div class="recommended-badge">RECOMENDADO</div>
+                <div class="plan-icon">🥇</div>
+                <h3>Plan Premium</h3>
+                <div class="price">MX$ <span class="price-amount">650</span><span class="price-period">/año</span></div>
+                
+                <ul class="features">
+                    <li>Banner en HEADER principal</li>
+                    <li>Banner en sidebar</li>
+                    <li>Logo en footer destacado</li>
+                    <li>Máxima visibilidad</li>
+                    <li>Posición privilegiada</li>
+                    <li>Renovación anual</li>
+                </ul>
+
+                <div class="preview">
+                    <h4>📱 Así se verá tu anuncio:</h4>
+                    <div class="preview-demo">
+                        <div style="background: linear-gradient(135deg, #ffd700, #ffed4e); padding: 12px; border-radius: 8px; text-align: center; border: 2px solid #ff6b00;">
+                            <strong>🚀 PATROCINADO POR: TU EMPRESA</strong><br>
+                            <small>Mensaje destacado - Visible en todas las páginas</small>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-plan" onclick="solicitarPlan('Premium')">
+                    Elegir Plan Premium
+                </button>
+            </div>
         </div>
 
-        <!-- PLAN PREMIUM -->
-        <div class="plan-card plan-premium">
-            <h3>🥇 Plan Premium</h3>
-            <p><strong>MX$ 650/año</strong></p>
-            <div class="preview">
-                <h4>📱 Se verá así:</h4>
-                <p>Banner en HEADER + sidebar + footer</p>
-                <img src="" alt="">
-                <div style="background: #fff3cd; padding: 10px; border-radius: 5px; text-align: center;">
-                    <strong>🚀 PATROCINADO POR: TU EMPRESA</strong><br>
-                    <small>Mensaje destacado visible siempre</small>
-                </div>
-            </div>
-            <button onclick="solicitarPlan('Premium')">Elegir este Plan</button>
+        <!-- Información de contacto -->
+        <div class="whatsapp-info">
+            <h3>💬 ¿Tienes dudas?</h3>
+            <p>Contáctanos directamente por WhatsApp y te ayudamos a elegir el mejor plan para tu negocio.</p>
         </div>
     </div>
 
     <script>
         function solicitarPlan(plan) {
-            const mensaje = `Hola, estoy interesado en el Plan ${plan} de PaitZone. Por favor envíenme más información.`;
+            const mensaje = `Hola, estoy interesado en el Plan ${plan} de PaitZone. Por favor envíenme más información sobre:
+- Precios y formas de pago
+- Requisitos de imagen/logo
+- Proceso de activación
+- Términos y condiciones
+
+Quedo atento a su respuesta. ¡Gracias!`;
+            
             window.open(`https://wa.me/523312345678?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
     </script>

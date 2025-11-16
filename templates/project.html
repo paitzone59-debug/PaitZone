@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="/static/css/estilo_de_filtro.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 <link rel="stylesheet" href="/static/css/botones de promo.css">
-
+<link rel="stylesheet" href="/static/css/Patrocinios.css">
 <style>
 .main-content {
     margin-top: 90px; 
@@ -1160,7 +1160,45 @@ function actualizarEstadoRechazado(equipoId) {
     </div>
 </div>
 
-
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <h3>PaitZone</h3>
+            <p>Conectando estudiantes para un aprendizaje colaborativo</p>
+        </div>
+        
+        <!-- SECCIÓN PATROCINADORES -->
+        <div class="patrocinadores-footer">
+            <h4>Nuestros Patrocinadores</h4>
+            <div class="patrocinadores-container">
+                <div class="patrocinador-basico">
+                    <img src="/static/img/pape.webp" alt="Papelería La Económica">
+                    <p>Papelería La Económica</p>
+                </div>
+                <div class="patrocinador-basico">
+                    <img src="/static/img/cafe.avif" alt="Cafetería">
+                    <p>Cafetería Don José</p>
+                </div>
+                <div class="patrocinador-basico">
+                    <img src="/static/img/copias.jpg" alt="Copias">
+                    <p>Centro de Copiado</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ENLACES LEGALES -->
+        <div class="footer-links">
+            <a href="{{ url_for('terminos') }}">Privacidad</a>
+            <span class="separator">•</span>
+            <a href="{{ url_for('terminos') }}">Términos</a>
+        </div>
+        
+        <!-- COPYRIGHT -->
+        <div class="footer-copyright">
+            <p>&copy; 2025 PaitZone - Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
 
 <div class="modal fade" id="notificacionesModal" tabindex="-1" aria-labelledby="notificacionesModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-lg">

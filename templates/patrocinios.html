@@ -160,8 +160,9 @@
 
         .preview h4 {
             color: #333;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-size: 1rem;
+            text-align: center;
         }
 
         .preview-demo {
@@ -170,6 +171,38 @@
             border-radius: 8px;
             border: 1px solid #e9ecef;
             margin-top: 10px;
+            text-align: center;
+        }
+
+        /* ESTILOS PARA CAPTURAS */
+        .captura-real {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 10px;
+            border: 3px solid #007bff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .captura-real:hover {
+            transform: scale(1.05);
+        }
+
+        .captura-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .captura-placeholder {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 20px;
         }
 
         .btn-plan {
@@ -203,6 +236,25 @@
             font-weight: bold;
         }
 
+        .contacto-directo {
+            background: rgba(255,255,255,0.15);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .numero-whatsapp {
+            background: #25D366;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 5px 0;
+            text-decoration: none;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header h1 {
@@ -216,6 +268,10 @@
             
             .plan-card {
                 padding: 20px;
+            }
+
+            .captura-real {
+                max-width: 250px;
             }
         }
 
@@ -252,22 +308,31 @@
                 <div class="price">MX$ <span class="price-amount">350</span><span class="price-period">/año</span></div>
                 
                 <ul class="features">
-                    <li>Logo en footer de todas las páginas</li>
-                    <li>Presencia constante</li>
+                    <li>Logo en footer de TODAS las páginas</li>
+                    <li>Presencia constante 24/7</li>
                     <li>Ideal para negocios locales</li>
-                    <li>Renovación anual</li>
+                    <li>Renovación anual automática</li>
+                    <li>Soporte prioritario</li>
                 </ul>
 
                 <div class="preview">
-                    <h4>📱 Así se verá tu anuncio:</h4>
+                    <h4>📸 CAPTURA REAL - Así se verá:</h4>
                     <div class="preview-demo">
-                        <small>Footer de la página ↓</small>
-                        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 10px;">
-                            <div style="text-align: center;">
-                                <div style="width: 40px; height: 40px; background: #007bff; border-radius: 8px; margin: 0 auto 5px;"></div>
-                                <small style="font-size: 0.7rem;">Tu Logo</small>
+                        <div class="captura-container">
+                            <!-- REEMPLAZA ESTA URL CON TU CAPTURA REAL -->
+                            <img src="/static/img/plan-basico-footer.jpg.png" 
+                                 alt="Captura real Plan Básico - Footer" 
+                                 class="captura-real"
+                                 onerror="this.style.display='none'; document.getElementById('placeholder-basico').style.display='block';">
+                            <div id="placeholder-basico" class="captura-placeholder" style="display: none;">
+                                📷<br>
+                                <strong>Captura del Footer</strong><br>
+                                <small>Tu logo entre otros patrocinadores</small>
                             </div>
                         </div>
+                        <p style="margin-top: 10px; font-size: 0.8rem; color: #666;">
+                            Tu logo aparecerá aquí ↓ en todas las páginas
+                        </p>
                     </div>
                 </div>
 
@@ -283,23 +348,32 @@
                 <div class="price">MX$ <span class="price-amount">600</span><span class="price-period">/año</span></div>
                 
                 <ul class="features">
-                    <li>Banner destacado en sidebar</li>
-                    <li>Logo en footer</li>
-                    <li>Botón de acción "Visitar"</li>
-                    <li>Mayor visibilidad</li>
+                    <li>Banner destacado en SIDEBAR</li>
+                    <li>Logo en footer incluido</li>
+                    <li>Botón de acción "Visitar Sitio"</li>
+                    <li>Mayor visibilidad en listas</li>
+                    <li>Estadísticas de clics mensuales</li>
                     <li>Renovación anual</li>
                 </ul>
 
                 <div class="preview">
-                    <h4>📱 Así se verá tu anuncio:</h4>
+                    <h4>📸 CAPTURA REAL - Así se verá:</h4>
                     <div class="preview-demo">
-                        <div style="border: 2px solid #007bff; border-radius: 10px; padding: 15px; text-align: center;">
-                            <strong style="color: #007bff;">Tu Empresa Aquí</strong><br>
-                            <small style="color: #666;">¡Promoción especial!</small><br>
-                            <button style="background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 5px; margin-top: 8px; cursor: pointer;">
-                                Visitar Sitio
-                            </button>
+                        <div class="captura-container">
+                            <!-- REEMPLAZA ESTA URL CON TU CAPTURA REAL -->
+                            <img src="/static/img/plan-estandar-sidebar.jpg.png" 
+                                 alt="Captura real Plan Estándar - Sidebar" 
+                                 class="captura-real"
+                                 onerror="this.style.display='none'; document.getElementById('placeholder-estandar').style.display='block';">
+                            <div id="placeholder-estandar" class="captura-placeholder" style="display: none;">
+                                📷<br>
+                                <strong>Captura del Sidebar</strong><br>
+                                <small>Tu banner entre equipos disponibles</small>
+                            </div>
                         </div>
+                        <p style="margin-top: 10px; font-size: 0.8rem; color: #666;">
+                            Tu banner aparecerá aquí ↓ entre los equipos
+                        </p>
                     </div>
                 </div>
 
@@ -316,22 +390,45 @@
                 <div class="price">MX$ <span class="price-amount">650</span><span class="price-period">/año</span></div>
                 
                 <ul class="features">
-                    <li>Banner en HEADER principal</li>
-                    <li>Banner en sidebar</li>
-                    <li>Logo en footer destacado</li>
-                    <li>Máxima visibilidad</li>
-                    <li>Posición privilegiada</li>
-                    <li>Renovación anual</li>
+                    <li>Banner en HEADER principal (máxima visibilidad)</li>
+                    <li>Banner en sidebar incluido</li>
+                    <li>Logo destacado en footer</li>
+                    <li>Colores personalizables para tu marca</li>
+                    <li>Información de contacto visible</li>
+                    <li>Posición privilegiada exclusiva</li>
+                    <li>Estadísticas avanzadas</li>
+                    <li>Renovación anual con prioridad</li>
                 </ul>
 
                 <div class="preview">
-                    <h4>📱 Así se verá tu anuncio:</h4>
+                    <h4>📸 CAPTURA REAL - Así se verá:</h4>
                     <div class="preview-demo">
-                        <div style="background: linear-gradient(135deg, #ffd700, #ffed4e); padding: 12px; border-radius: 8px; text-align: center; border: 2px solid #ff6b00;">
-                            <strong>🚀 PATROCINADO POR: TU EMPRESA</strong><br>
-                            <small>Mensaje destacado - Visible en todas las páginas</small>
+                        <div class="captura-container">
+                            <!-- REEMPLAZA ESTA URL CON TU CAPTURA REAL -->
+                            <img src="/static/img/plan-premium-header.png" 
+                                 alt="Captura real Plan Premium - Header" 
+                                 class="captura-real"
+                                 onerror="this.style.display='none'; document.getElementById('placeholder-premium').style.display='block';">
+                            <div id="placeholder-premium" class="captura-placeholder" style="display: none;">
+                                📷<br>
+                                <strong>Captura del Header</strong><br>
+                                <small>Tu banner premium en la parte superior</small>
+                            </div>
                         </div>
+                        <p style="margin-top: 10px; font-size: 0.8rem; color: #666;">
+                            Tu banner premium aparecerá aquí ↓ en el header
+                        </p>
                     </div>
+                </div>
+
+                <div class="contacto-directo">
+                    <strong>💬 Contacto directo para Premium:</strong>
+                    <br>
+                    <a src="https://wa.me/523310539464" class="numero-whatsapp" target="_blank">
+                        📱 WhatsApp: 33 1053 9464
+                    </a>
+                    <br>
+                    <small style="color: #666;">(Coordinación personalizada)</small>
                 </div>
 
                 <button class="btn-plan" onclick="solicitarPlan('Premium')">
@@ -342,23 +439,38 @@
 
         <!-- Información de contacto -->
         <div class="whatsapp-info">
-            <h3>💬 ¿Tienes dudas?</h3>
-            <p>Contáctanos directamente por WhatsApp y te ayudamos a elegir el mejor plan para tu negocio.</p>
+            <h3>💬 ¿Tienes dudas o quieres ver más ejemplos?</h3>
+            <p>Contáctanos directamente por WhatsApp y te enviamos capturas reales de cómo quedaría tu anuncio.</p>
+            <div style="margin-top: 15px;">
+                <a href="https://wa.me/523310539464" style="background: #25D366; color: white; padding: 12px 25px; border-radius: 25px; text-decoration: none; font-weight: bold; display: inline-block;">
+                    📱 WhatsApp: 33 1053 9464
+                </a>
+            </div>
         </div>
     </div>
 
     <script>
         function solicitarPlan(plan) {
-            const mensaje = `Hola, estoy interesado en el Plan ${plan} de PaitZone. Por favor envíenme más información sobre:
-- Precios y formas de pago
-- Requisitos de imagen/logo
+            const mensaje = `Hola, estoy interesado en el Plan ${plan} de PaitZone. 
+
+Por favor envíenme:
+- Más información sobre este plan
+- Capturas reales de cómo quedaría mi anuncio
+- Formas de pago disponibles
 - Proceso de activación
-- Términos y condiciones
 
 Quedo atento a su respuesta. ¡Gracias!`;
             
-            window.open(`https://wa.me/523312345678?text=${encodeURIComponent(mensaje)}`, '_blank');
+            // Usa TU número para el plan Premium, número genérico para otros
+            const numero = plan === 'Premium' ? '523310539464' : '523312345678';
+            window.open(`https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
+
+        // Cargar capturas con fallback
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Página de patrocinios cargada');
+            console.log('📞 Número de contacto: 33 1053 9464');
+        });
     </script>
 </body>
 </html>

@@ -195,6 +195,9 @@ def index():
         solicitudes_usuario=solicitudes_usuario
     )
 
+@app.route('/patrocinios')
+def patrocinios():
+    return render_template('patrocinios.html')
 
 @app.route('/terminos')
 def terminos():

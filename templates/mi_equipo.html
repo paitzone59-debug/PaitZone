@@ -11,6 +11,8 @@
 <link rel="stylesheet" href="/static/css/fondo.css">
 <link rel="stylesheet" href="/static/css/mensajes.css">
 <link rel="stylesheet" href="/static/css/emoji.css">
+<link rel="stylesheet" href="/static/css/botones de promo.css">
+
 <style>
   body {
     padding-top: 70px;
@@ -143,6 +145,13 @@
   {% else %}
     <p class="text-center text-light">No estás en ningún equipo.</p>
   {% endif %}
+</div>
+
+<div class="sidebar-ad">
+    <h5>Patrocinador Estándar</h5>
+    <img src="/static/img/restaurant.avif" alt="Restaurante Don José">
+    <p>¡Promoción especial para estudiantes!</p>
+    <button>Visitar Sitio</button>
 </div>
 
 <div class="modal fade" id="integrantesModal" tabindex="-1" aria-labelledby="integrantesModalLabel" aria-hidden="true">
@@ -418,6 +427,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     let usuarioTransferirId = null;

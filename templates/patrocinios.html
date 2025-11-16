@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sé un Patrocinador - PaitZone</title>
+    <style>
+        .plan-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .plan-card {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .plan-basico { border-color: #28a745; }
+        .plan-estandar { border-color: #007bff; }
+        .plan-premium { border-color: #ffc107; }
+        
+        .preview {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 Conviértete en Patrocinador de PaitZone</h1>
+    
+    <div class="plan-container">
+        <!-- PLAN BÁSICO -->
+        <div class="plan-card plan-basico">
+            <h3>🥉 Plan Básico</h3>
+            <p><strong>MX$ 350/año</strong></p>
+            <div class="preview">
+                <h4>📱 Se verá así:</h4>
+                <p>Logo en el footer de todas las páginas</p>
+                <img src="" alt="">
+                <div style="background: #e9ecef; padding: 10px; border-radius: 5px;">
+                    <small>Footer ↓</small><br>
+                    [🔹 Tu Logo] [🔹 Otro Logo] [🔹 Más Logos]
+                </div>
+            </div>
+            <button onclick="solicitarPlan('Básico')">Elegir este Plan</button>
+        </div>
+
+        <!-- PLAN ESTÁNDAR -->
+        <div class="plan-card plan-estandar">
+            <h3>🥈 Plan Estándar</h3>
+            <p><strong>MX$ 600/año</strong></p>
+            <div class="preview">
+                <h4>📱 Se verá así:</h4>
+                <p>Banner en sidebar + logo en footer</p>
+                <img src="" alt="">
+                <div style="border: 1px solid #007bff; padding: 10px; border-radius: 5px;">
+                    <strong>Tu Banner Aquí</strong><br>
+                    <small>¡Promoción activa!</small><br>
+                    <button style="background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 3px;">
+                        Visitar
+                    </button>
+                </div>
+            </div>
+            <button onclick="solicitarPlan('Estándar')">Elegir este Plan</button>
+        </div>
+
+        <!-- PLAN PREMIUM -->
+        <div class="plan-card plan-premium">
+            <h3>🥇 Plan Premium</h3>
+            <p><strong>MX$ 650/año</strong></p>
+            <div class="preview">
+                <h4>📱 Se verá así:</h4>
+                <p>Banner en HEADER + sidebar + footer</p>
+                <img src="" alt="">
+                <div style="background: #fff3cd; padding: 10px; border-radius: 5px; text-align: center;">
+                    <strong>🚀 PATROCINADO POR: TU EMPRESA</strong><br>
+                    <small>Mensaje destacado visible siempre</small>
+                </div>
+            </div>
+            <button onclick="solicitarPlan('Premium')">Elegir este Plan</button>
+        </div>
+    </div>
+
+    <script>
+        function solicitarPlan(plan) {
+            const mensaje = `Hola, estoy interesado en el Plan ${plan} de PaitZone. Por favor envíenme más información.`;
+            window.open(`https://wa.me/523312345678?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+    </script>
+</body>
+</html>

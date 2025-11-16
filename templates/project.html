@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 <link rel="stylesheet" href="/static/css/botones de promo.css">
 <link rel="stylesheet" href="/static/css/Patrocinios.css">
+<link rel="stylesheet" href="/static/css/footer.css">
 <style>
 .main-content {
     margin-top: 90px; 
@@ -204,7 +205,7 @@
         {% endif %}
 
 {% if mi_proyecto %}
-<section class="news-section">
+    <section class="news-section">
     <div class="container">
         <div class="section-header">
             <div class="header-content">
@@ -340,7 +341,7 @@
 
 
     </div>
-</section>
+    </section>
 
 <style>
     :root {
@@ -1084,6 +1085,7 @@
   {% endif %}
 </div>
 
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Manejar clic en botones de enviar solicitud
@@ -1150,6 +1152,53 @@ function actualizarEstadoRechazado(equipoId) {
               </div>
             </div>
           </div>
+
+<div class="row g-4">
+  {% for equipo in equipos %}
+    <!-- EQUIPO NORMAL -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card equipo-card h-100 text-light">
+        <!-- ... todo el contenido del equipo que ya tienes ... -->
+      </div>
+    </div>
+
+    <!-- INSERTAR ANUNCIOS CADA 2 EQUIPOS -->
+    {% if loop.index == 2 %}
+      <!-- ANUNCIO ESTÁNDAR 1 -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="sidebar-ad">
+          <h5>🥈 Patrocinador Estándar</h5>
+          <img src="/static/img/restaurant.avif" alt="Restaurante Don José">
+          <p>¡Promoción especial para estudiantes! 15% de descuento mostrando tu credencial</p>
+          <button onclick="window.open('https://wa.me/523312345678', '_blank')">Visitar Sitio</button>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if loop.index == 4 %}
+      <!-- ANUNCIO ESTÁNDAR 2 -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="sidebar-ad">
+          <h5>🥈 Patrocinador Estándar</h5>
+          <img src="/static/img/pim.jpg" alt="Gimnasio Fit">
+          <p>50% de descuento en membresía estudiantil. ¡Cuida tu salud!</p>
+          <button onclick="window.open('https://wa.me/523312345678', '_blank')">Visitar Sitio</button>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if loop.index == 6 %}
+      <!-- ANUNCIO ESTÁNDAR 3 -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="sidebar-ad">
+          <h5>🥈 Patrocinador Estándar</h5>
+          <img src="/static/img/cafe.avif" alt="Academia de Idiomas">
+          <p>Clases de inglés con 30% de descuento para estudiantes PaitZone</p>
+          <button onclick="window.open('https://wa.me/523312345678', '_blank')">Visitar Sitio</button>
+        </div>
+      </div>
+    {% endif %}
+
           {% else %}
           <div class="col-12">
             <p class="text-center text-light">No hay equipos disponibles para tu turno ({{ usuario.turno }}) en este momento.</p>
@@ -1157,8 +1206,8 @@ function actualizarEstadoRechazado(equipoId) {
           {% endfor %}
         </div>
         {% endif %}
-    </div>
-</div>
+        </div>
+        </div>
 
 <footer class="footer">
     <div class="container">

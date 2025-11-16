@@ -967,124 +967,172 @@
 
 
 
-        {% if not mi_proyecto %}
-        <h2 class="mb-4 text-center text-light fw-bold">Equipos Disponibles para {{ usuario.turno }}</h2>
+{% if not mi_proyecto %}
+<h2 class="mb-4 text-center text-light fw-bold">Equipos Disponibles para {{ usuario.turno }}</h2>
 
-        <div class="row g-4">
-          {% for equipo in equipos %}
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="card equipo-card h-100 text-light">
-              <div class="card-body d-flex flex-column">
-                
-                <div class="mb-3">
-                  <h6 class="text-uppercase text-info fw-bold mb-1" style="letter-spacing: 0.5px;">
-                    Nombre del proyecto
-                  </h6>
-                  <h5 class="fw-semibold text-light mb-3">{{ equipo.nombre_proyecto }}</h5>
-                </div>
-
-                <div class="mb-3">
-                  <h6 class="text-uppercase text-info fw-bold mb-1" style="letter-spacing: 0.5px;">
-                    Descripción del proyecto
-                  </h6>
-                  <p class="card-text small mb-3" style="color: rgba(255, 255, 255, 0.9);">
-                    {{ equipo.descripcion }}
-                  </p>
-                </div>
-
-                <div class="row mb-3">
-                  <div class="col-6">
-                    <strong>Asesor:</strong><br>
-                    <span class="small">{{ equipo.asesor or "No asignado" }}</span>
-                  </div>
-                  <div class="col-6">
-                    <strong>Turno:</strong><br>
-                    <span class="badge {% if equipo.turno == 'Matutino' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %}">
-                      {{ equipo.turno }}
-                    </span>
-                  </div>
-                </div>
-
-                <div class="mb-3">
-                  <strong>Carreras necesarias:</strong><br>
-                  {% for carrera in equipo.carreras_necesarias %}
-                    <span class="badge bg-info text-dark mb-1">{{ carrera }}</span>
-                  {% else %}
-                    <span class="text-muted small">No especificadas</span>
-                  {% endfor %}
-                </div>
-
-                <div class="mb-3">
-                  <strong>Integrantes ({{ equipo.integrantes | length }}/{{ equipo.max_integrantes }}):</strong>
-                  <ul class="list-unstyled mt-2 mb-0">
-                    {% for integrante in equipo.integrantes %}
-                      <li class="d-flex align-items-center justify-content-between bg-secondary bg-opacity-10 rounded px-2 py-1 mb-1">
-                        <div>
-                          <span>{{ integrante.nombre_completo }}</span>
-                          {% if integrante.id == equipo.creador_id %}
-                            <span class="badge bg-warning text-dark ms-1">Admin</span>
-                          {% endif %}
-                        </div>
-                        <a href="{{ url_for('perfil', id=integrante.id) }}" class="btn btn-sm btn-outline-light">Ver perfil</a>
-                      </li>
-                    {% else %}
-                      <li class="text-muted small">Sin integrantes</li>
-                    {% endfor %}
-                  </ul>
-                </div>
-
-                <div class="mb-3">
-                  <strong>Privacidad:</strong>
-                  {% if equipo.privacidad == 'publico' %}
-                    <span class="badge bg-success">Público</span>
-                  {% else %}
-                    <span class="badge bg-warning text-dark">Privado</span>
-                  {% endif %}
-                </div>
-
-<div class="mt-auto" id="boton-container-{{ equipo.id }}">
-  {% if usuario %}
-    {% if equipo.privacidad == 'publico' %}
-      <a href="{{ url_for('unirse', equipo_id=equipo.id) }}" class="btn btn-primary w-100">Unirme</a>
-    {% else %}
-      {# VERIFICAR ESTADO DE SOLICITUD #}
-      {% set solicitud_usuario = none %}
-      {% for solicitud in solicitudes_usuario %}
-        {% if solicitud['equipo_id'] == equipo.id %}
-          {% set solicitud_usuario = solicitud %}
-        {% endif %}
-      {% endfor %}
-      
-      {% if solicitud_usuario %}
-        {% if solicitud_usuario['estado'] == 'pendiente' %}
-          {# SOLICITUD PENDIENTE - MOSTRAR ESTADO FIJO #}
-          <div class="alert alert-warning text-center py-2 mb-0" id="estado-{{ equipo.id }}">
-            <small>⏳ Solicitud enviada</small>
+<div class="row g-4">
+  {% for equipo in equipos %}
+    <!-- EQUIPO NORMAL -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card equipo-card h-100 text-light">
+        <div class="card-body d-flex flex-column">
+          
+          <div class="mb-3">
+            <h6 class="text-uppercase text-info fw-bold mb-1" style="letter-spacing: 0.5px;">
+              Nombre del proyecto
+            </h6>
+            <h5 class="fw-semibold text-light mb-3">{{ equipo.nombre_proyecto }}</h5>
           </div>
-        {% elif solicitud_usuario['estado'] == 'rechazada' %}
-          {# SOLICITUD RECHAZADA - VOLVER A MOSTRAR BOTÓN #}
-          <a href="{{ url_for('enviar_solicitud', equipo_id=equipo.id) }}" 
-             class="btn btn-outline-warning w-100 btn-enviar-solicitud"
-             data-equipo-id="{{ equipo.id }}"
-             id="btn-{{ equipo.id }}">
-            🔄 Reenviar solicitud
-          </a>
-        {% endif %}
-      {% else %}
-        {# NO TIENE SOLICITUD - MOSTRAR BOTÓN NORMAL #}
-        <a href="{{ url_for('enviar_solicitud', equipo_id=equipo.id) }}" 
-           class="btn btn-outline-warning w-100 btn-enviar-solicitud"
-           data-equipo-id="{{ equipo.id }}"
-           id="btn-{{ equipo.id }}">
-          Enviar solicitud
-        </a>
-      {% endif %}
-    {% endif %}
-  {% else %}
-    <a href="{{ url_for('login') }}" class="btn btn-outline-light w-100">Inicia sesión para unirte</a>
-  {% endif %}
-</div>
 
+          <div class="mb-3">
+            <h6 class="text-uppercase text-info fw-bold mb-1" style="letter-spacing: 0.5px;">
+              Descripción del proyecto
+            </h6>
+            <p class="card-text small mb-3" style="color: rgba(255, 255, 255, 0.9);">
+              {{ equipo.descripcion }}
+            </p>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-6">
+              <strong>Asesor:</strong><br>
+              <span class="small">{{ equipo.asesor or "No asignado" }}</span>
+            </div>
+            <div class="col-6">
+              <strong>Turno:</strong><br>
+              <span class="badge {% if equipo.turno == 'Matutino' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %}">
+                {{ equipo.turno }}
+              </span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <strong>Carreras necesarias:</strong><br>
+            {% for carrera in equipo.carreras_necesarias %}
+              <span class="badge bg-info text-dark mb-1">{{ carrera }}</span>
+            {% else %}
+              <span class="text-muted small">No especificadas</span>
+            {% endfor %}
+          </div>
+
+          <div class="mb-3">
+            <strong>Integrantes ({{ equipo.integrantes | length }}/{{ equipo.max_integrantes }}):</strong>
+            <ul class="list-unstyled mt-2 mb-0">
+              {% for integrante in equipo.integrantes %}
+                <li class="d-flex align-items-center justify-content-between bg-secondary bg-opacity-10 rounded px-2 py-1 mb-1">
+                  <div>
+                    <span>{{ integrante.nombre_completo }}</span>
+                    {% if integrante.id == equipo.creador_id %}
+                      <span class="badge bg-warning text-dark ms-1">Admin</span>
+                    {% endif %}
+                  </div>
+                  <a href="{{ url_for('perfil', id=integrante.id) }}" class="btn btn-sm btn-outline-light">Ver perfil</a>
+                </li>
+              {% else %}
+                <li class="text-muted small">Sin integrantes</li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <div class="mb-3">
+            <strong>Privacidad:</strong>
+            {% if equipo.privacidad == 'publico' %}
+              <span class="badge bg-success">Público</span>
+            {% else %}
+              <span class="badge bg-warning text-dark">Privado</span>
+            {% endif %}
+          </div>
+
+          <div class="mt-auto" id="boton-container-{{ equipo.id }}">
+            {% if usuario %}
+              {% if equipo.privacidad == 'publico' %}
+                <a href="{{ url_for('unirse', equipo_id=equipo.id) }}" class="btn btn-primary w-100">Unirme</a>
+              {% else %}
+                {# VERIFICAR ESTADO DE SOLICITUD #}
+                {% set solicitud_usuario = none %}
+                {% for solicitud in solicitudes_usuario %}
+                  {% if solicitud['equipo_id'] == equipo.id %}
+                    {% set solicitud_usuario = solicitud %}
+                  {% endif %}
+                {% endfor %}
+                
+                {% if solicitud_usuario %}
+                  {% if solicitud_usuario['estado'] == 'pendiente' %}
+                    {# SOLICITUD PENDIENTE - MOSTRAR ESTADO FIJO #}
+                    <div class="alert alert-warning text-center py-2 mb-0" id="estado-{{ equipo.id }}">
+                      <small>⏳ Solicitud enviada</small>
+                    </div>
+                  {% elif solicitud_usuario['estado'] == 'rechazada' %}
+                    {# SOLICITUD RECHAZADA - VOLVER A MOSTRAR BOTÓN #}
+                    <a href="{{ url_for('enviar_solicitud', equipo_id=equipo.id) }}" 
+                       class="btn btn-outline-warning w-100 btn-enviar-solicitud"
+                       data-equipo-id="{{ equipo.id }}"
+                       id="btn-{{ equipo.id }}">
+                      🔄 Reenviar solicitud
+                    </a>
+                  {% endif %}
+                {% else %}
+                  {# NO TIENE SOLICITUD - MOSTRAR BOTÓN NORMAL #}
+                  <a href="{{ url_for('enviar_solicitud', equipo_id=equipo.id) }}" 
+                     class="btn btn-outline-warning w-100 btn-enviar-solicitud"
+                     data-equipo-id="{{ equipo.id }}"
+                     id="btn-{{ equipo.id }}">
+                    Enviar solicitud
+                  </a>
+                {% endif %}
+              {% endif %}
+            {% else %}
+              <a href="{{ url_for('login') }}" class="btn btn-outline-light w-100">Inicia sesión para unirte</a>
+            {% endif %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- INSERTAR ANUNCIOS CADA 2 EQUIPOS -->
+    {% if loop.index == 2 %}
+      <!-- ANUNCIO ESTÁNDAR 1 -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="sidebar-ad">
+          <h5>🥈 Patrocinador Estándar</h5>
+          <img src="/static/img/restaurant.avif" alt="Restaurante Don José">
+          <p>¡Promoción especial para estudiantes! 15% de descuento mostrando tu credencial</p>
+          <button onclick="window.open('https://wa.me/523312345678', '_blank')">Visitar Sitio</button>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if loop.index == 4 %}
+      <!-- ANUNCIO ESTÁNDAR 2 -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="sidebar-ad">
+          <h5>🥈 Patrocinador Estándar</h5>
+          <img src="/static/img/pim.jpg" alt="Gimnasio Fit">
+          <p>50% de descuento en membresía estudiantil. ¡Cuida tu salud!</p>
+          <button onclick="window.open('https://wa.me/523312345678', '_blank')">Visitar Sitio</button>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if loop.index == 6 %}
+      <!-- ANUNCIO ESTÁNDAR 3 -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="sidebar-ad">
+          <h5>🥈 Patrocinador Estándar</h5>
+          <img src="/static/img/cafe.avif" alt="Academia de Idiomas">
+          <p>Clases de inglés con 30% de descuento para estudiantes PaitZone</p>
+          <button onclick="window.open('https://wa.me/523312345678', '_blank')">Visitar Sitio</button>
+        </div>
+      </div>
+    {% endif %}
+
+  {% else %}
+    <div class="col-12">
+      <p class="text-center text-light">No hay equipos disponibles para tu turno ({{ usuario.turno }}) en este momento.</p>
+    </div>
+  {% endfor %}
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -1147,67 +1195,7 @@ function actualizarEstadoRechazado(equipoId) {
     }
 }
 </script>
-
-
-              </div>
-            </div>
-          </div>
-
-<div class="row g-4">
-  {% for equipo in equipos %}
-    <!-- EQUIPO NORMAL -->
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="card equipo-card h-100 text-light">
-        <!-- ... todo el contenido del equipo que ya tienes ... -->
-      </div>
-    </div>
-
-    <!-- INSERTAR ANUNCIOS CADA 2 EQUIPOS -->
-    {% if loop.index == 2 %}
-      <!-- ANUNCIO ESTÁNDAR 1 -->
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="sidebar-ad">
-          <h5>🥈 Patrocinador Estándar</h5>
-          <img src="/static/img/restaurant.avif" alt="Restaurante Don José">
-          <p>¡Promoción especial para estudiantes! 15% de descuento mostrando tu credencial</p>
-          <button onclick="window.open('https://wa.me/523312345678', '_blank')">Visitar Sitio</button>
-        </div>
-      </div>
-    {% endif %}
-
-    {% if loop.index == 4 %}
-      <!-- ANUNCIO ESTÁNDAR 2 -->
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="sidebar-ad">
-          <h5>🥈 Patrocinador Estándar</h5>
-          <img src="/static/img/pim.jpg" alt="Gimnasio Fit">
-          <p>50% de descuento en membresía estudiantil. ¡Cuida tu salud!</p>
-          <button onclick="window.open('https://wa.me/523312345678', '_blank')">Visitar Sitio</button>
-        </div>
-      </div>
-    {% endif %}
-
-    {% if loop.index == 6 %}
-      <!-- ANUNCIO ESTÁNDAR 3 -->
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="sidebar-ad">
-          <h5>🥈 Patrocinador Estándar</h5>
-          <img src="/static/img/cafe.avif" alt="Academia de Idiomas">
-          <p>Clases de inglés con 30% de descuento para estudiantes PaitZone</p>
-          <button onclick="window.open('https://wa.me/523312345678', '_blank')">Visitar Sitio</button>
-        </div>
-      </div>
-    {% endif %}
-
-          {% else %}
-          <div class="col-12">
-            <p class="text-center text-light">No hay equipos disponibles para tu turno ({{ usuario.turno }}) en este momento.</p>
-          </div>
-          {% endfor %}
-        </div>
-        {% endif %}
-        </div>
-        </div>
+{% endif %}
 
 <footer class="footer">
     <div class="container">

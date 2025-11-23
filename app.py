@@ -398,9 +398,13 @@ def login():
         codigo = request.form['codigo']
         password = request.form['password']
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM usuarios WHERE codigo = %s', (codigo,))
+        
+        # CAMBIA ESTA LÍNEA: usar codigo_estudiante en lugar de codigo
+        cursor.execute('SELECT * FROM usuarios WHERE codigo_estudiante = %s', (codigo,))
+        
         user = cursor.fetchone()
         cursor.close()
+        
         from werkzeug.security import check_password_hash
         if user and check_password_hash(user['contrasena'], password):
             turno = user.get('turno')
@@ -410,6 +414,7 @@ def login():
                 cursor.execute('UPDATE usuarios SET turno = %s WHERE id = %s', (turno, user['id']))
                 mysql.connection.commit()
                 cursor.close()
+            
             session['usuario'] = {
                 'id': user['id'],
                 'nombre_completo': user['nombre_completo'],
@@ -417,20 +422,22 @@ def login():
                 'grado': user.get('grado'),
                 'grupo': user.get('grupo'),
                 'turno': turno,
-                'codigo': user['codigo'],
+                'codigo': user['codigo_estudiante'],  # También cambia aquí
                 'correo': user['correo'],
                 'telefono': user.get('telefono'),
                 'role': user.get('role', 'user')
             }
             session['usuario_id'] = user['id']
             flash(f"Bienvenido, {user['nombre_completo']}", "success")
+            
             if session['usuario']['role'] == 'admin':
                 return redirect(url_for('admin_panel'))
             else:
                 return redirect(url_for('index'))
         else:
-            flash("Cdigo o contrasea incorrectos", "danger")
+            flash("Código o contraseña incorrectos", "danger")
             return redirect(url_for('login'))
+    
     return render_template("login.html")
 
 

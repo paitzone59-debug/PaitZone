@@ -8,47 +8,36 @@ from flask import g
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask import jsonify
-from filtro_groserias import contiene_groserias, verificar_campos
 import os
 
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"
+app.secret_key = os.environ.get("SECRET_KEY", "supersecretkey")
 
-
-app.config['MYSQL_HOST'] = os.environ.get('MYSQLHOST', 'localhost')
+app.config['MYSQL_HOST'] = os.environ.get('MYSQLHOST', 'mysql.railway.internal')
 app.config['MYSQL_USER'] = os.environ.get('MYSQLUSER', 'root')
-app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQLPASSWORD', 'mysql')
-app.config['MYSQL_DB'] = os.environ.get('MYSQLDATABASE', 'Entrelaza')
-app.config['MYSQL_PORT'] = int(os.environ.get('MYSQLPORT', 44135))
-app.config['MYSQL_SSL'] = False
+app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQLPASSWORD', 'lHIHHgqYhJCDcpfnzGsoHBBBJqPSOSej')
+app.config['MYSQL_DB'] = os.environ.get('MYSQLDATABASE', 'railway')
+app.config['MYSQL_PORT'] = int(os.environ.get('MYSQLPORT', 3306))
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
 
-
-if os.environ.get('MYSQLHOST'):
-    database_uri = f"mysql+pymysql://{os.environ.get('MYSQLUSER')}:{os.environ.get('MYSQLPASSWORD')}@{os.environ.get('MYSQLHOST')}:{os.environ.get('MYSQLPORT', 3306)}/{os.environ.get('MYSQLDATABASE')}"
-else:
-    database_uri = 'mysql+pymysql://root:mysql@localhost/Entrelaza'
-
-
+database_uri = f"mysql+pymysql://{app.config['MYSQL_USER']}:{app.config['MYSQL_PASSWORD']}@{app.config['MYSQL_HOST']}:{app.config['MYSQL_PORT']}/{app.config['MYSQL_DB']}"
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
-
-
-
 
 class Notificacion(db.Model):
     __tablename__ = 'notificaciones'
     id = db.Column(db.Integer, primary_key=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id', ondelete='CASCADE'), nullable=False)
+    usuario_id = db.Column(db.Integer, nullable=False)
     mensaje = db.Column(db.String(255), nullable=False)
-    tipo = db.Column(db.Enum('solicitud','respuesta'), nullable=False)
+    tipo = db.Column(db.String(50), nullable=False)
     leida = db.Column(db.Boolean, default=False)
     fecha = db.Column(db.DateTime, default=datetime.utcnow)
-
+    solicitud_id = db.Column(db.Integer)
 
 
 
@@ -91,6 +80,7 @@ def debug_tables():
         return f" Tablas en la BD: {tables}"
     except Exception as e:
         return f" Error al obtener tablas: {str(e)}"
+    
     
     
 @app.route('/')
@@ -218,9 +208,19 @@ def test_db():
         cursor.execute("SHOW TABLES")
         tables = cursor.fetchall()
         cursor.close()
-        return f" BD Conectada. Tablas: {len(tables)}"
+        return f"✅ Tablas en la BD: {tables}"
     except Exception as e:
-        return f" Error BD: {str(e)}"
+        return f"❌ Error: {str(e)}"
+
+@app.route('/test-credentials')
+def test_credentials():
+    creds = {
+        'host': app.config['MYSQL_HOST'],
+        'user': app.config['MYSQL_USER'],
+        'database': app.config['MYSQL_DB'],
+        'port': app.config['MYSQL_PORT']
+    }
+    return f"🔐 Credenciales usadas: {creds}"
     
 @app.route('/admin')
 @admin_required
@@ -1400,5 +1400,5 @@ def inject_estadisticas():
         stats['total_equipos'] = 0
     return stats
 if __name__ == "__main__":
-    from os import environ
-    app.run(host="0.0.0.0", port=int(environ.get("PORT", 5000)), debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)

@@ -330,48 +330,67 @@ def agregar_usuario():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-
     if request.method == 'POST':
-        nombre = request.form['nombre']
-        carrera = request.form['carrera']
-        grado = request.form['grado']
-        grupo = request.form['grupo']
-        turno = request.form['turno']
-        codigo = request.form['codigo']
-        correo = request.form['correo']
-        telefono = request.form['telefono']
-        password = request.form['password']
-        campos = {
-            'nombre': nombre,
-            'carrera': carrera,
-            'grado': grado,
-            'grupo': grupo,
-            'cdigo': codigo
-        }
-        tiene_groseria, campo_problematico = verificar_campos(campos)
-        if tiene_groseria:
-            flash(f"El campo '{campo_problematico}' contiene palabras no permitidas. Por favor usa lenguaje apropiado.", "danger")
-            return redirect(url_for('register'))
-        if not correo.endswith("@alumnos.udg.mx"):
-            flash("Debes usar tu correo institucional (@alumnos.udg.mx)", "danger")
-            return redirect(url_for('register'))
-        cursor = mysql.connection.cursor()
-        cursor.execute("SELECT * FROM usuarios WHERE codigo = %s OR correo = %s", (codigo, correo))
-        if cursor.fetchone():
-            flash("Ya existe un usuario con ese cdigo o correo", "danger")
+        try:
+            # Obtener datos del formulario
+            nombre_completo = request.form['nombre']
+            codigo_estudiante = request.form['codigo']
+            correo = request.form['correo']
+            contrasena = request.form['password']
+            carrera = request.form['carrera']
+            grado = request.form['grado']
+            grupo = request.form['grupo']
+            turno = request.form['turno']
+            telefono = request.form.get('telefono', '')
+            
+            # Validar campos obligatorios
+            if not all([nombre_completo, codigo_estudiante, correo, contrasena, carrera, grado, grupo, turno]):
+                flash('Por favor completa todos los campos obligatorios', 'error')
+                return redirect(url_for('register'))
+            
+            # Verificar si el código o correo ya existen
+            cursor = mysql.connection.cursor()
+            cursor.execute("SELECT * FROM usuarios WHERE codigo_estudiante = %s OR correo = %s", (codigo_estudiante, correo))
+            existing_user = cursor.fetchone()
+            
+            if existing_user:
+                flash('El código de estudiante o correo electrónico ya está registrado', 'error')
+                cursor.close()
+                return redirect(url_for('register'))
+            
+            # Hashear la contraseña
+            hashed_password = generate_password_hash(contrasena)
+            
+            # Insertar usuario con los nombres de columna CORRECTOS
+            cursor.execute(
+                """INSERT INTO usuarios 
+                (nombre_completo, codigo_estudiante, carrera, grado, grupo, turno, correo, telefono, contrasena) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                (nombre_completo, codigo_estudiante, carrera, grado, grupo, turno, correo, telefono, hashed_password)
+            )
+            
+            mysql.connection.commit()
             cursor.close()
+            
+            flash('¡Registro exitoso! Ahora puedes iniciar sesión', 'success')
+            return redirect(url_for('login'))
+            
+        except KeyError as e:
+            flash(f'Falta el campo obligatorio: {e}', 'error')
             return redirect(url_for('register'))
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-        cursor.execute('''
-            INSERT INTO usuarios(nombre_completo, carrera, grado, grupo, turno, codigo, correo, telefono, contrasena)
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
-        ''', (nombre, carrera, grado, grupo, turno, codigo, correo, telefono, hashed_password))
-        mysql.connection.commit()
-        cursor.close()
-        flash("Registro exitoso, ahora inicia sesin", "success")
-        return redirect(url_for('login'))
-    return render_template("register.html")
-
+        except Exception as e:
+            flash(f'Error en el registro: {str(e)}', 'error')
+            return redirect(url_for('register'))
+    
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT COUNT(*) as total FROM usuarios")
+    total_usuarios = cursor.fetchone()['total']
+    
+    cursor.execute("SELECT COUNT(*) as total FROM equipos")
+    total_equipos = cursor.fetchone()['total']
+    cursor.close()
+    
+    return render_template('register.html', total_usuarios=total_usuarios, total_equipos=total_equipos)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

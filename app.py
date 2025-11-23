@@ -10,26 +10,26 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import jsonify
 from filtro_groserias import contiene_groserias, verificar_campos
 import os
+from urllib.parse import urlparse
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "supersecretkey")
 
-app.config['MYSQL_HOST'] = os.environ.get('MYSQLHOST', 'mysql.railway.internal')
-app.config['MYSQL_USER'] = os.environ.get('MYSQLUSER', 'root')
-app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQLPASSWORD', 'lHIHHgqYhJCDcpfnzGsoHBBBJqPSOSej')
-app.config['MYSQL_DB'] = os.environ.get('MYSQLDATABASE', 'railway')
-app.config['MYSQL_PORT'] = int(os.environ.get('MYSQLPORT', 3306))
-app.config['MYSQL_SSL'] = False
+mysql_public_url = os.environ.get('MYSQL_PUBLIC_URL', 'mysql://root:lHIHHgqYhJCDcpfnzGsoHBBBJqPSOSej@shinkansen.proxy.rlwy.net:21152/railway')
+
+parsed_url = urlparse(mysql_public_url)
+
+app.config['MYSQL_HOST'] = parsed_url.hostname  
+app.config['MYSQL_USER'] = parsed_url.username  
+app.config['MYSQL_PASSWORD'] = parsed_url.password  
+app.config['MYSQL_DB'] = parsed_url.path[1:] if parsed_url.path else 'railway'  
+app.config['MYSQL_PORT'] = parsed_url.port or 21152  # 21152
+app.config['MYSQL_SSL'] = True  
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
 
-if os.environ.get('MYSQLHOST'):
-    database_uri = f"mysql+pymysql://{os.environ.get('MYSQLUSER')}:{os.environ.get('MYSQLPASSWORD')}@{os.environ.get('MYSQLHOST')}:{os.environ.get('MYSQLPORT', 3306)}/{os.environ.get('MYSQLDATABASE')}"
-else:
-    database_uri = 'mysql+pymysql://root:mysql@localhost/Entrelaza'
-
-app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
+app.config['SQLALCHEMY_DATABASE_URI'] = mysql_public_url.replace('mysql://', 'mysql+pymysql://')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 

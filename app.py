@@ -9,7 +9,10 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask import jsonify
 import os
+import logging
 
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "supersecretkey")
@@ -20,8 +23,56 @@ app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQLPASSWORD', 'lHIHHgqYhJCDcpfn
 app.config['MYSQL_DB'] = os.environ.get('MYSQLDATABASE', 'railway')
 app.config['MYSQL_PORT'] = int(os.environ.get('MYSQLPORT', 3306))
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-
 mysql = MySQL(app)
+
+try:
+    mysql = MySQL(app)
+    logger.info("✅ MySQL inicializado")
+except Exception as e:
+    logger.error(f"❌ Error inicializando MySQL: {e}")
+    mysql = None
+
+try:
+    database_uri = f"mysql+pymysql://{app.config['MYSQL_USER']}:{app.config['MYSQL_PASSWORD']}@{app.config['MYSQL_HOST']}:{app.config['MYSQL_PORT']}/{app.config['MYSQL_DB']}"
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db = SQLAlchemy(app)
+    logger.info("✅ SQLAlchemy configurado")
+except Exception as e:
+    logger.error(f"❌ Error configurando SQLAlchemy: {e}")
+    db = None
+
+@app.route('/')
+def index():
+    return "🚀 Flask en Render - ¡Funcionando!"
+
+@app.route('/health')
+def health_check():
+    try:
+        if mysql:
+            cursor = mysql.connection.cursor()
+            cursor.execute("SELECT 1")
+            result = cursor.fetchone()
+            cursor.close()
+            return f"✅ MySQL conectado: {result}"
+        else:
+            return "❌ MySQL no inicializado"
+    except Exception as e:
+        return f"❌ Error MySQL: {str(e)}"
+
+@app.route('/simple')
+def simple():
+    return "✅ Esta ruta simple funciona"
+
+@app.errorhandler(500)
+def internal_error(error):
+    return f"❌ Error 500: {str(error)}", 500
+
+@app.errorhandler(404)
+def not_found(error):
+    return "❌ Página no encontrada", 404
+
+
 
 database_uri = f"mysql+pymysql://{app.config['MYSQL_USER']}:{app.config['MYSQL_PASSWORD']}@{app.config['MYSQL_HOST']}:{app.config['MYSQL_PORT']}/{app.config['MYSQL_DB']}"
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
